@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: benhvien
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./medical-booking/src/main/resources/database/benhvien.sql:/docker-entrypoint-initdb.d/benhvien.sql
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
