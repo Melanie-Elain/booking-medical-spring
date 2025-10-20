@@ -10,7 +10,7 @@ const Header = () => {
       <div className="header-container">
         <div className="logo">
           <img
-            src="https://cdn.youmed.vn/wp-content/themes/youmed/images/logo.svg"
+            src="https://cdn.youmed.vn/wp-content/themes/youmed/images/logo-youmed.png"
             alt="YouMed Logo"
             className="logo-img"
           />
@@ -29,5 +29,4 @@ const Header = () => {
     </header>
   );
 };
-
 export default Header;
