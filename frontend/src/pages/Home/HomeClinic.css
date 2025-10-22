@@ -1,0 +1,141 @@
+/* --- Cấu trúc chung --- */
+.home-clinic {
+    padding: 30px 0; 
+    background-color: #f7f9fc; /* Màu nền nhẹ cho toàn bộ section */
+}
+
+.container {
+    width: 90%; 
+    max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+    margin: 0 auto; 
+}
+
+/* --- Phần Header và Nút Xem thêm --- */
+.clinic-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #777;
+    margin: 0;
+}
+
+.view-all-button {
+    background-color: #007bff; /* Màu xanh dương tương tự ảnh */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+
+.view-all-button:hover {
+    background-color: #0056b3;
+}
+
+.arrow-icon {
+    margin-left: 5px;
+    font-weight: bold;
+}
+
+/* --- Danh sách Phòng khám (Clinic List) --- */
+.clinic-list {
+    display: flex;
+    gap: 20px; /* Khoảng cách giữa các card */
+    /* Cho phép cuộn ngang trên thiết bị di động nếu cần */
+    overflow-x: auto; 
+    padding-bottom: 10px;
+}
+
+/* --- Thẻ Phòng khám (Clinic Card) --- */
+.clinic-card {
+    /* Đảm bảo mỗi card chiếm khoảng 1/4 (4 cột) */
+    flex: 1 0 calc(25% - 15px); /* 15px = (3 gaps / 4 items) * 20px/gap */
+    min-width: 250px; /* Giới hạn chiều rộng nhỏ nhất */
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s, transform 0.3s;
+    text-align: center; /* Căn giữa logo */
+}
+
+.clinic-card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px); /* Hiệu ứng nâng nhẹ khi di chuột */
+}
+
+.logo-container {
+    margin-bottom: 15px;
+    /* Đảm bảo logo nằm trên một hình tròn */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.clinic-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%; /* Tạo hình tròn */
+    border: 3px solid #eee; /* Đường viền nhẹ */
+}
+
+.clinic-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.3;
+    margin: 0 0 5px 0;
+    text-align: left; /* Căn lề trái cho tên phòng khám */
+}
+
+.clinic-card-address {
+    font-size: 13px;
+    color: #777;
+    text-align: left; /* Căn lề trái cho địa chỉ */
+    line-height: 1.4;
+}
+
+/* --- Media Queries cho Responsive Design (Tùy chọn) --- */
+@media (max-width: 1024px) {
+    .clinic-card {
+        flex: 1 0 calc(33.33% - 13.33px); /* 3 cột trên tablet */
+        min-width: 220px;
+    }
+}
+
+@media (max-width: 768px) {
+    .clinic-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .view-all-button {
+        margin-top: 10px;
+    }
+    .clinic-list {
+        /* Bật cuộn ngang, hiển thị khoảng 1.5 card */
+        flex-wrap: nowrap;
+    }
+    .clinic-card {
+        flex: 0 0 45%; 
+        min-width: 180px;
+    }
+}
