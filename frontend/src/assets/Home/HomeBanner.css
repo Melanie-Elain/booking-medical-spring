@@ -4,8 +4,8 @@
 }
 
 .home-banner {
-  background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
-  height: 400px;
+  background: linear-gradient(90deg, #1975dc 0%, #1975dc 100%);
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,17 +21,18 @@
 }
 
 .banner-content h1 {
-  font-size: 42px;
+  font-size: 40px;
   font-weight: 700;
   margin-bottom: 10px;
   line-height: 1.3;
 }
 
 .banner-content p {
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1.6;
   margin-bottom: 20px;
   opacity: 0.9;
+  color: #fff;
 }
 
 .search-box {
@@ -39,9 +40,9 @@
   align-items: center;
   background: #fff;
   border-radius: 25px;
-  padding: 10px;
-  width: 70%;
-  max-width: 600px;
+  padding: 8px;
+  width: 100%;
+  max-width: 1000px;
   margin: 0 auto 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -70,8 +71,8 @@
   top: 50%;
   right: 10%;
   transform: translateY(-50%);
-  width: 300px;
-  height: 300px;
+  width: 500px;
+  height: 500px;
   background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 30 Q 40 0 20 30 Q 0 60 20 80 Q 40 100 50 80 Q 60 100 80 80 Q 100 60 80 30 Q 60 0 50 30 Z" fill="none" stroke="%230072ff" stroke-width="5"/></svg>') no-repeat center;
   background-size: contain;
   overflow: hidden;
