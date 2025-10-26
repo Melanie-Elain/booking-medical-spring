@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+
+/*Nút xem tất cả*/
+.view-all-btn {
+  background-color: #007bff; /* Màu xanh dương tương tự ảnh */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+.view-all-btn:hover {
+  background-color: #0056b3;
+}
+
+.arrow-icon {
+  margin-left: 5px;
+  font-weight: bold;
+  width: 10px;
+}
