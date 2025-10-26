@@ -1,53 +1,175 @@
+/* Header base */
 .header {
+  width: 100%;
   background: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px 20px;
-  position: relative;
-  z-index: 100;
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
 }
-
 .header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 85%;
 }
 
-.logo-img {
-  height: 40px;
-  width: auto;
-}
+/* Logo */
+.logo-img { height: 30px; }
+
 
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 20px;
+  /* 📢 FIX LỖI: Đẩy menu sang phải và không cho nó chiếm không gian thừa */
+  margin-left: auto; 
+  flex-grow: 0;
+  
+  gap: 22px;
+  position: relative;
+  /* width: fit-content; được bỏ để tránh lỗi đỏ */
 }
 
 .nav-item {
+  font-size: 15px;
   color: #333;
   text-decoration: none;
-  font-size: 16px;
-  padding: 5px 10px;
-  transition: color 0.3s;
+  font-weight: 500;
 }
 
-.nav-item:hover {
-  color: #00b4db;
-}
 
 .login-btn {
-  background: #00b4db;
-  color: #fff !important;
-  border-radius: 20px;
-  padding: 5px 15px;
-  display: flex;
+  background: transparent;
+  border: 1px solid #1975dc;
+  color: #1975dc !important;
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-flex;
+  gap: 8px;
   align-items: center;
-  gap: 5px;
+}
+.login-btn:hover { 
+  background: #116fdb;
+  color: #fff !important;}
+
+
+.dropdown {
+  position: relative;
+  display: inline-block;
 }
 
-.login-btn:hover {
-  background: #0097c1;
+
+.dropdown-label {
+  background: none;
+  border: none;
+  font: inherit;
+  padding: 6px 6px;
+  cursor: pointer;
+  color: #333;
+  font-weight: 500;
+}
+.dropdown-label .caret { margin-left: 6px; font-size: 12px; color: #888; }
+
+
+.dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 360px;
+  max-width: 520px;
+
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden; /* ✅ thêm dòng này */
+  margin-top: 14px;
+  transform-origin: top center;
+  transition: opacity 220ms ease, transform 220ms ease, visibility 0s linear 220ms;
+  z-index: 1300;
+}
+
+
+
+.dropdown-inner {
+  pointer-events: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(29,41,55,0.18);
+  overflow:  hidden; /* ✅ tránh vùng bóng mờ vẫn bắt hover */
+  padding: 12px 0;
+}
+
+
+.dropdown-row {
+  display: block;
+  padding: 14px 20px;
+  text-decoration: none;
+  color: #111;
+  transition: background 160ms ease;
+  border-radius: 8px;
+  margin: 6px 12px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+.dropdown-row .row-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+.dropdown-row .row-desc {
+  font-size: 13px;
+  color: #6b7280; /* gray */
+  margin-top: 6px;
+}
+
+.nav-item.dropdown {
+    display: inline-flex; 
+    position: relative;
+}
+
+
+.dropdown-row:hover {
+  background: #f4f9ff;
+}
+
+
+.dropdown-row.active {
+  background: rgba(25,117,220,0.08);
+  border-radius: 10px;
+}
+
+
+.dropdown-footer {
+  margin: 10px 14px 6px;
+  padding: 12px 16px;
+  border-top: 1px solid #eef2f7;
+  color: #374151;
+  font-size: 14px;
+  border-radius: 0 0 10px 10px;
+  background: #fbfdff;
+}
+
+
+.dropdown:hover .dropdown-panel {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible; /* ✅ thêm dòng này */
+  transform: translateX(-50%) translateY(0);
+  transition-delay: 0s;
+}
+
+
+.dropdown:hover .dropdown-inner {
+  animation: popIn 220ms cubic-bezier(.2,.9,.2,1);
+}
+@keyframes popIn {
+  from { transform: translateY(-6px); opacity: 0; }
+  to  { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  .dropdown-panel { left: 0; transform: translateX(0); min-width: 260px; }
+  .header-container { padding: 10px 12px; }
 }

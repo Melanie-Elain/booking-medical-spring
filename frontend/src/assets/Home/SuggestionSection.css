@@ -1,0 +1,242 @@
+.suggestion-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 20px;
+  background: #fff;
+  font-family: "Inter", sans-serif;
+  color: #333;
+}
+
+/* --- Khối đội ngũ chuyên gia --- */
+.expert-team {
+  border: 1px solid #e0f0ff; 
+  border-radius: 16px;
+  padding: 40px;
+  margin-bottom: 60px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.expert-team h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0066ff;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+/* --- Danh sách chuyên gia --- */
+.expert-box {
+  display: flex;
+  align-items: stretch; 
+  justify-content: space-between;
+  gap: 40px; 
+}
+
+.expert-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  flex: 1;
+  min-width: 500px; 
+}
+
+.expert-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.expert-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #eee; 
+}
+
+.expert-item h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.expert-item p {
+    font-size: 14px;
+    font-weight: 400;
+    margin: 4px 0 0 0;
+    color: #666;
+}
+
+/* --- Căn giữa nội dung mô tả --- */
+.expert-desc {
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  flex-shrink: 0;
+}
+
+
+.expert-desc p {
+  /* Tăng cỡ chữ và độ đậm */
+  font-size: 24px; /* Tăng cỡ chữ, giữ 24px là kích thước phù hợp với ảnh mẫu */
+  line-height: 1.5;
+  color: #333; 
+  font-weight: 700; /* In đậm */
+  letter-spacing: -0.5px; 
+  text-align: left; 
+  margin-bottom: 30px; 
+}
+
+
+.btn-view-team {
+  background: #2069d6;
+  color: #fff;
+  border: none;
+  /* Giảm padding ngang để nút ngắn lại */
+  padding: 10px 20px; 
+  border-radius: 25px;
+  margin: 30px 0 0 0; 
+  /* Đổi display thành inline-flex để nút chỉ dài bằng nội dung */
+  display: inline-flex; 
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  /* Đảm bảo nút nằm ở lề trái */
+  align-self: flex-start; 
+}
+
+.btn-view-team:hover {
+  background: #0052cc;
+}
+
+/* --- Khối chính sách, hướng dẫn --- */
+.info-suggestion {
+  background: rgb(25, 117, 220); 
+  color: #fff;
+  padding: 50px 30px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.info-content-wrapper {
+    display: flex;
+    align-items: center; /* Căn giữa nội dung theo chiều dọc */
+    justify-content: space-between;
+    max-width: 1100px;
+    margin: 0 auto;
+    gap: 40px; 
+}
+
+.info-content-wrapper h3 {
+  font-size: 24px; 
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0;
+  max-width: 400px; /* Giới hạn chiều rộng cho tiêu đề */
+  text-align: left;
+  flex-shrink: 0; 
+}
+
+
+/* .info-policies {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 80px;
+  flex-wrap: wrap;
+} */
+
+.info-policies {
+  display: flex;
+  justify-content: space-between; 
+  align-items: flex-start;
+  gap: 15px; 
+  flex-wrap: nowrap; 
+  flex-grow: 1; 
+}
+
+.policy-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 25%; /* Mỗi mục chiếm 1/4 chiều rộng của info-policies */
+}
+
+.policy-item img {
+  width: 100px; 
+  height: auto;
+  margin-bottom: 12px;
+}
+
+.policy-item p {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+  max-width: 100%;
+}
+
+/* --- Media Query cho Responsive --- */
+@media (max-width: 1024px) {
+    .expert-box {
+        flex-direction: column; 
+        align-items: center;
+    }
+
+    .expert-list {
+        min-width: auto;
+        width: 100%;
+        margin-bottom: 40px;
+        grid-template-columns: repeat(3, 1fr); 
+    }
+
+    .expert-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .expert-desc {
+        max-width: 100%;
+        align-items: center; /* Căn giữa nút và nội dung khi ở 1 cột */
+    }
+
+    .expert-desc p {
+        text-align: center; 
+        max-width: 600px;
+        font-size: 20px; /* Giảm cỡ chữ khi màn hình nhỏ */
+    }
+
+    .btn-view-team {
+        margin: 30px auto 0; 
+        align-self: center; /* Đảm bảo nút căn giữa khi ở 1 cột */
+    }
+
+    .info-policies {
+        gap: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .expert-list {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+@media (max-width: 540px) {
+    .expert-list {
+        grid-template-columns: 1fr; 
+    }
+
+    .policy-item {
+        width: 100%;
+    }
+}
