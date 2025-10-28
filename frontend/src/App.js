@@ -3,30 +3,26 @@ import './App.css';
 
 import React from "react";
 import HomePage from "./pages/Home/HomePage";
+import {Routes, Route } from "react-router-dom";
+import BookingDoctor from "./pages/Booking/BookingDoctor"; 
+import MainLayout from "./components/MainLayout";
+import BookingPage from './pages/Booking/BookingPage';  
+
 
 function App() {
-  // return (
-  //   <div className="App">
-  //     <header className="App-header">
-  //       <img src={logo} className="App-logo" alt="logo" />
-  //       <p>
-  //         Edit <code>src/App.js</code> and save to reload.
-  //       </p>
-  //       <a
-  //         className="App-link"
-  //         href="https://reactjs.org"
-  //         target="_blank"
-  //         rel="noopener noreferrer"
-  //       >
-  //         Learn React
-  //       </a>
-  //     </header>
-  //   </div>
-  // );
   return (
-    <div>
-      <HomePage />
-    </div>
+      <Routes>
+        <Route path="/" element={
+          <MainLayout>
+            <HomePage />
+          </MainLayout> 
+        } /> 
+        <Route path="/Booking/BookingDoctor" element={
+          <MainLayout>
+            <BookingPage />
+          </MainLayout>
+        } />
+      </Routes>
   );
 }
 

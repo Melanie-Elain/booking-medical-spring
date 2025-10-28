@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef} from "react";
 import DoctorCard from '../../components/DoctorCard';
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -45,7 +46,7 @@ const doctors = [
 
 
 const HomeDoctor = () => {
-
+  const navigate = useNavigate();
   const scrollRef = useRef(null);
 
   const scrollLeft = () => {
@@ -77,7 +78,9 @@ const HomeDoctor = () => {
             </p>
           </div>
           
-          <button className="bg-blue-600 text-white px-5 py-2 h-10 rounded-full hover:bg-blue-700">
+          <button className="bg-blue-600 text-white px-5 py-2 h-10 rounded-full hover:bg-blue-700"
+              onClick={() => navigate("/Booking/BookingDoctor")}
+          >
             Xem thêm →
           </button>
         </div>

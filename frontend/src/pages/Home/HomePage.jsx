@@ -8,11 +8,9 @@ import HomeFooter from "./HomeFooter";
 const HomePage = () => {
   return (
     <div>
-      <HomeBanner />
       <HomeSpecialty />
       <HomeDoctor />
       <HomeHospital />
-      <HomeFooter />
     </div>
   );
 };

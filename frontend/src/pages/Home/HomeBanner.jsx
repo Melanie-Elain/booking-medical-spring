@@ -40,7 +40,7 @@ import "../../assets/Home/HomeBanner.css";
 
 const HomeBanner = () => {
   return (
-    <div className="home-wrapper">
+    <div className="home-wrapper h-fit">
       <Header />
       <section className="home-banner">
         <div className="banner-content">
