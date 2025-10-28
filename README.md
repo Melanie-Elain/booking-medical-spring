@@ -134,3 +134,5 @@ docker-compose up -d --build	Chạy toàn bộ project
 docker ps	Xem container đang chạy
 docker logs <container_name>	Xem log chi tiết
 docker-compose down	Dừng và xóa container
+
+
