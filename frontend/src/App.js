@@ -22,6 +22,9 @@ function App() {
             <BookingPage />
           </MainLayout>
         } />
+        <Route path="/Booking/BookingDoctor/searchDoctor" element={
+            <BookingDoctor />
+        } />
       </Routes>
   );
 }

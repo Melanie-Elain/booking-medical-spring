@@ -5,12 +5,7 @@ import "../../assets/Home/HomeBanner.css";
 
 const HomeBanner = () => {
   return (
-<<<<<<< HEAD
-    <div className="home-wrapper h-fit">
-      <Header />
-=======
     <div className="home-wrapper">
->>>>>>> main
       <section className="home-banner">
         <div className="banner-content">
           <h1>Ứng dụng đặt khám</h1>

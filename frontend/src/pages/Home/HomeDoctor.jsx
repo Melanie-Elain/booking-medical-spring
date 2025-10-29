@@ -45,7 +45,7 @@ const doctors = [
 ];
 
 
-const HomeDoctor = () => {
+const HomeDoctor = ({ isBookingPage = false }) => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
 
@@ -57,10 +57,11 @@ const HomeDoctor = () => {
     scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
   };
 
+
   return (
     <section className="py-16 px-10">
       <div className="max-w-7xl mx-auto ">
-        
+        { !isBookingPage ?(
         <div className="flex justify-center items-center mb-8 ">
           <div>
             <h2 className="text-3xl font-bold">Đặt lịch khám trực tuyến</h2>
@@ -69,19 +70,27 @@ const HomeDoctor = () => {
             </p>
           </div>
           
-        </div>
+        </div>): null}
         <div className="flex justify-between px-4">
-          <div>
+          <div className="mb-8">
             <h3 className="text-xl font-semibold mb-4">Đặt khám bác sĩ</h3>
-            <p className="text-gray-500 mb-8">
+            {!isBookingPage ?(
+            <p className="text-gray-500">
               Phiếu khám kèm số thứ tự và thời gian của bạn được xác nhận.
-            </p>
+            </p>) : null}
           </div>
           
           <button className="bg-blue-600 text-white px-5 py-2 h-10 rounded-full hover:bg-blue-700"
-              onClick={() => navigate("/Booking/BookingDoctor")}
+              onClick={() => {
+                if (isBookingPage) {
+                  navigate("/Booking/BookingDoctor/searchDoctor");
+                }
+                  else{
+                    navigate("/Booking/BookingDoctor");
+                  }
+                }}
           >
-            Xem thêm →
+            {isBookingPage ? "Xem tất cả" : "Xem thêm →"}
           </button>
         </div>
         <div className="relative">

@@ -10,7 +10,6 @@ const tabs=[
 
 const BookingTab = ({onTabChange}) => {
     const [active, setActive] = useState(1);
-
     const handleTabClick = (id) => {
         setActive(id);
         if (onTabChange) {
@@ -18,14 +17,15 @@ const BookingTab = ({onTabChange}) => {
         }
     }
     return (
-        <div className="booking-tab flex justify-between align-items-center max-w-7xl mx-auto gap-4">
+        <div className="booking-tab  flex justify-between align-items-center max-w-7xl mx-auto  ">
             {tabs.map((tab) => (
                 <div 
                     key={tab.id} 
-                    className={`tab-item d-flex flex-column justify-content-center align-items-center py-3 px-4 ${active === tab.id ? 'active' : ''}`}
+                    className={`tab-item flex flex-row justify-content-center align-items-center p-8 ${active === tab.id ? 'active' : ''}`}
                     onClick={() => handleTabClick(tab.id)}
+                    
                 >
-                    <div className="tab-icon mb-2">
+                    <div className="tab-icon pr-3">
                         {tab.icon}
                     </div>
                     <div className="tab-label">

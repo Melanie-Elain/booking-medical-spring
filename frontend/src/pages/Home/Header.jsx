@@ -1,8 +1,10 @@
 import React from "react";
 import { IoLogInOutline } from "react-icons/io5";
 import "../../assets/Home/Header.css";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <header className="header">
       <div className="header-container">
@@ -23,7 +25,9 @@ const Header = () => {
 
             <div className="dropdown-panel">
               <div className="dropdown-inner">
-                <a href="#dat-bac-si" className="dropdown-row">
+                <a href="#dat-bac-si" className="dropdown-row"
+                  onClick={() => navigate('/Booking/BookingDoctor')}
+                >
                   <div className="row-title">Đặt khám bác sĩ</div>
                   <div className="row-desc">Đặt lịch khám không chờ đợi</div>
                 </a>

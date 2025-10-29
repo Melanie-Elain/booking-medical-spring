@@ -14,16 +14,12 @@ import HomeNews from "./HomeNews";
 const HomePage = () => {
   return (
     <div>
-      <Header />  
-      <HomeBanner />
-      <HomeDoctor />
+      <HomeDoctor isBookingPage={false} />
       <HomeHospital />
       <HomeClinic />
       <HomeSpecialty />
       <HomeNews />
       <SuggestionSection />
-      <DownloadApp />
-      <HomeFooter />
     </div>
   );
 };
