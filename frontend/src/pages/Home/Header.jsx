@@ -2,6 +2,7 @@ import React from "react";
 import { IoLogInOutline } from "react-icons/io5";
 import "../../assets/Home/Header.css";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom'; 
 
 const Header = () => {
   const navigate = useNavigate();
@@ -64,9 +65,9 @@ const Header = () => {
           <a href="#tro-ly" className="nav-item">Trợ lý y khoa</a>
           <a href="#danh-cho-bs" className="nav-item">Dành cho Bác sĩ</a>
 
-          <a href="#dang-nhap" className="nav-item login-btn">
+          <Link to="/login" className="nav-item login-btn">
             <IoLogInOutline size={18} /> Đăng nhập
-          </a>
+          </Link>
         </nav>
       </div>
     </header>
@@ -74,3 +75,4 @@ const Header = () => {
 };
 
 export default Header;
+
