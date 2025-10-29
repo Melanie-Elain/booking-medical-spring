@@ -25,20 +25,27 @@ const HomeSpecialty = () => {
     <section className="home-specialty">
       <div className="container">
         <div className="specialty-header">
-          <div className=""></div>
+          <div className="specialty-text">
+            <h2 className="title">Đặt lịch theo Chuyên khoa</h2>
+            <p className="subtitle">
+              Danh sách bác sĩ, bệnh viện, phòng khám theo chuyên khoa
+            </p>
+          </div>
         </div>
-        <div></div>
-        <div></div>
-      </div>
-      <h2>Đặt lịch theo Chuyên khoa</h2>
-      <div className="specialty-list">
-        {specialtyData.map(specialty => (
-          <SpecialtyCard
-            key={specialty.id}
-            image={specialty.image}
-            name={specialty.name}
-          />
-        ))}
+        <div className="specialty-list">
+          {specialtyData.map(specialty => (
+            <SpecialtyCard
+              key={specialty.id}
+              image={specialty.image}
+              name={specialty.name}
+            />
+          ))}
+        </div>
+        <div className="specialty-footer">
+          <button className="view-all-btn">
+            Xem thêm <span className="arrow-icon"><i class="fa-solid fa-chevron-right"></i></span>
+          </button>
+        </div>
       </div>
     </section>
   );
