@@ -92,7 +92,7 @@ const BookingDoctor = () => {
         <Header/>
         <main className="w-full mx-auto py-10">
       {/* Thanh tìm kiếm */}
-      <div className="flex flex-col items-center mb-8">
+      <div className="flex flex-col items-center w-full fixed top-[60px] left-0  mb-8 bg-white py-5">
         <div className="relative w-full max-w-3xl">
           <input
             type="text"
@@ -119,7 +119,7 @@ const BookingDoctor = () => {
       </div>
 
       {/* Danh sách bác sĩ */}
-      <div className=" bg-gray-100 flex items-center flex-col">
+      <div className=" bg-gray-100 flex items-center flex-col pt-[120px]">
         <div className="bg-white w-3/5 rounded-lg border border-gray-200 my-2">
           {selectedDoctors.map((doctor) => (
             <div

@@ -17,7 +17,7 @@ const BookingTab = ({onTabChange}) => {
         }
     }
     return (
-        <div className="booking-tab  flex justify-between align-items-center max-w-7xl mx-auto  ">
+        <div className="booking-tab flex justify-between align-items-center max-w-7xl mx-auto  ">
             {tabs.map((tab) => (
                 <div 
                     key={tab.id} 
