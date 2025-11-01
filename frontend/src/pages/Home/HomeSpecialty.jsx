@@ -10,16 +10,27 @@ const specialtyData = [
   { id: 6, name: "Hồi sức - cấp cứu", icon: "/images/Hoisuccapcuu.png" },
 ];
 
-const HomeSpecialty = () => {
+const HomeSpecialty = ({isBookingPage = false}) => {
   return (
     <section className="home-specialty">
       <div className="container">
+      {!isBookingPage ? (
         <div className="specialty-header">
           <h2 className="title">Đặt lịch theo Chuyên khoa</h2>
           <p className="subtitle">
             Danh sách bác sĩ, bệnh viện, phòng khám theo chuyên khoa
           </p>
         </div>
+      ):
+        <div className="text-center mb-[24px]">
+          <h2 className="font-[700] text-[30px] ">Đa dạng chuyên khoa khám</h2>
+          <p className="subtitle">
+            Đặt khám dễ dàng và tiện lợi hơn với đầy đủ các chuyên khoa
+          </p>
+        </div>
+      }
+
+          
 
         <div className="specialty-list">
           {specialtyData.map((item) => (

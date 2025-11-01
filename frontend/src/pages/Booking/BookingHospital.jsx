@@ -66,7 +66,7 @@ const BookingHospital = () => {
         <div className="bg-white flex flex-col justify-items-center max-w-4xl mx-auto">
 
             <div className="pt-8 pb-3 ml-5">
-                <h1 className="font-semibold text-3xl ">Đặt khám trực tuyến với các Bệnh viện</h1>
+                <h1 className="font-[700] text-[22px] ">Đặt khám trực tuyến với các Bệnh viện</h1>
                 <p>Chủ động chọn lịch hẹn - Đi khám không đợi chờ</p>
             </div>
             <div className=" w-full py-5">
