@@ -14,7 +14,6 @@ const BookingTab = ({onTabChange, selectedTab}) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Cập nhật active khi route thay đổi
     useEffect(() => {
         const found = tabs.find(tab => location.pathname.startsWith(tab.path));
         if (found) {
@@ -25,7 +24,7 @@ const BookingTab = ({onTabChange, selectedTab}) => {
 
     const handleTabClick = (tab) => {
         setActive(tab.id);
-        navigate(tab.path); // Điều hướng đến route tương ứng
+        navigate(tab.path); 
         if (onTabChange) onTabChange(tab.id);
     };
     return (
@@ -33,7 +32,7 @@ const BookingTab = ({onTabChange, selectedTab}) => {
             {tabs.map((tab) => (
                 <div 
                     key={tab.id} 
-                    onClick={() => handleTabClick(tab.id)}
+                    onClick={() => handleTabClick(tab)}
                     className={`tab-item flex flex-row justify-content-center align-items-center p-8 ${active === tab.id ? 'active' : ''}`}
                     
                 >
