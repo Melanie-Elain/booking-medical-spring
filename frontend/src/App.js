@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
-import AppRoutes from "./routes/AppRoutes"; // Giữ lại dòng này
+import AppRoutes from "./routes/AppRoutes"; 
 
 function App() {
-  return <AppRoutes />; // Không cần bọc Router nữa
+  return <AppRoutes />; 
 }
 
 export default App;
