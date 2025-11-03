@@ -26,29 +26,33 @@ const Header = () => {
 
             <div className="dropdown-panel">
               <div className="dropdown-inner">
-                <a href="#dat-bac-si" className="dropdown-row"
-                  onClick={() => navigate('/Booking/BookingDoctor')}
+                <a href="" className="dropdown-row"
+                  onClick={() => navigate('/dat-kham/bac-si')}
                 >
                   <div className="row-title">Đặt khám bác sĩ</div>
                   <div className="row-desc">Đặt lịch khám không chờ đợi</div>
                 </a>
 
-                <a href="#dat-benh-vien" className="dropdown-row">
+                <a href="" className="dropdown-row"
+                  onClick={() => navigate('/dat-kham/benh-vien')}
+                >
                   <div className="row-title">Đặt khám bệnh viện</div>
                   <div className="row-desc">Đặt khám, thanh toán, nhận kết quả</div>
                 </a>
 
-                <a href="#dat-phong-kham" className="dropdown-row">
+                <a href="" className="dropdown-row"
+                  onClick={() => navigate('/dat-kham/phong-kham')}
+                >
                   <div className="row-title">Đặt khám phòng khám</div>
                   <div className="row-desc">Đa dạng chuyên khoa và dịch vụ</div>
                 </a>
 
-                <a href="#dat-tiem-chung" className="dropdown-row">
+                <a href="" className="dropdown-row">
                   <div className="row-title">Đặt lịch tiêm chủng</div>
                   <div className="row-desc">Trung tâm tiêm chủng uy tín</div>
                 </a>
 
-                <a href="#dat-xet-nghiem" className="dropdown-row">
+                <a href="" className="dropdown-row">
                   <div className="row-title">Đặt lịch xét nghiệm</div>
                   <div className="row-desc">Trung tâm xét nghiệm uy tín</div>
                 </a>

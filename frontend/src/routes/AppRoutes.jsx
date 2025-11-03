@@ -7,6 +7,8 @@ import BookingPage from "../pages/Booking/BookingPage";
 import BookingDoctor from "../pages/Booking/BookingDoctor";
 import LoginPage from "../pages/Auth/LoginPage";
 import RegisterPage from "../pages/Auth/RegisterPage";
+import BookingHospital from "../pages/Booking/BookingHospital";
+import BookingClinic from "../pages/Booking/BookingClinic";
 
 const AppRoutes = () => {
   return (
@@ -23,16 +25,29 @@ const AppRoutes = () => {
 
       {/* Đặt khám */}
       <Route
-        path="/Booking/BookingDoctor"
+        path="/dat-kham/bac-si"
         element={
           <MainLayout>
-            <BookingPage />
+            <BookingPage/>
           </MainLayout>
         }
       />
 
-      <Route path="/Booking/BookingDoctor/searchDoctor" element={<BookingDoctor />} />
-
+      <Route path="/dat-kham/bac-si/search" element={<BookingDoctor />}/>
+      <Route path="/dat-kham/benh-vien" 
+        element={
+          <MainLayout>
+            <BookingPage selectedTab = {2} />
+          </MainLayout>
+        }
+      />
+      <Route path="/dat-kham/phong-kham" 
+        element={
+          <MainLayout>
+            <BookingPage selectedTab = {3} />
+          </MainLayout>
+        }
+       />
       {/* Auth */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

@@ -1,7 +1,7 @@
 import React from 'react';
 import "../../assets/Home/DownloadApp.css"; 
 
-const DownloadApp = () => {
+const DownloadApp = ({isBookingPage =false}) => {
 
     const securityItems = [
         { 
@@ -30,6 +30,7 @@ const DownloadApp = () => {
         <div className="download-app-section">
             
             {/* -------------------- KHUNG 1: TIN TỨC VÀ HƯỚNG DẪN (Nền trắng) -------------------- */}
+            {!isBookingPage ? (
             <div className="news-and-guide-container">
                 
                 {/* Cột 1: Video Hướng dẫn */}
@@ -91,7 +92,7 @@ const DownloadApp = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>): null}
 
             {/* -------------------- KHUNG 2: TẢI ỨNG DỤNG (Nền xanh) -------------------- */}
             <div className="download-app-banner">
@@ -120,6 +121,7 @@ const DownloadApp = () => {
             </div>
 
 {/* -------------------- KHUNG 3: BẢO MẬT DỮ LIỆU (Nền trắng) -------------------- */}
+            {!isBookingPage ? (
             <section className="data-security-section">
                 <h2 className="security-main-title">Bảo mật dữ liệu</h2>
                 <p className="security-subtitle">An toàn dữ liệu của bạn là ưu tiên hàng đầu của chúng tôi</p>
@@ -143,7 +145,7 @@ const DownloadApp = () => {
                         chính sách bảo mật dữ liệu cao nhất trên thế giới.
                     </p>
                 </div>
-            </section>
+            </section>) : null}
         </div>
     );
 };

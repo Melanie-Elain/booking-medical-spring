@@ -83,18 +83,18 @@ const HomeHospital = () => {
   };
   return (
     <section className="py-16 px-10">
-      <div className="max-w-7xl mx-auto relative">
+      <div className="w-[85%] max-w-7xl mx-auto relative">
         
         <div className="flex justify-between px-4">
           <div>
-            <h3 className="text-xl font-semibold mb-4">Đặt khám bệnh viện</h3>
+            <h3 className=" mb-4 text-[24px] font-[700]">Đặt khám bệnh viện</h3>
             <p className="text-gray-500 mb-8">
             Đặt khám và thanh toán để có phiếu khám (thời gian, số thứ tự) trước khi đi khám các bệnh viện kết nối chính thức với YouMed.
             </p>
           </div>
           
           <button className="bg-blue-600 text-white px-5 py-2 h-10 rounded-full hover:bg-blue-700"
-              onClick={() => navigate("/Booking/BookingHospital")}
+              onClick={() => navigate("/dat-kham/benh-vien")}
           >
             Xem thêm →
           </button>
