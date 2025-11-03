@@ -1,5 +1,5 @@
 import React, {useRef} from "react";
-import HospitalCard from "../../components/HospitalCard";
+import HospitalCard from "../HospitalCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 

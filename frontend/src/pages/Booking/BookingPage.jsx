@@ -1,9 +1,9 @@
 import React from "react";
-import HomeFooter from "../Home/HomeFooter";
-import HomeBanner from "../Home/HomeBanner";
+import HomeFooter from "../../components/Home/HomeFooter";
+import HomeBanner from "../../components/Home/HomeBanner";
 import BookingTab from "../../components/BookingTab";
-import HomeDoctor from "../Home/HomeDoctor";
-import HomeSpecialty from "../Home/HomeSpecialty";
+import HomeDoctor from "../../components/Home/HomeDoctor";
+import HomeSpecialty from "../../components/Home/HomeSpecialty";
 import BookingHospital from "./BookingHospital";
 
 const BookingPage = () => {
