@@ -1,5 +1,5 @@
 import React from "react";
-import './HomeSpecialty.css';
+import "../../assets/Home/HomeSpecialty.css";
 
 const specialtyData = [
   { id: 1, name: "Y học cổ truyền", icon: "/images/Yhoccotruyen.png" },

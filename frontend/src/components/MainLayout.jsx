@@ -1,9 +1,11 @@
-import React, { Children } from "react";
-import Header from "../pages/Home/Header";
-import Banner from "../pages/Home/HomeBanner";
-import Footer from "../pages/Home/HomeFooter";
-import DownloadApp from "../pages/Home/DownloadApp";
+
+import React from "react";
+import Header from "./Home/Header";
+import Banner from "./Home/HomeBanner";
+import Footer from "./Home/HomeFooter";
+import DownloadApp from "./Home/DownloadApp";
 import { useLocation } from "react-router-dom";
+
 
 const MainLayout = ({ children }) => {
     const location = useLocation();

@@ -1,112 +1,197 @@
+
+
 import React, { useState } from 'react';
-import AuthLayout from './AuthLayout';
-import {  User, Lock, LogIn } from 'lucide-react';
+import { Eye, EyeOff, User, Phone } from 'lucide-react';
+import Header from '../../components/Home/Header';
+import HomeFooter from '../../components/Home/HomeFooter';
+import { useNavigate } from 'react-router-dom';
+import { auth } from "../../api/firebase-config";
+import { RecaptchaVerifier, signInWithPhoneNumber, getAuth } from "firebase/auth";
 
-// Cảnh báo: Đã thay thế alert() bằng một thông báo console.log() và đoạn code UI giả lập do quy tắc an toàn.
+import Step1OTP from "../Register/Step1OTP";
+import Step2Password from "../Register/Step2Password";
+import Step3Info from "../Register/Step3Info";
+
 const RegisterPage = () => {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [step, setStep] = useState(1);
+  const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  // Tạo reCAPTCHA
+  // const setupRecaptcha = () => {
+  //   window.recaptchaVerifier = new RecaptchaVerifier(
+  //     "recaptcha-container",
+  //     {
+  //       size: "invisible",
+  //       callback: (response) => {
+  //         console.log("reCAPTCHA resolved");
+  //       },
+  //     },
+  //     auth
+  //   );
+  // };
+  const setupRecaptcha = () => {
+  const currentAuth = auth || getAuth(); // ✅ đảm bảo luôn có auth
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier(
+      currentAuth,
+      "recaptcha-container",
+      {
+        size: "invisible",
+        callback: (response) => {
+          console.log("reCAPTCHA resolved");
+        },
+      }
+    );
+  }
+};
+  // Xử lý gửi OTP và sang Step1
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logic gọi API đăng ký ở đây
-    console.log('Đang thực hiện Đăng ký với:', { name, password, phone });
-    setMessage('Đăng ký thành công (logic giả lập). Vui lòng kiểm tra tin nhắn!');
-    setTimeout(() => setMessage(''), 3000);
+    if (!phoneNumber) return alert("Vui lòng nhập số điện thoại");
+
+    const formattedPhone = "+84" + phoneNumber.slice(1);
+    setLoading(true);
+    setupRecaptcha();
+    const appVerifier = window.recaptchaVerifier;
+
+    try {
+      const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+      window.confirmationResult = confirmationResult;
+      alert("Đã gửi mã OTP đến số " + phoneNumber);
+      setStep(2);
+    } catch (err) {
+      alert("Gửi OTP thất bại: " + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // // Khi hoàn thành Step2 thì chuyển Step3
+  // const handleNextStep = () => setStep(3);
+
   return (
-    <AuthLayout
-      title="Tạo tài khoản mới"
-      subtitle="Đăng ký để bắt đầu đặt lịch khám bệnh dễ dàng"
-    >
-      {/* Hiển thị thông báo (thay thế cho alert) */}
-      {message && (
-        <div className="p-3 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
-            {message}
-        </div>
-      )}
+    <div className="flex flex-col min-h-screen bg-white">
+      <Header />
+      <main className="flex-grow flex items-center justify-center py-12 px-6">
+        <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        
-        {/* 1. Trường Họ và Tên */}
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            Họ và Tên
-          </label>
-          <div className="relative">
-            <input
-              id="name"
-              type="text"
-              placeholder="Ví dụ: Nguyễn Văn A"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+          {/* Bên trái */}
+          <div className="flex flex-col items-center text-center space-y-6">
+            <img
+              src="https://youmed.vn/dat-kham/assets/img/booking/png/Login.png"
+              alt="YouMed Register Illustration"
+              className="w-96 max-w-full"
             />
-            <User size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <p className="text-gray-700 text-base leading-relaxed">
+              Đặt khám <span className="font-semibold text-indigo-600">DỄ DÀNG HƠN</span> <br />
+              trên ứng dụng <span className="text-indigo-600 font-semibold">YouMed</span>
+            </p>
           </div>
-        </div>
-        
-        {/* 2. Trường Số điện thoại */}
-        <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-            Số điện thoại
-          </label>
-          <div className="relative">
-            <input
-              id="phone"
-              type="text"
-              placeholder="Nhập số điện thoại (dùng để đăng nhập)"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-              className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-            />
-            <LogIn size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          </div>
-        </div>
 
-        {/* 3. Trường Mật khẩu */}
-        <div>
-          <label htmlFor="reg-password" className="block text-sm font-medium text-gray-700 mb-1">
-            Mật khẩu
-          </label>
-          <div className="relative">
-            <input
-              id="reg-password"
-              type="password"
-              placeholder="Tối thiểu 6 ký tự"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
-            />
-            <Lock size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          {/* Bên phải */}
+          <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+            {step === 1 && (
+              <>
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-1">Đăng ký</h2>
+                <p className="text-center text-sm text-gray-500 mb-6">
+                  Nhập thông tin để nhận mã xác thực
+                </p>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Họ và tên */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
+                    <div className="relative">
+                      <User size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Nhập họ và tên của bạn"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        required
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Số điện thoại */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+                    <div className="relative">
+                      <Phone size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                      <input
+                        type="text"
+                        placeholder="Nhập số điện thoại của bạn"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        required
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Nút đăng ký */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3 px-4 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 font-semibold"
+                  >
+                    {loading ? "Đang gửi mã..." : "Đăng ký"}
+                  </button>
+
+                  {/* Đã có tài khoản? */}
+                  <p className="mt-6 text-center text-sm text-gray-600">
+                    Đã có tài khoản?{" "}
+                    <a
+                      href="/login"
+                      className="font-bold text-indigo-600 hover:text-indigo-500 transition duration-150"
+                    >
+                      Đăng nhập ngay
+                    </a>
+                  </p>
+                </form>
+                <div id="recaptcha-container"></div>
+              </>
+            )}
+
+            {step === 2 && (
+              <Step1OTP
+                phone={phoneNumber}
+                onVerify={(otp) => {
+                  console.log("OTP đã xác thực:", otp);
+                  setStep(3); // 
+                }}
+              />
+            )}
+        
+            {/* === STEP 3: Form tạo mật khẩu === */}
+            {step === 3 && ( 
+              <Step2Password
+                onNext={(newPassword) => { 
+                  setPassword(newPassword); 
+                  setStep(4); 
+                }}
+              />
+            )}
+            
+            {/* === STEP 4: Form điền thông tin cuối === */}
+            {step === 4 && (
+              <Step3Info 
+                fullName={fullName} 
+                phone={phoneNumber} 
+                password={password} 
+              />
+            )}
           </div>
         </div>
-        
-        {/* 4. Nút Đăng ký */}
-        <button
-          type="submit"
-          className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-lg font-semibold text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200"
-        >
-          Đăng ký tài khoản
-        </button>
-        
-        {/* 5. Chuyển sang Đăng nhập */}
-        <p className="mt-6 text-center text-sm text-gray-600">
-          Đã có tài khoản?{' '}
-          <a href="/login" className="font-bold text-indigo-600 hover:text-indigo-500 transition duration-150">
-            Đăng nhập ngay
-          </a>
-        </p>
-        
-      </form>
-    </AuthLayout>
+      </main>
+      <HomeFooter />
+    </div>
   );
 };
 

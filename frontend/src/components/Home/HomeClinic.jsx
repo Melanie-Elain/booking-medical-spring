@@ -1,5 +1,5 @@
 import React from "react";
-import './HomeClinic.css';
+import "../../assets/Home/HomeClinic.css";
 
 const clinicData = [
     { 
