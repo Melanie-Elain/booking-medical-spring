@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Search, MapPin, Stethoscope, LocateFixed , ChevronDown, X } from "lucide-react";
-import Header from "../Home/Header";
-import DownloadApp from "../Home/DownloadApp";
-import HomeFooter from "../Home/HomeFooter";
+import Header from "../../components/Home/Header";
+import DownloadApp from "../../components/Home/DownloadApp";
+import HomeFooter from "../../components/Home/HomeFooter";
 import ReactPaginate from "react-paginate";
 import {doctorsData} from "../../data/doctorsData";
 import hospitalsData from "../../data/hospitalsData";
