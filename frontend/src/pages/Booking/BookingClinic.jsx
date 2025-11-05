@@ -10,49 +10,49 @@ const clinicsData = [
       id: 1,
       name: "Shine Clinic By TS.BS Trần Ngọc Ánh since 1987",
       address: "06 Trương Quyền, P.6, Q.3, TP.HCM",
-      image: "https://nutrihome.vn/wp-content/uploads/2024/10/tieu-chi-lua-chon-phong-kham-da-khoa.jpg",
+      image: "/images/clinic/1.webp",
     },
     {
       id: 2,
       name: "SIM Medical Center Tân Phú",
       address: "Tòa nhà Richstar 2 - RS5, 239-241 Hòa Bình, P. Hiệp Tân, Q. Tân Phú, TP.HCM",
-      image: "https://nutrihome.vn/wp-content/uploads/2024/10/tieu-chi-lua-chon-phong-kham-da-khoa.jpg",
+      image: "/images/clinic/2.webp",
     },
     {
       id: 3,
       name: "Phòng khám Nhi Mỹ Mỹ",
       address: "105/10 Nguyễn Thị Tú, P. Bình Hưng Hòa B, Q. Bình Tân, TP.HCM",
-      image: "https://nutrihome.vn/wp-content/uploads/2024/10/tieu-chi-lua-chon-phong-kham-da-khoa.jpg",
+      image: "/images/clinic/3.webp",
     },
     {
       id: 4,
       name: "Phòng khám Nhi Đồng 315 Quận 10",
       address: "307 Tô Hiến Thành, P.13, Q.10, TP.HCM",
-      image: "https://nutrihome.vn/wp-content/uploads/2024/10/tieu-chi-lua-chon-phong-kham-da-khoa.jpg",
+      image: "/images/clinic/4.webp",
     },
     {
       id: 5,
       name: "Phòng khám Đa khoa An Tâm",
       address: "25 Lê Văn Việt, P. Hiệp Phú, TP. Thủ Đức",
-      image: "https://nutrihome.vn/wp-content/uploads/2024/10/tieu-chi-lua-chon-phong-kham-da-khoa.jpg",
+      image: "/images/clinic/5.webp",
     },
     {
     id: 6,
     name: "Phòng khám Nhi Mỹ Mỹ",
     address: "105/10 Nguyễn Thị Tú, P. Bình Hưng Hòa B, Q. Bình Tân, TP.HCM",
-    image: "https://nutrihome.vn/wp-content/uploads/2024/10/tieu-chi-lua-chon-phong-kham-da-khoa.jpg",
+    image: "/images/clinic/6.webp",
     },
     {
     id: 7,
     name: "Phòng khám Nhi Đồng 315 Quận 10",
     address: "307 Tô Hiến Thành, P.13, Q.10, TP.HCM",
-    image: "https://nutrihome.vn/wp-content/uploads/2024/10/tieu-chi-lua-chon-phong-kham-da-khoa.jpg",
+    image: "/images/clinic/7.webp",
     },
     {
     id: 8,
     name: "Phòng khám Đa khoa An Tâm",
     address: "25 Lê Văn Việt, P. Hiệp Phú, TP. Thủ Đức",
-    image: "https://nutrihome.vn/wp-content/uploads/2024/10/tieu-chi-lua-chon-phong-kham-da-khoa.jpg",
+    image: "/images/clinic/3.webp",
     },
   ];
   
@@ -79,7 +79,7 @@ const BookingClinic = () => {
 
             <div className="pt-8 pb-3 ml-5">
                 <h1 className="font-[700] text-[22px] ">Đa dạng phòng khám</h1>
-                <p>Đặt khám dễ dàng và tiện lợi hơn với các phòng khám cùng nhiều chuyên khoa</p>
+                <p className="text-sm font-normal">Đặt khám dễ dàng và tiện lợi hơn với các phòng khám cùng nhiều chuyên khoa</p>
             </div>
             <div className=" w-full py-5">
             {selectedclinics.map((clinic) => (
@@ -92,11 +92,11 @@ const BookingClinic = () => {
                     <img
                     src={clinic.image}
                     alt={clinic.name}
-                    className="w-20 h-20 rounded-full object-cover border"
+                    className="w-24 h-24 rounded-full object-cover border"
                     />
                     <div>
                     <h3 className="font-semibold text-lg hover:underline decoration-black cursor-pointer ">{clinic.name}</h3>
-                    <p className="text-sm text-gray-500">{clinic.address}</p>
+                    <p className="text-base text-gray-500 font-medium">{clinic.address}</p>
                     </div>
                 </div>
                 </div>

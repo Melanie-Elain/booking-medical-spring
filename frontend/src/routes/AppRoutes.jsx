@@ -4,11 +4,10 @@ import MainLayout from "../components/MainLayout";
 
 import HomePage from "../pages/Home/HomePage";
 import BookingPage from "../pages/Booking/BookingPage";
-import BookingDoctor from "../pages/Booking/BookingDoctor";
+import BookingSearch from "../pages/Booking/BookingSearch";
 import LoginPage from "../pages/Auth/LoginPage";
 import RegisterPage from "../pages/Auth/RegisterPage";
-import BookingHospital from "../pages/Booking/BookingHospital";
-import BookingClinic from "../pages/Booking/BookingClinic";
+import DoctorProfile from "../pages/Booking/DoctorProfile";
 
 const AppRoutes = () => {
   return (
@@ -33,7 +32,7 @@ const AppRoutes = () => {
         }
       />
 
-      <Route path="/dat-kham/bac-si/search" element={<BookingDoctor />}/>
+      <Route path="/dat-kham/bac-si/search" element={<BookingSearch />}/>
       <Route path="/dat-kham/benh-vien" 
         element={
           <MainLayout>
@@ -41,6 +40,7 @@ const AppRoutes = () => {
           </MainLayout>
         }
       />
+      <Route path="/dat-kham/bac-si/:id" element={<DoctorProfile/>}/>
       <Route path="/dat-kham/phong-kham" 
         element={
           <MainLayout>

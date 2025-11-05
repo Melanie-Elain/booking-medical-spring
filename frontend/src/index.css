@@ -16,3 +16,13 @@ code {
     monospace;
 }
 
+/* Ẩn thanh scroll (tương thích đa trình duyệt) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE và Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+
