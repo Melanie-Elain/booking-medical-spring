@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -33,20 +34,27 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public String login(String phone, String password) {
-        Optional<User> userOpt = userRepository.findByPhoneNumber(phone);
+public Map<String, String> login(String phone, String password) {
+    Optional<User> userOpt = userRepository.findByPhoneNumber(phone);
 
-        if (userOpt.isEmpty()) {
-            throw new RuntimeException("Sai số điện thoại hoặc mật khẩu");
-        }
+    if (userOpt.isEmpty()) {
+        throw new RuntimeException("Sai số điện thoại hoặc mật khẩu");
+    }
 
-        User user = userOpt.get();
+    User user = userOpt.get();
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Sai mật khẩu");
-        }
+    if (!passwordEncoder.matches(password, user.getPassword())) {
+        // Cải tiến bảo mật: Dùng chung 1 thông báo lỗi
+        throw new RuntimeException("Sai số điện thoại hoặc mật khẩu");
+    }
 
-        // Sinh JWT token khi đăng nhập thành công
-        return jwtService.generateToken(user.getPhoneNumber());
+    // 2. Tạo biến token (để dùng ở dưới)
+    String token = jwtService.generateToken(user.getPhoneNumber());
+
+    // 3. Chỉ return Map (code mới)
+    return Map.of(
+        "token", token,
+        "fullName", user.getFullName()
+    );
     }
 }

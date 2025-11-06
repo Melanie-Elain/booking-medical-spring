@@ -1,18 +1,73 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
+import { loginUser } from '../../api/auth'; // 
 import Header from '../../components/Home/Header';
 import HomeFooter from '../../components/Home/HomeFooter';
 
 const LoginPage = () => {
-  const [phoneNumber, setPhoneNumber] = useState('');
+  // 3. Tự động điền SĐT nếu người dùng đã chọn "Ghi nhớ"
+  const [phoneNumber, setPhoneNumber] = useState(
+    localStorage.getItem('rememberedPhone') || ''
+  );
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(
+    !!localStorage.getItem('rememberedPhone') // Tự động check nếu đã lưu SĐT
+  );
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(''); // 4. Thêm state để hiển thị lỗi
+  const navigate = useNavigate(); // 5. Khởi tạo navigate
 
-  const handleSubmit = (e) => {
+  // 6. HÀM XỬ LÝ ĐĂNG NHẬP THẬT
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Đang thực hiện Đăng nhập với:', { phoneNumber, password, rememberMe });
-    alert('Đăng nhập thành công (logic giả lập)');
+    setError(''); // Xóa mọi lỗi cũ
+
+    try {
+      const loginData = {
+        phoneNumber: phoneNumber,
+        password: password,
+      };
+
+      // response bây giờ là: { token: "...", fullName: "..." }
+      const response = await loginUser(loginData); // Gọi API
+
+      // 1. Lưu token (giữ nguyên)
+      localStorage.setItem('jwtToken', response.token);
+
+      // 2. SỬA CHỖ NÀY: Lưu fullName thay vì SĐT
+      localStorage.setItem('userName', response.fullName); 
+      
+      // 3. Xóa SĐT cũ (nếu có) để dọn dẹp
+      localStorage.removeItem('userPhone');
+
+      // 4. Xử lý "Ghi nhớ mật khẩu" (giữ nguyên)
+      if (rememberMe) {
+        localStorage.setItem('rememberedPhone', phoneNumber);
+      } else {
+        localStorage.removeItem('rememberedPhone');
+      }
+
+      // 5. Thông báo và chuyển hướng (giữ nguyên)
+      alert('Đăng nhập thành công!');
+      navigate('/'); // Chuyển về trang chủ
+
+    } catch (err) {
+      // ... (Phần catch xử lý lỗi giữ nguyên)
+      console.error('Lỗi đăng nhập:', err);
+      if (
+        err.response &&
+        (err.response.status === 401 || 
+          err.response.status === 403 || 
+          err.response.status === 500) 
+      ) {
+        setError('Sai số điện thoại hoặc mật khẩu.');
+      } else if (err.code === 'ERR_NETWORK') {
+        setError('Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại!');
+      } else {
+        setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
+      }
+    }
   };
 
   return (
@@ -23,7 +78,6 @@ const LoginPage = () => {
       {/* Nội dung chính */}
       <main className="flex-grow flex items-center justify-center py-12 px-6">
         <div className="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-          
           {/* Bên trái: ảnh minh họa và QR */}
           <div className="flex flex-col items-center text-center space-y-6">
             <img
@@ -117,6 +171,13 @@ const LoginPage = () => {
                   Quên mật khẩu?
                 </a>
               </div>
+
+              {/* 7. HIỂN THỊ LỖI NẾU CÓ */}
+              {error && (
+                <div className="text-center text-sm text-red-600 font-medium">
+                  {error}
+                </div>
+              )}
 
               {/* Nút đăng nhập */}
               <button
