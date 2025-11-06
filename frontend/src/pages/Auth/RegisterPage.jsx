@@ -21,34 +21,39 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Tạo reCAPTCHA
-  // const setupRecaptcha = () => {
-  //   window.recaptchaVerifier = new RecaptchaVerifier(
-  //     "recaptcha-container",
-  //     {
-  //       size: "invisible",
-  //       callback: (response) => {
-  //         console.log("reCAPTCHA resolved");
-  //       },
-  //     },
-  //     auth
-  //   );
-  // };
-  const setupRecaptcha = () => {
-  const currentAuth = auth || getAuth(); // ✅ đảm bảo luôn có auth
+  
+//   const setupRecaptcha = () => {
+//   const currentAuth = auth || getAuth(); // ✅ đảm bảo luôn có auth
+//   if (!window.recaptchaVerifier) {
+//     window.recaptchaVerifier = new RecaptchaVerifier(
+//       currentAuth,
+//       "recaptcha-container",
+//       {
+//         size: "invisible",
+//         callback: (response) => {
+//           console.log("reCAPTCHA resolved");
+//         },
+//       }
+//     );
+//   }
+// };
+const setupRecaptcha = () => {
   if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new RecaptchaVerifier(
-      currentAuth,
+      auth, // ✅ phải truyền auth ở đây đầu tiên
       "recaptcha-container",
       {
         size: "invisible",
         callback: (response) => {
-          console.log("reCAPTCHA resolved");
+          console.log("reCAPTCHA resolved:", response);
         },
       }
     );
   }
 };
+
+
+
   // Xử lý gửi OTP và sang Step1
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,8 +76,6 @@ const RegisterPage = () => {
     }
   };
 
-  // // Khi hoàn thành Step2 thì chuyển Step3
-  // const handleNextStep = () => setStep(3);
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -196,3 +199,4 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+
