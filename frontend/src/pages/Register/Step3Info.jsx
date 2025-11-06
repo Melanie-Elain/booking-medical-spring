@@ -1,67 +1,7 @@
-// import React, { useState } from "react";
 
-// const Step3Info = () => {
-//   const [info, setInfo] = useState({
-//     name: "",
-//     email: "",
-//     dob: "",
-//   });
-
-//   const handleChange = (e) => {
-//     setInfo({ ...info, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     if (!info.name || !info.email || !info.dob)
-//       return alert("Vui lòng nhập đầy đủ thông tin!");
-//     alert("Đăng ký thành công!");
-//   };
-
-//   return (
-//     <div className="flex items-center justify-center min-h-screen bg-blue-50">
-//       <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
-//         <h2 className="text-2xl font-semibold mb-4 text-blue-600">
-//           Thông tin cá nhân
-//         </h2>
-//         <form onSubmit={handleSubmit}>
-//           <input
-//             name="name"
-//             placeholder="Họ và tên"
-//             value={info.name}
-//             onChange={handleChange}
-//             className="w-full border rounded-lg px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//           />
-//           <input
-//             name="email"
-//             type="email"
-//             placeholder="Email"
-//             value={info.email}
-//             onChange={handleChange}
-//             className="w-full border rounded-lg px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//           />
-//           <input
-//             name="dob"
-//             type="date"
-//             value={info.dob}
-//             onChange={handleChange}
-//             className="w-full border rounded-lg px-4 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-blue-400"
-//           />
-//           <button
-//             type="submit"
-//             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-//           >
-//             Hoàn tất
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Step3Info;
 
 import React, { useState } from "react";
+import axios from 'axios';
 
 // === PHẦN DÀNH CHO CÁC COMPONENT CON (để code chính gọn gàng) ===
 
@@ -145,18 +85,70 @@ const Step3Info = ({ fullName, phone, password }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Bổ sung logic kiểm tra các trường required
-    if (!formData.fullName || !formData.dob) {
-      return alert("Vui lòng nhập đầy đủ thông tin bắt buộc!");
-    }
-    console.log("Dữ liệu hồ sơ:", formData);
-    console.log("Mật khẩu đã tạo (từ step 2):", password);
-    alert("Đăng ký hoàn tất!");
-    // Tại đây, bạn sẽ gọi API để tạo user với:
-    // formData, fullName, phone, và password
-  };
+  const handleSubmit = async (e) => { // Chuyển hàm thành async
+    e.preventDefault(); 
+    // Đã xóa đoạn text lỗi ở đây
+
+    // 1. Kiểm tra validation
+    if (!formData.fullName || !formData.dob) {
+      return alert("Vui lòng nhập đầy đủ thông tin bắt buộc!");
+    }
+
+    // 2. Gom tất cả dữ liệu lại để gửi đi
+    // (Bao gồm dữ liệu từ props và từ state của form này)
+    const registrationData = {
+      // Dữ liệu từ props (Step 1 & 2)
+      fullName: fullName,
+      phoneNumber: phone,
+      password: password,
+      
+      // Dữ liệu từ state (Step 3)
+      dob: formData.dob,
+      idCard: formData.idCard,
+      gender: formData.gender,
+      email: formData.email,
+      ethnicity: formData.ethnicity,
+      healthInsurance: formData.healthInsurance,
+      province: formData.province,
+      district: formData.district,
+      ward: formData.ward,
+      address: formData.address,
+      referralCode: formData.referralCode,
+      occupation: formData.occupation
+    };
+
+    console.log("Dữ liệu chuẩn bị gửi đi:", registrationData);
+
+    try {
+      // 3. GỌI API BACKEND
+
+      const response = await axios.post('http://localhost:8080/api/auth/register', registrationData);
+
+      // 4. Xử lý khi backend trả về thành công
+      if (response.status === 201 || response.status === 200) {
+        alert("Đăng ký thành công!");
+        // (Chuyển hướng người dùng đến trang đăng nhập/trang chủ ở đây)
+      } else {
+        // Xử lý các trường hợp thành công nhưng không phải 200/201
+        alert("Đăng ký hoàn tất (mã: " + response.status + ")");
+      }
+
+    } catch (error) {
+      // 5. Xử lý khi backend BÁO LỖI (lỗi 400, 500...)
+      console.error('Lỗi khi gọi API đăng ký:', error);
+      
+      if (error.response) {
+        // Lỗi có phản hồi từ server (ví dụ: email đã tồn tại)
+        alert(`Đăng ký thất bại: ${error.response.data.message || 'Lỗi từ server'}`);
+      } else if (error.request) {
+        // Không kết nối được tới server
+        alert('Đăng ký thất bại: Không thể kết nối tới máy chủ.');
+      } else {
+        // Lỗi gì đó ở phía frontend
+        alert('Đăng ký thất bại: Lỗi không xác định.');
+      }
+    }
+  };
 
   return (
     <div className="w-full">

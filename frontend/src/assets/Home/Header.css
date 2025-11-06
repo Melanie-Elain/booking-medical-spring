@@ -23,13 +23,10 @@
 .nav-menu {
   display: flex;
   align-items: center;
-  /* 📢 FIX LỖI: Đẩy menu sang phải và không cho nó chiếm không gian thừa */
   margin-left: auto; 
   flex-grow: 0;
-  
   gap: 22px;
   position: relative;
-  /* width: fit-content; được bỏ để tránh lỗi đỏ */
 }
 
 .nav-item {
@@ -83,7 +80,7 @@
 
   opacity: 0;
   pointer-events: none;
-  visibility: hidden; /* ✅ thêm dòng này */
+  visibility: hidden;
   margin-top: 14px;
   transform-origin: top center;
   transition: opacity 220ms ease, transform 220ms ease, visibility 0s linear 220ms;
@@ -97,7 +94,7 @@
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 18px 40px rgba(29,41,55,0.18);
-  overflow:  hidden; /* ✅ tránh vùng bóng mờ vẫn bắt hover */
+  overflow: hidden;
   padding: 12px 0;
 }
 
@@ -125,8 +122,8 @@
 }
 
 .nav-item.dropdown {
-    display: inline-flex; 
-    position: relative;
+  display: inline-flex; 
+  position: relative;
 }
 
 
@@ -155,7 +152,7 @@
 .dropdown:hover .dropdown-panel {
   opacity: 1;
   pointer-events: auto;
-  visibility: visible; /* ✅ thêm dòng này */
+  visibility: visible;
   transform: translateX(-50%) translateY(0);
   transition-delay: 0s;
 }
@@ -164,9 +161,70 @@
 .dropdown:hover .dropdown-inner {
   animation: popIn 220ms cubic-bezier(.2,.9,.2,1);
 }
+
+/* === SỬA LỖI CĂN LỀ VÀ STYLE CHO USER MENU === */
+
+.user-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px; 
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 15px;
+  color: #333;
+}
+.user-dropdown-toggle .caret {
+  margin-left: 0; 
+}
+
+
+/* Panel dropdown của user, căn lề phải */
+.user-dropdown-menu {
+  right: 0;
+  left: auto;
+  /* === SỬA LỖI 1: KHUNG QUÁ RỘNG === */
+  width: auto; /* Đổi từ 220px -> auto */
+  min-width: 200px; /* Đặt chiều rộng tối thiểu */
+  transform: translateX(0); 
+}
+
+/* Áp dụng lại hiệu ứng hover cho user-dropdown-menu */
+.dropdown:hover .user-dropdown-menu {
+  transform: translateX(0) translateY(0);
+}
+
+
+/* Vạch kẻ ngang */
+.dropdown-divider {
+  border-top: 1px solid #eef0f3;
+  margin: 4px 0;
+}
+
+/* Nút Đăng xuất */
+.logout-btn {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  /* === SỬA LỖI 2: XÓA DÒNG 'padding: 0;' ĐỂ CĂN LẠI CHỮ "THOÁT" === */
+}
+
+/* Làm cho chữ "Thoát" có màu đỏ */
+.logout-btn .row-title {
+  color: #d9534f;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background-color: #f9f9f9;
+}
+
 @keyframes popIn {
   from { transform: translateY(-6px); opacity: 0; }
-  to  { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 @media (max-width: 900px) {
