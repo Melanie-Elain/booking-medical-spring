@@ -1,14 +1,39 @@
 -- =======================================================
 -- 📁 CSDL: QuanLyBenhVien
--- 📅 Ngày tạo: 2025-10-09
--- 🧠 Tác giả: Tran Bao Han
+-- 📅 Ngày cập nhật: 2025-11-05
+-- 🧠 Người chỉnh: ChatGPT & Tran Bao Han
 -- =======================================================
 
-CREATE DATABASE IF NOT EXISTS QuanLyBenhVien;
+DROP DATABASE IF EXISTS QuanLyBenhVien;
+CREATE DATABASE QuanLyBenhVien CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE QuanLyBenhVien;
 
 -- =======================================================
--- 🏥 1. Bảng benhvien
+-- 🧾 1. Bảng users (tài khoản đăng nhập - dùng cho JWT)
+-- =======================================================
+CREATE TABLE users (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100),
+    dob DATE,
+    gender VARCHAR(10),
+    id_card VARCHAR(20),
+    health_insurance VARCHAR(50),
+    ethnicity VARCHAR(50),
+    province VARCHAR(100),
+    district VARCHAR(100),
+    ward VARCHAR(100),
+    address VARCHAR(255),
+    occupation VARCHAR(100),
+    referral_code VARCHAR(50),
+    role ENUM('BENHNHAN', 'BACSI', 'ADMIN') DEFAULT 'BENHNHAN',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- =======================================================
+-- 🏥 2. Bảng benhvien
 -- =======================================================
 CREATE TABLE benhvien (
     MaBV INT PRIMARY KEY AUTO_INCREMENT,
@@ -19,7 +44,7 @@ CREATE TABLE benhvien (
 );
 
 -- =======================================================
--- 🧠 2. Bảng chuyenkhoa
+-- 🧠 3. Bảng chuyenkhoa
 -- =======================================================
 CREATE TABLE chuyenkhoa (
     MaCK INT PRIMARY KEY AUTO_INCREMENT,
@@ -32,7 +57,7 @@ CREATE TABLE chuyenkhoa (
 );
 
 -- =======================================================
--- 🧑‍⚕️ 3. Bảng bacsi
+-- 🧑‍⚕️ 4. Bảng bacsi
 -- =======================================================
 CREATE TABLE bacsi (
     MaBS INT PRIMARY KEY AUTO_INCREMENT,
@@ -47,7 +72,7 @@ CREATE TABLE bacsi (
 );
 
 -- =======================================================
--- 👩‍🦰 4. Bảng benhnhan
+-- 👩‍🦰 5. Bảng benhnhan
 -- =======================================================
 CREATE TABLE benhnhan (
     MaBN INT PRIMARY KEY AUTO_INCREMENT,
@@ -60,7 +85,7 @@ CREATE TABLE benhnhan (
 );
 
 -- =======================================================
--- 📅 5. Bảng lichhen
+-- 📅 6. Bảng lichhen
 -- =======================================================
 CREATE TABLE lichhen (
     MaLich INT PRIMARY KEY AUTO_INCREMENT,
@@ -79,56 +104,33 @@ CREATE TABLE lichhen (
 );
 
 -- =======================================================
--- 💊 6. (Tuỳ chọn) Bảng taikhoan
--- =======================================================
-CREATE TABLE taikhoan (
-    MaTK INT PRIMARY KEY AUTO_INCREMENT,
-    TenDangNhap VARCHAR(50) UNIQUE NOT NULL,
-    MatKhau VARCHAR(255) NOT NULL,
-    VaiTro ENUM('BENHNHAN', 'BACSI', 'ADMIN') NOT NULL,
-    MaLienKet INT,
-    FOREIGN KEY (MaLienKet) REFERENCES benhnhan(MaBN)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
-);
-
--- =======================================================
 -- 🧾 DỮ LIỆU MẪU
 -- =======================================================
 
--- 🏥 Thêm bệnh viện
 INSERT INTO benhvien (TenBV, DiaChi, SoDienThoai, Email) VALUES
-('Bệnh viện Trung Ương A', '123 Đường Lý Thường Kiệt, Hà Nội', '0241234567', 'contact@bvtwa.vn'),
-('Bệnh viện Đa khoa B', '45 Nguyễn Văn Linh, TP. Hồ Chí Minh', '0287654321', 'info@bvdkb.vn');
+('Bệnh viện Trung Ương A', '123 Lý Thường Kiệt, Hà Nội', '0241234567', 'contact@bvtwa.vn'),
+('Bệnh viện Đa khoa B', '45 Nguyễn Văn Linh, TP.HCM', '0287654321', 'info@bvdkb.vn');
 
--- 🧠 Thêm chuyên khoa
 INSERT INTO chuyenkhoa (TenCK, MoTa, MaBV) VALUES
-('Nội tổng quát', 'Chuyên điều trị các bệnh lý nội khoa.', 1),
-('Ngoại thần kinh', 'Chuyên phẫu thuật thần kinh và cột sống.', 1),
-('Tim mạch', 'Chuyên điều trị bệnh về tim mạch.', 2);
+('Nội tổng quát', 'Chuyên điều trị các bệnh lý nội khoa', 1),
+('Ngoại thần kinh', 'Phẫu thuật thần kinh, cột sống', 1),
+('Tim mạch', 'Điều trị bệnh tim mạch', 2);
 
--- 🧑‍⚕️ Thêm bác sĩ
 INSERT INTO bacsi (TenBS, GioiTinh, SoDienThoai, Email, MaCK) VALUES
 ('Nguyễn Văn An', 'Nam', '0912345678', 'ngan@bvtwa.vn', 1),
 ('Trần Thị Bình', 'Nữ', '0923456789', 'tbinh@bvtwa.vn', 2),
 ('Phạm Minh Cường', 'Nam', '0934567890', 'pcuong@bvdkb.vn', 3);
 
--- 👩‍🦰 Thêm bệnh nhân
 INSERT INTO benhnhan (TenBN, NgaySinh, GioiTinh, SoDienThoai, DiaChi, Email) VALUES
 ('Lê Thị Hoa', '1995-05-10', 'Nữ', '0905123456', 'Ba Đình, Hà Nội', 'hoa.le@gmail.com'),
-('Ngô Văn Nam', '1988-09-22', 'Nam', '0916234567', 'Quận 1, TP. Hồ Chí Minh', 'nam.ngo@gmail.com');
+('Ngô Văn Nam', '1988-09-22', 'Nam', '0916234567', 'Quận 1, TP.HCM', 'nam.ngo@gmail.com');
 
--- 📅 Thêm lịch hẹn
 INSERT INTO lichhen (MaBN, MaBS, NgayHen, GioHen, TrangThai, GhiChu) VALUES
 (1, 1, '2025-10-15', '09:00:00', 'Đang chờ', 'Khám sức khỏe định kỳ'),
 (2, 3, '2025-10-16', '14:30:00', 'Đang chờ', 'Khám tim mạch');
 
--- 💊 Thêm tài khoản
-INSERT INTO taikhoan (TenDangNhap, MatKhau, VaiTro, MaLienKet) VALUES
-('lehoa', '123456', 'BENHNHAN', 1),
-('ngonam', '123456', 'BENHNHAN', 2),
-('admin', 'admin123', 'ADMIN', NULL);
-
--- =======================================================
--- ✅ Hoàn tất khởi tạo dữ liệu mẫu
--- =======================================================
+INSERT INTO users (full_name, phone_number, password, email, role)
+VALUES
+('Lê Thị Hoa', '0905123456', '$2a$10$examplehashedpassword', 'hoa.le@gmail.com', 'BENHNHAN'),
+('Phạm Minh Cường', '0934567890', '$2a$10$examplehashedpassword', 'pcuong@bvdkb.vn', 'BACSI'),
+('Admin', '0999999999', '$2a$10$examplehashedpassword', 'admin@system.vn', 'ADMIN');
