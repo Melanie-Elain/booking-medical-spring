@@ -106,7 +106,7 @@ const HomeHospital = () => {
           >
               <ChevronLeft size={24}/>
           </button>
-          <div ref={scrollRef} className="flex space-x-6 overflow-x-auto pb-4 scrollbar-hide px-4">
+          <div ref={scrollRef} className="flex space-x-6 overflow-x-scroll pb-4  px-4">
             {hospitals.map((hos, index) => (
               <div key={index} className="flex-shrink-0 w-72">
                 <HospitalCard hospital={hos} />

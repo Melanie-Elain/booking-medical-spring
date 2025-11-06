@@ -4,7 +4,7 @@ import Header from "../../components/Home/Header";
 import DownloadApp from "../../components/Home/DownloadApp";
 import HomeFooter from "../../components/Home/HomeFooter";
 import ReactPaginate from "react-paginate";
-import {doctorsData} from "../../data/doctorsData";
+import doctorsData from "../../data/doctorsData";
 import hospitalsData from "../../data/hospitalsData";
 import clinicsData from "../../data/clinicsData";
 import BookingSearchCard from "../../components/BookingSearchCard";

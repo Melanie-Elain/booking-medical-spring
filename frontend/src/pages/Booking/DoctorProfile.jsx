@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import {doctorsData}  from "../../data/doctorsData";
+import doctorsData  from "../../data/doctorsData";
 import { HeartIcon, BadgeCheck,ChevronLeft, ChevronRight, MapPin} from "lucide-react";
 import Header from "../../components/Home/Header";
 import HomeFooter from "../../components/Home/HomeFooter";

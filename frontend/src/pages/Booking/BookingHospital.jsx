@@ -1,61 +1,22 @@
 import React, { useState } from "react";
-import Header from "../../components/Home/Header";
-import DownloadApp from "../../components/Home/DownloadApp";
-import HomeFooter from "../../components/Home/HomeFooter";
+import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
-
-
-const hospitalsData = [
-    {
-      id: 1,
-      name: "Bệnh viện Ung Bướu TPHCM",
-      address: "47 Nguyễn Huy Lượng, Phường Bình Thạnh, TP. Hồ Chí Minh",
-      image: "/images/hospital/1.webp",
-    },
-    {
-      id: 2,
-      name: "Bệnh viện Quân Y 175",
-      address: "Số 786 Nguyễn Kiệm, Phường Hạnh Thông, TP. Hồ Chí Minh",
-      image: "/images/hospital/2.webp",
-    },
-    {
-      id: 3,
-      name: "Bệnh viện Ung Bướu TPHCM",
-      address: "47 Nguyễn Huy Lượng, Phường Bình Thạnh, TP. Hồ Chí Minh",
-      image: "/images/hospital/3.webp",
-    },
-    {
-      id: 4,
-      name: "Bệnh viện Quân Y 175",
-      address: "Số 786 Nguyễn Kiệm, Phường Hạnh Thông, TP. Hồ Chí Minh",
-      image: "/images/hospital/4.webp",
-    },
-    {
-      id: 5,
-      name: "Bệnh viện Ung Bướu TPHCM",
-      address: "47 Nguyễn Huy Lượng, Phường Bình Thạnh, TP. Hồ Chí Minh",
-      image: "/images/hospital/5.webp",
-    },
-    {
-      id: 6,
-      name: "Bệnh viện Quân Y 175",
-      address: "Số 786 Nguyễn Kiệm, Phường Hạnh Thông, TP. Hồ Chí Minh",
-      image: "/images/hospital/6.webp",
-    },
-  ];
+import hospitalsData from "../../data/hospitalsData";
 
 
 const BookingHospital = () => {
+    const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(0);
     const hospitalPerPage = 6; 
 
+    const hospitals= hospitalsData;
     const startIndex = currentPage * hospitalPerPage;
-    const selectedHospitals = hospitalsData.slice(
+    const selectedHospitals = hospitals.slice(
       startIndex,
       startIndex + hospitalPerPage
     );
 
-    const pageCount = Math.ceil(hospitalsData.length / hospitalPerPage);
+    const pageCount = Math.ceil(hospitals.length / hospitalPerPage);
 
     const handlePageClick = ({ selected }) => {
       setCurrentPage(selected);
@@ -74,8 +35,8 @@ const BookingHospital = () => {
                 <div
                 key={hospital.id}
                 className="flex items-center justify-between border-b p-4 "
+                onClick={() => navigate(`/dat-kham/benh-vien/${hospital.id}`)}
                 >
-                {/* Ảnh bác sĩ */}
                 <div className="flex items-center gap-4">
                     <img
                     src={hospital.image}
