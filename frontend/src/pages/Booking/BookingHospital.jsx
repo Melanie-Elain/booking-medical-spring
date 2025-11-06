@@ -51,7 +51,7 @@ const BookingHospital = () => {
 
     const startIndex = currentPage * hospitalPerPage;
     const selectedHospitals = hospitalsData.slice(
-      startIndex,
+      startIndex, 
       startIndex + hospitalPerPage
     );
 

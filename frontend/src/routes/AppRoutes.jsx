@@ -22,32 +22,59 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Đặt khám */}
+      {/* Đặt khám Bác sĩ (mặc định) */}
       <Route
         path="/dat-kham/bac-si"
         element={
           <MainLayout>
-            <BookingPage/>
+            <BookingPage selectedTab={1} />
           </MainLayout>
         }
       />
 
-      <Route path="/dat-kham/bac-si/search" element={<BookingSearch />}/>
-      <Route path="/dat-kham/benh-vien" 
+      <Route path="/dat-kham/bac-si/search" element={<BookingSearch />} />
+      <Route path="/dat-kham/bac-si/:id" element={<DoctorProfile />} />
+
+      {/* Đặt khám Bệnh viện */}
+      <Route
+        path="/dat-kham/benh-vien"
         element={
           <MainLayout>
-            <BookingPage selectedTab = {2} />
+            <BookingPage selectedTab={2} />
           </MainLayout>
         }
       />
-      <Route path="/dat-kham/bac-si/:id" element={<DoctorProfile/>}/>
-      <Route path="/dat-kham/phong-kham" 
+
+      {/* Đặt khám Phòng khám */}
+      <Route
+        path="/dat-kham/phong-kham"
         element={
           <MainLayout>
-            <BookingPage selectedTab = {3} />
+            <BookingPage selectedTab={3} />
           </MainLayout>
         }
-       />
+      />
+
+      {/* Đặt lịch tiêm chủng */}
+      <Route
+        path="/dat-kham/tiem-chung"
+        element={
+          <MainLayout>
+            <BookingPage selectedTab={4} />
+          </MainLayout>
+        }
+      />
+
+      {/* Đặt lịch xét nghiệm */}
+      <Route
+        path="/dat-kham/xet-nghiem"
+        element={
+          <MainLayout>
+            <BookingPage selectedTab={5} />
+          </MainLayout>
+        }
+      />
+
       {/* Auth */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />

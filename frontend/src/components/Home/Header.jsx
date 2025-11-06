@@ -47,12 +47,16 @@ const Header = () => {
                   <div className="row-desc">Đa dạng chuyên khoa và dịch vụ</div>
                 </a>
 
-                <a href="" className="dropdown-row">
+                <a href="" className="dropdown-row"
+                  onClick={() => navigate('/dat-kham/tiem-chung')}
+                >
                   <div className="row-title">Đặt lịch tiêm chủng</div>
                   <div className="row-desc">Trung tâm tiêm chủng uy tín</div>
                 </a>
 
-                <a href="" className="dropdown-row">
+                <a href="" className="dropdown-row"
+                  onClick={() => navigate('/dat-kham/xet-nghiem')}
+                >
                   <div className="row-title">Đặt lịch xét nghiệm</div>
                   <div className="row-desc">Trung tâm xét nghiệm uy tín</div>
                 </a>

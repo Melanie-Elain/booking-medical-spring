@@ -7,6 +7,7 @@ const tabs = [
     { id: 2, label: "Đặt khám Bệnh viện", icon: <Building size={18} />, path: "/dat-kham/benh-vien" },
     { id: 3, label: "Đặt khám Phòng khám", icon: <BriefcaseMedical size={18} />, path: "/dat-kham/phong-kham" },
     { id: 4, label: "Đặt lịch Tiêm chủng", icon: <FlaskRound size={18} />, path: "/dat-kham/tiem-chung" },
+    { id: 5, label: "Đặt lịch Xét nghiệm", icon: <FlaskRound size={18} />, path: "/dat-kham/xet-nghiem" },
   ];
 
 const BookingTab = ({onTabChange, selectedTab}) => {
