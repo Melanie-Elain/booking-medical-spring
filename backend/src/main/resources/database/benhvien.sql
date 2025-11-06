@@ -1,17 +1,16 @@
 -- =======================================================
--- 📁 CSDL: QuanLyBenhVien
--- 📅 Ngày cập nhật: 2025-11-05
--- 🧠 Người chỉnh: ChatGPT & Tran Bao Han
+-- 📁 CSDL: bookingdb (phiên bản đơn giản hóa cho Medical Booking)
+-- 📅 Ngày cập nhật: 2025-11-06
+-- 🧠 Người chỉnh: ChatGPT & Trần Bảo Hân
 -- =======================================================
 
-DROP DATABASE IF EXISTS QuanLyBenhVien;
-CREATE DATABASE QuanLyBenhVien CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE QuanLyBenhVien;
+-- ❌ Bỏ dòng DROP DATABASE và CREATE DATABASE vì bạn đã có sẵn bookingdb
+USE bookingdb;
 
 -- =======================================================
 -- 🧾 1. Bảng users (tài khoản đăng nhập - dùng cho JWT)
 -- =======================================================
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     full_name VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20) UNIQUE NOT NULL,
@@ -35,7 +34,7 @@ CREATE TABLE users (
 -- =======================================================
 -- 🏥 2. Bảng benhvien
 -- =======================================================
-CREATE TABLE benhvien (
+CREATE TABLE IF NOT EXISTS benhvien (
     MaBV INT PRIMARY KEY AUTO_INCREMENT,
     TenBV VARCHAR(100) NOT NULL,
     DiaChi VARCHAR(255),
@@ -46,7 +45,7 @@ CREATE TABLE benhvien (
 -- =======================================================
 -- 🧠 3. Bảng chuyenkhoa
 -- =======================================================
-CREATE TABLE chuyenkhoa (
+CREATE TABLE IF NOT EXISTS chuyenkhoa (
     MaCK INT PRIMARY KEY AUTO_INCREMENT,
     TenCK VARCHAR(100) NOT NULL,
     MoTa TEXT,
@@ -59,7 +58,7 @@ CREATE TABLE chuyenkhoa (
 -- =======================================================
 -- 🧑‍⚕️ 4. Bảng bacsi
 -- =======================================================
-CREATE TABLE bacsi (
+CREATE TABLE IF NOT EXISTS bacsi (
     MaBS INT PRIMARY KEY AUTO_INCREMENT,
     TenBS VARCHAR(100) NOT NULL,
     GioiTinh VARCHAR(10),
@@ -74,7 +73,7 @@ CREATE TABLE bacsi (
 -- =======================================================
 -- 👩‍🦰 5. Bảng benhnhan
 -- =======================================================
-CREATE TABLE benhnhan (
+CREATE TABLE IF NOT EXISTS benhnhan (
     MaBN INT PRIMARY KEY AUTO_INCREMENT,
     TenBN VARCHAR(100) NOT NULL,
     NgaySinh DATE,
@@ -87,7 +86,7 @@ CREATE TABLE benhnhan (
 -- =======================================================
 -- 📅 6. Bảng lichhen
 -- =======================================================
-CREATE TABLE lichhen (
+CREATE TABLE IF NOT EXISTS lichhen (
     MaLich INT PRIMARY KEY AUTO_INCREMENT,
     MaBN INT,
     MaBS INT,

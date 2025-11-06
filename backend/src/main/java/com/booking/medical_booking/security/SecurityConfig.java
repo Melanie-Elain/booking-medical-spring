@@ -8,18 +8,37 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration; // <-- Thêm import
+
+import java.util.List; // <-- Thêm import
 
 @Configuration
 public class SecurityConfig {
 
-    // Cho phép API auth truy cập công khai
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // tắt CSRF cho API
+            // 1. THÊM CẤU HÌNH CORS VÀO ĐÂY
+            .cors(cors -> cors.configurationSource(request -> {
+                var corsConfig = new CorsConfiguration();
+                corsConfig.setAllowedOrigins(List.of("http://localhost:3000")); // Cho phép React
+                corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                corsConfig.setAllowedHeaders(List.of("*"));
+                corsConfig.setAllowCredentials(true);
+                return corsConfig;
+            }))
+            
+            // 2. TẮT CSRF (bạn đã làm đúng)
+            .csrf(csrf -> csrf.disable()) 
+            
+            // 3. PHÂN QUYỀN
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // không cần token cho đăng nhập / đăng ký
-                .anyRequest().authenticated()
+            //     // 4. SỬA LẠI ĐÚNG ĐƯỜNG DẪN API ĐĂNG KÝ
+            //    .requestMatchers("/api/auth/register").permitAll() // Cho phép API đăng ký
+            //     // Cho phép tất cả các request "OPTIONS" (quan trọng cho CORS)
+            //     .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+            //     .anyRequest().authenticated()
+            .anyRequest().permitAll()
             );
 
         return http.build();
