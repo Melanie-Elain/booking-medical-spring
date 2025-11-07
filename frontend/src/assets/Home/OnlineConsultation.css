@@ -1,0 +1,411 @@
+.consultation-container {
+    padding: 40px 80px;
+}
+
+/*Specialty-Section*/
+.specialty-section {
+    padding: 60px 20px;
+    text-align: center;
+    background: #fff;
+}
+
+.specialty-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.specialty-header h2 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.specialty-header p {
+    color: #6b7280;
+    font-size: 15px;
+}
+
+/* Khung chứa grid */
+.specialty-grid-wrapper {
+    max-width: 1200px;
+    margin: 40px auto 0 auto;
+    overflow: hidden;
+    height: 130px;
+    transition: height 0.5s ease;
+}
+
+.specialty-grid-wrapper.expanded {
+    height: auto;
+}
+
+/* Grid item */
+.specialty-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 30px;
+    justify-items: center;
+}
+
+.specialty-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease;
+}
+
+.specialty-item:hover {
+    transform: translateY(-4px);
+}
+
+.specialty-icon {
+    background: #f0f8ff;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.specialty-icon img {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.3s;
+}
+
+.specialty-item:hover .specialty-icon img {
+    transform: scale(1.1);
+}
+
+.specialty-item p {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/*Nút Xem thêm*/
+.toggle-button {
+    background: none;
+    border: none;
+    color: #0ea5e9;
+    font-size: 16px;
+    margin-top: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s;
+}
+
+.toggle-button:hover {
+    color: #0284c7;
+}
+
+/*Step-Section*/
+.steps-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.step-header {
+    width: 100%;
+}
+
+.step-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+}
+
+.step-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+.step-image {
+    width: 380px;
+    border-radius: 16px;
+}
+
+.steps-right .step {
+    margin-bottom: 20px;
+    cursor: pointer;
+    padding: 12px 16px;
+    border-left: 4px solid transparent;
+}
+
+.steps-right .title-step {
+    font-weight: 700;
+}
+
+.steps-right .step.active {
+    background: #f0f7ff;
+    border-left-color: #007bff;
+}
+
+/*Info-Section*/
+.info-section {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+
+    background-color: #f9fafb;
+    padding: 4rem 1rem;
+    text-align: center;
+}
+
+.info-header {
+    margin-bottom: 2rem;
+}
+
+.info-title {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.info-subtitle {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.info-card {
+    background-color: #fff;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.info-card img {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 1rem;
+}
+
+.info-card h3 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.info-card p {
+    color: #555;
+    font-size: 0.95rem;
+}
+
+/*Video-Section*/
+.video-section {
+    background-color: white;
+    padding: 3rem 1rem;
+}
+
+.video-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .video-container {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Video bên phải */
+.video-right {
+    order: 2;
+    position: relative;
+    border-radius: 1rem;
+    margin: 1rem;
+    overflow: hidden;
+    border: 1px solid #f1f1f1;
+}
+
+.video-player {
+    width: 100%;
+    display: block;
+    border-radius: 1rem;
+}
+
+/* Nội dung bên trái */
+.video-left {
+    order: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.video-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .video-title {
+        text-align: left;
+        font-size: 2.5rem;
+    }
+}
+
+.video-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+/* Dòng bác sĩ */
+.doctor-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+}
+
+.doctor-avatars {
+    display: flex;
+    margin-right: 0.5rem;
+}
+
+.doctor-img {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    border: 2px solid white;
+    margin-left: -4px;
+}
+
+.doctor-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Nút tải app */
+.store-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .store-buttons {
+        justify-content: flex-start;
+    }
+}
+
+.store-img {
+    height: 40px;
+    width: auto;
+}
+
+/*FAQ-Section*/
+.faq-section {
+    background-color: #fff;
+    padding: 3rem 1rem;
+}
+
+.faq-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .faq-title {
+        font-size: 2.5rem;
+    }
+}
+
+.faq-container {
+    margin-top: 2rem;
+}
+
+.faq-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid #e5e7eb;
+}
+
+.faq-item {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: #111827;
+    transition: color 0.3s;
+}
+
+.faq-question:hover {
+    color: #0ea5e9;
+    /* màu xanh nhẹ */
+}
+
+.faq-icon {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.3s;
+    color: #6b7280;
+}
+
+.faq-icon.rotate {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.faq-answer.hide {
+    max-height: 0;
+    opacity: 0;
+}
+
+.faq-answer.show {
+    max-height: 200px;
+    opacity: 1;
+    padding-bottom: 1rem;
+}

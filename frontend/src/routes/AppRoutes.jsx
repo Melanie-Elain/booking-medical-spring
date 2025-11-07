@@ -9,6 +9,8 @@ import LoginPage from "../pages/Auth/LoginPage";
 import RegisterPage from "../pages/Auth/RegisterPage";
 import BookingHospital from "../pages/Booking/BookingHospital";
 import BookingClinic from "../pages/Booking/BookingClinic";
+import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
+import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
 
 const AppRoutes = () => {
   return (
@@ -28,26 +30,47 @@ const AppRoutes = () => {
         path="/dat-kham/bac-si"
         element={
           <MainLayout>
-            <BookingPage/>
+            <BookingPage />
           </MainLayout>
         }
       />
 
-      <Route path="/dat-kham/bac-si/search" element={<BookingDoctor />}/>
-      <Route path="/dat-kham/benh-vien" 
+      <Route path="/dat-kham/bac-si/search" element={<BookingDoctor />} />
+      <Route path="/dat-kham/benh-vien"
         element={
           <MainLayout>
-            <BookingPage selectedTab = {2} />
+            <BookingPage selectedTab={2} />
           </MainLayout>
         }
       />
-      <Route path="/dat-kham/phong-kham" 
+      <Route path="/dat-kham/phong-kham"
         element={
           <MainLayout>
-            <BookingPage selectedTab = {3} />
+            <BookingPage selectedTab={3} />
           </MainLayout>
         }
-       />
+      />
+
+      {/* OnlineConsultation*/}
+      <Route
+        path="/tu-van-truc-tuyen"
+        element={
+          <MainLayout>
+            <OnlineConsultation />
+          </MainLayout>
+        }
+      />
+
+      {/* MedicalNew*/}
+      <Route
+        path="/tin-y-te"
+        element={
+          <MainLayout>
+            <MedicalNews />
+          </MainLayout>
+        }
+      />
+
       {/* Auth */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
