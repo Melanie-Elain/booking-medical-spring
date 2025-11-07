@@ -7,9 +7,16 @@ import BookingPage from "../pages/Booking/BookingPage";
 import BookingSearch from "../pages/Booking/BookingSearch";
 import LoginPage from "../pages/Auth/LoginPage";
 import RegisterPage from "../pages/Auth/RegisterPage";
+
 import DoctorProfile from "../pages/Booking/DoctorProfile";
 import HospitalProfile from "../pages/Booking/HospitalProfile";
 import ClinicProfile from "../pages/Booking/ClinicProfile";
+
+// Các import này có thể cần thiết cho các route bên dưới
+// import BookingHospital from "../pages/Booking/BookingHospital";
+// import BookingClinic from "../pages/Booking/BookingClinic";
+import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
+import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
 
 const AppRoutes = () => {
   return (
@@ -45,7 +52,6 @@ const AppRoutes = () => {
           </MainLayout>
         }
       />
-      {/* Code từ nhánh HEAD (của bạn) */}
       <Route path="/dat-kham/benh-vien/:id" element={<HospitalProfile />} />
 
       {/* Đặt khám Phòng khám */}
@@ -57,10 +63,8 @@ const AppRoutes = () => {
           </MainLayout>
         }
       />
-      {/* Code từ nhánh HEAD (của bạn) */}
       <Route path="/dat-kham/phong-kham/:id" element={<ClinicProfile />} />
 
-      {/* Code từ nhánh origin/BaoHuy (của đồng đội) */}
       {/* Đặt lịch tiêm chủng */}
       <Route
         path="/dat-kham/tiem-chung"
@@ -71,12 +75,32 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Đặt lịch xét nghiệm */}
+      {/* Đặt lịch xét nghiệm  */}
       <Route
         path="/dat-kham/xet-nghiem"
         element={
           <MainLayout>
             <BookingPage selectedTab={5} />
+          </MainLayout>
+        }
+      />
+
+      {/* OnlineConsultation  */}
+      <Route
+        path="/tu-van-truc-tuyen"
+        element={
+          <MainLayout>
+            <OnlineConsultation />
+          </MainLayout>
+        }
+      />
+
+      {/* MedicalNews  */}
+      <Route
+        path="/tin-y-te"
+        element={
+          <MainLayout>
+            <MedicalNews />
           </MainLayout>
         }
       />

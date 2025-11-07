@@ -1,8 +1,11 @@
+
 import React from 'react';
 import { IoLogInOutline } from 'react-icons/io5';
-import { FaRegUserCircle } from 'react-icons/fa'; // Icon cho user
-import '../../assets/Home/Header.css'; // File CSS của bạn
-import { useNavigate, Link } from 'react-router-dom';
+import { FaRegUserCircle } from 'react-icons/fa'; 
+import "../../assets/Home/Header.css";
+import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
+
 
 const Header = () => {
   const navigate = useNavigate();
@@ -75,9 +78,23 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Các link nav khác */}
-          <a href="#tu-van" className="nav-item">Tư vấn trực tuyến</a>
-          <a href="#tin-y-te" className="nav-item">Tin Y tế</a>
+
+          {/* Chuyển đổi sang tư vấn trực tuyến */}
+          <a href="" className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/tu-van-truc-tuyen");
+            }}
+          >Tư vấn trực tuyến</a>
+
+          {/* Chuyển đổi sang tư vấn trực tuyến */}
+          <a href="" className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/tin-y-te");
+            }}
+          >Tin Y tế</a>
+
           <a href="#tro-ly" className="nav-item">Trợ lý y khoa</a>
           <a href="#danh-cho-bs" className="nav-item">Dành cho Bác sĩ</a>
 
