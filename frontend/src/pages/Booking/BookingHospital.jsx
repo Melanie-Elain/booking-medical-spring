@@ -11,8 +11,8 @@ const BookingHospital = () => {
 
     const hospitals= hospitalsData;
     const startIndex = currentPage * hospitalPerPage;
-    const selectedHospitals = hospitals.slice(
-      startIndex,
+    const selectedHospitals = hospitalsData.slice(
+      startIndex, 
       startIndex + hospitalPerPage
     );
 
