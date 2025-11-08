@@ -14,7 +14,6 @@ import ClinicProfile from "../pages/Booking/ClinicProfile";
 import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
 import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
 
-
 const AppRoutes = () => {
   return (
     <Routes>
@@ -84,7 +83,7 @@ const AppRoutes = () => {
       />
 {/* End Menu Booking */}
 
-      {/* OnlineConsultation*/}
+      {/* OnlineConsultation  */}
       <Route
         path="/tu-van-truc-tuyen"
         element={
@@ -94,7 +93,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* MedicalNew*/}
+      {/* MedicalNews  */}
       <Route
         path="/tin-y-te"
         element={

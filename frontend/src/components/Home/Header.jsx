@@ -1,7 +1,7 @@
 import React from 'react';
 import { IoLogInOutline } from 'react-icons/io5';
-import { FaRegUserCircle } from 'react-icons/fa'; // Icon cho user
-import '../../assets/Home/Header.css'; // File CSS của bạn
+import { FaRegUserCircle } from 'react-icons/fa';
+import '../../assets/Home/Header.css';
 import { useNavigate, Link } from 'react-router-dom';
 
 const Header = () => {
