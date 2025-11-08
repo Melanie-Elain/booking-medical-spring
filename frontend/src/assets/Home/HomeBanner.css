@@ -83,18 +83,76 @@
 }
 
 .banner-image img {
-    position: absolute;
-    top: 50%;
-    left: 50%; /* Căn giữa */
-    transform: translate(-50%, -50%); /* Dịch chuyển về tâm */
-    
-    /* 📢 SỬA: Thiết lập kích thước để ưu tiên hiển thị toàn bộ */
-    min-width: 100%; /* Đảm bảo ảnh đủ rộng */
-    min-height: 100%; /* Đảm bảo ảnh đủ cao */
-    
-    object-fit: contain; /* Hoặc không cần thuộc tính này */
-    
-    /* TĂNG KÍCH THƯỚC ẢNH LÊN MỘT CHÚT để nó tràn ra khỏi khung nhìn, nhưng tâm vẫn ở giữa */
-    width: 1200px; /* Thử đặt một giá trị lớn cố định (ví dụ 1200px) */
-    height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Căn giữa */
+  transform: translate(-50%, -50%);
+  /* Dịch chuyển về tâm */
+
+  /* 📢 SỬA: Thiết lập kích thước để ưu tiên hiển thị toàn bộ */
+  min-width: 100%;
+  /* Đảm bảo ảnh đủ rộng */
+  min-height: 100%;
+  /* Đảm bảo ảnh đủ cao */
+
+  object-fit: contain;
+  /* Hoặc không cần thuộc tính này */
+
+  /* TĂNG KÍCH THƯỚC ẢNH LÊN MỘT CHÚT để nó tràn ra khỏi khung nhìn, nhưng tâm vẫn ở giữa */
+  width: 1200px;
+  /* Thử đặt một giá trị lớn cố định (ví dụ 1200px) */
+  height: auto;
+}
+
+/* --- Banner Tư vấn trực tuyến --- */
+.consultation-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60px 10%;
+  background: linear-gradient(90deg, #e6f8f6, #f9ffff);
+  border-bottom: 1px solid #e0f2f1;
+}
+
+.consultation-banner .banner-content {
+  max-width: 500px;
+}
+
+.consultation-banner .banner-content h1 {
+  font-size: 40px;
+  font-weight: 700;
+  color: #00695c;
+  margin-bottom: 20px;
+}
+
+.consultation-banner .banner-content p {
+  font-size: 18px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.consultation-download-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #00bfa5, #00e0c6);
+  color: white;
+  font-weight: 600;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 191, 165, 0.25);
+}
+
+.consultation-download-btn:hover {
+  background: linear-gradient(135deg, #00e0c6, #00bfa5);
+  transform: translateY(-3px);
+}
+
+.consultation-banner .banner-image img {
+  width: 480px;
+  height: auto;
+  border-radius: 12px;
+  object-fit: contain;
 }
