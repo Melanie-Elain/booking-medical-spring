@@ -1,9 +1,9 @@
 
 import React from "react";
-import Header from "./Home/Header";
-import Banner from "./Home/HomeBanner";
-import Footer from "./Home/HomeFooter";
-import DownloadApp from "./Home/DownloadApp";
+import Header from "../Home/Header";
+import Banner from "../Home/HomeBanner";
+import Footer from "../Home/HomeFooter";
+import DownloadApp from "../Home/DownloadApp";
 import { useLocation } from "react-router-dom";
 
 

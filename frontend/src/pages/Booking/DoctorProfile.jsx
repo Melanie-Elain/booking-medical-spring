@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useRef, useState,useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import doctorsData  from "../../data/doctorsData";
 import { HeartIcon, BadgeCheck,ChevronLeft, ChevronRight, MapPin} from "lucide-react";
 import Header from "../../components/Home/Header";
@@ -13,6 +13,12 @@ const DoctorProfile = () => {
     const doctor = doctorsData.find((d) => d.id === Number(id));
     const [showFull, setShowFull] = useState (false);
     const MAX_LENGTH = 100; 
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, []);
 
     const toggleShow = () => {
         setShowFull(!showFull);
@@ -38,7 +44,8 @@ const DoctorProfile = () => {
         <Header />
         <div className="w-full bg-gray-200 pt-5 pb-10">
             <div className="pb-5 max-w-4xl mx-auto">
-                <a href="">Trang chủ /</a>
+                <a href="/dat-kham"
+               >Trang chủ /</a>
                 <a href=""> Bác sĩ</a>
             </div>
             
@@ -90,7 +97,7 @@ const DoctorProfile = () => {
                             className="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 z-10">
                             <ChevronLeft size={22}/>
                         </button>
-                        <div ref={scrollRef} className="flex overflow-x-auto scrollbar-hide pb-1 scroll-smooth space-x-2">
+                        <div ref={scrollRef} className="flex overflow-x-auto scrollbar-hide pb-1 scroll-smooth ">
 
                             {schedules.map((day, index) => (
                                 <button
@@ -183,7 +190,7 @@ const DoctorProfile = () => {
 
                 <hr className="border-1 my-5"/>
                 <div className="flex flex-row justify-between">
-                    <div className="text-base hover:text-blue-500">
+                    <div className="text-base hover:text-blue-500 hover:cursor-pointer">
                         <p>Hỗ trợ đặt khám</p>
                         <p className="font-semibold">1900-2805</p>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useParams } from "react-router-dom";
 import Header from "../../components/Home/Header";
 import DownloadApp from "../../components/Home/DownloadApp";
@@ -10,6 +10,11 @@ import { useNavigate } from "react-router-dom";
 const HospitalProfile = () => {
     const navigate = useNavigate();
     const { id } = useParams();
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, []);
+
     const hospital = hospitalsData.find((h) => h.id === Number(id));
     if (!hospital) {
         return <div className="p-6 text-center text-gray-500">Không tìm thấy bệnh viện.</div>;

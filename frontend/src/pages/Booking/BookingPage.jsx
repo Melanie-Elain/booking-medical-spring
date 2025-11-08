@@ -1,8 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import HomeFooter from "../../components/Home/HomeFooter";
-import HomeBanner from "../../components/Home/HomeBanner";
-import BookingTab from "../../components/BookingTab";
+import BookingTab from "../../components/Booking/BookingTab";
 import HomeDoctor from "../../components/Home/HomeDoctor";
 import HomeSpecialty from "../../components/Home/HomeSpecialty";
 import BookingHospital from "./BookingHospital";

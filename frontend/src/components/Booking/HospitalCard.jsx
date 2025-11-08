@@ -1,8 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const HospitalCard = ({ hospital }) => {
+  const navigate = useNavigate();
   return (
-    <div className="bg-white rounded-xl border border-gray-300 overflow-hidden w-72 h-[350px] flex flex-col hover:shadow-md">
+    <div className="bg-white rounded-xl border border-gray-300 overflow-hidden w-72 h-[350px] flex flex-col hover:shadow-md"
+          onClick={() => navigate(`/dat-kham/benh-vien/${hospital.id}`)}
+    >
       {/* Ảnh banner */}
       <div className="relative">
         <img
@@ -11,7 +15,7 @@ const HospitalCard = ({ hospital }) => {
           className="w-full h-32 object-cover"
         />
 
-        <div className="absolute left-1/4 transform -translate-x-1/2 bottom-[-24px] bg-white p-2 rounded-lg shadow-md">
+        <div className="absolute left-1/4 transform -translate-x-1/2 bottom-[-40px] bg-white p-2 rounded-lg shadow-md">
           <img
             src={hospital.image}
             alt={hospital.name}
@@ -21,7 +25,7 @@ const HospitalCard = ({ hospital }) => {
       </div>
 
       {/* Nội dung */}
-      <div className="pt-8 px-4 flex flex-col justify-between flex-grow mb-5">
+      <div className="pt-16 px-4 flex flex-col justify-between flex-grow mb-5">
           <h3 className="text-base font-bold mb-1 text-black-700 hover:underline cursor-pointer">
             {hospital.name}
           </h3>
