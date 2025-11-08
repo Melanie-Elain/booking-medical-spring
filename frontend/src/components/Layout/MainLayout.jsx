@@ -10,15 +10,17 @@ import { useLocation } from "react-router-dom";
 const MainLayout = ({ children }) => {
     const location = useLocation();
     const isBookingPage = location.pathname.includes("/dat-kham");
+    const isConsultationPage = location.pathname.includes("/tu-van-truc-tuyen");
+    const isMedicalNewsPage = location.pathname.includes("/tin-y-te");
     return (
         <div>
             <Header />  
             
-            <Banner />
+            {!isMedicalNewsPage && <Banner />}
             <div className="main-content">
                 {children}
             </div>
-             <DownloadApp isBookingPage ={isBookingPage}/>
+            {!isConsultationPage && !isMedicalNewsPage && <DownloadApp isBookingPage={isBookingPage} />}
                 
             <Footer />
         </div>
