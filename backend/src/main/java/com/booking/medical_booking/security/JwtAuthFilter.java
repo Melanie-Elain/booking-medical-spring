@@ -39,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // 2. Lấy token (bỏ "Bearer ")
         jwt = authHeader.substring(7);
-        phoneNumber = jwtService.getUsernameFromToken(jwt); // (Bạn cần viết hàm này trong JwtService)
+        phoneNumber = jwtService.getUsernameFromToken(jwt); 
 
         // 3. Nếu có SĐT VÀ user chưa được xác thực trong Context
         if (phoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null) {
