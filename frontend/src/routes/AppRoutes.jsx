@@ -25,6 +25,11 @@ import AccountPage from "../pages/UserDashboard/AccountPage";
 import AdminRoute from './AdminRoute';
 import AdminLayout from '../pages/Admin/AdminLayout'; 
 import UserManagementPage from '../pages/Admin/UserManagementPage';
+import SpecialtyManagementPage from '../pages/Admin/SpecialtyManagementPage';
+import DoctorManagementPage from '../pages/Admin/DoctorManagementPage';
+import HospitalManagementPage from '../pages/Admin/HospitalManagementPage';
+import ClinicManagementPage from '../pages/Admin/ClinicManagementPage';
+import AppointmentManagementPage from '../pages/Admin/AppointmentManagementPage';
 
 
 
@@ -155,7 +160,11 @@ const AppRoutes = () => {
         {/* Trang mặc định của admin (ví dụ: /admin) */}
         <Route index element={<UserManagementPage />} /> 
         <Route path="users" element={<UserManagementPage />} />
-        {/* (Thêm các trang admin khác ở đây) */}
+        <Route path="specialties" element={<SpecialtyManagementPage />} />
+        <Route path="doctors" element={<DoctorManagementPage />} />
+        <Route path="hospitals" element={<HospitalManagementPage />} />
+        <Route path="clinics" element={<ClinicManagementPage />} />
+        <Route path="appointments" element={<AppointmentManagementPage />} />
       </Route>
 
     </Routes>
