@@ -21,6 +21,11 @@ import PaymentHistoryPage from "../pages/UserDashboard/PaymentHistoryPage";
 import ProfilePage from "../pages/UserDashboard/ProfilePage";
 import AccountPage from "../pages/UserDashboard/AccountPage";
 
+// 1. IMPORT ADMIN 
+import AdminRoute from './AdminRoute';
+import AdminLayout from '../pages/Admin/AdminLayout'; 
+import UserManagementPage from '../pages/Admin/UserManagementPage';
+
 
 
 const PrivateRoute = ({ children }) => {
@@ -136,6 +141,21 @@ const AppRoutes = () => {
         <Route path="payment-history" element={<PaymentHistoryPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="account" element={<AccountPage />} />
+      </Route>
+
+      {/* 2. ADMIN */}
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        }
+      >
+        {/* Trang mặc định của admin (ví dụ: /admin) */}
+        <Route index element={<UserManagementPage />} /> 
+        <Route path="users" element={<UserManagementPage />} />
+        {/* (Thêm các trang admin khác ở đây) */}
       </Route>
 
     </Routes>

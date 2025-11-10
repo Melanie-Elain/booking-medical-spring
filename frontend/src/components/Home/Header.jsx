@@ -10,6 +10,7 @@ const Header = () => {
   // 1. Kiểm tra trạng thái đăng nhập từ localStorage
   const token = localStorage.getItem('jwtToken');
   const userName = localStorage.getItem('userName');
+  const userRole = localStorage.getItem('userRole');
   const isLoggedIn = !!token; 
 
   // 2. Hàm Đăng xuất
