@@ -16,6 +16,7 @@ const DoctorProfile = () => {
 
     const navigate = useNavigate();
 
+    
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }, []);
@@ -23,6 +24,7 @@ const DoctorProfile = () => {
     const toggleShow = () => {
         setShowFull(!showFull);
       };
+    
     
     const schedules = Object.keys(doctor.schedules || {});
     const [selectedDay, setSelectedDay] = useState(schedules[0]);

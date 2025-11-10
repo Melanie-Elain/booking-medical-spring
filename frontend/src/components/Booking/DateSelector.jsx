@@ -5,13 +5,25 @@ import { useParams } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 
-const DateSelector = () => {
+const DateSelector = ({ onTimeSelect }) => {
 
     const { id } = useParams();
     const doctor = doctorsData.find((d) => d.id === Number(id));
     const schedules = Object.keys(doctor.schedules || {});
     const [selectedDay, setSelectedDay] = useState(schedules[0]);
+    const [selectedTime, setSelectedTime] = useState(null);
     const times = doctor.schedules[selectedDay] || [];
+
+    const handleTimeClick = (time) => {
+        setSelectedTime(time);           
+        onTimeSelect(selectedDay, time); 
+    };
+
+    const handleDayClick = (day) => {
+        setSelectedDay(day);
+        setSelectedTime(null); 
+        onTimeSelect(null, null); 
+    }
 
     const scrollRef = React.useRef(null);
     const scrollLeft = () => {
@@ -41,7 +53,7 @@ const DateSelector = () => {
                             {schedules.map((day, index) => (
                                 <button
                                     key={index}
-                                    onClick={() => setSelectedDay(day)}
+                                    onClick={() =>handleDayClick(day)}
                                     className={`flex-shrink-0 px-4 py-2  transition font-semibold relative ${
                                         day === selectedDay
                                         ? "bg-blue-50 "
@@ -70,8 +82,12 @@ const DateSelector = () => {
                     {times.map((time) => (
                         <button
                         key={time}
-                        className="border border-gray-300 hover:bg-blue-500 hover:text-white rounded-lg py-2 transition"
-                        
+                        onClick={() => handleTimeClick(time)}
+                        className={`border rounded-lg py-2 transition font-medium ${
+                            time === selectedTime // Style cho khung giờ đã chọn
+                                ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                                : "border-gray-300 hover:bg-blue-500 hover:text-white"
+                        }`}
                         >
                         {time}
                         </button>

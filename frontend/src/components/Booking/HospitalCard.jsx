@@ -31,11 +31,13 @@ const HospitalCard = ({ hospital }) => {
           </h3>
           <p className="text-sm text-gray-600 mb-3">{hospital.address}</p>
         <div className="text-sm text-gray-500 mt-auto">
-          {hospital.schedule.map((item, index) => (
+          {/* {hospital.schedule.map((item, index) => (
             <p key={index}>
               {item.day}: {item.time}
             </p>
-          ))}
+          ))} */}
+          <p>Thứ 2 - Thứ 6:  7h30 - 16h30</p>
+          <p>Thứ 7 - CN:   7h30 - 11h30</p>
         </div>
 
         

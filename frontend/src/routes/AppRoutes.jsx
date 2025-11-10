@@ -14,6 +14,9 @@ import ClinicProfile from "../pages/Booking/ClinicProfile";
 import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
 import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
 import CompleteBookingDoctor from "../pages/Booking/CompleteBookingDoctor";
+import BookingSuccessPage from "../pages/Booking/BookingSuccessPage";
+import CompleteBookingClinic from "../pages/Booking/CompleteBookingClinic";
+import CompleteBookingHospital from "../pages/Booking/CompleteBookingHospital";
 
 // === IMPORT CÁC TRANG DASHBOARD  ===
 import UserDashboardLayout from "../pages/UserDashboard/UserDashboardLayout";
@@ -61,6 +64,7 @@ const AppRoutes = () => {
       <Route path="/dat-kham/bac-si/search" element={<BookingSearch />} />
       <Route path="/dat-kham/bac-si/:id" element={<DoctorProfile />} />
       <Route path="/dat-kham/bac-si/:id/hoan-tat-dat-kham" element={<CompleteBookingDoctor />} />
+      <Route path="/dat-kham/phieu-kham" element={<BookingSuccessPage />} />
 
       {/* Đặt khám Bệnh viện */}
 
@@ -73,6 +77,7 @@ const AppRoutes = () => {
         }
       />
       <Route path="/dat-kham/benh-vien/:id" element={<HospitalProfile />} />
+      <Route path="/dat-kham/benh-vien/:id/hoan-tat-dat-kham" element={<CompleteBookingHospital />} />
       <Route
         path="/dat-kham/phong-kham"
         element={
@@ -82,6 +87,7 @@ const AppRoutes = () => {
         }
       />
       <Route path="/dat-kham/phong-kham/:id" element={<ClinicProfile />} />
+      <Route path="/dat-kham/phong-kham/:id/hoan-tat-dat-kham" element={<CompleteBookingClinic />} />
       <Route
         path="/dat-kham/tiem-chung"
         element={
