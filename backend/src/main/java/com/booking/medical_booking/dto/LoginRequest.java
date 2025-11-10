@@ -1,4 +1,4 @@
-package com.booking.medical_booking.dto; // (Sửa lại package cho đúng)
+package com.booking.medical_booking.dto;
 
 import lombok.Data;
 

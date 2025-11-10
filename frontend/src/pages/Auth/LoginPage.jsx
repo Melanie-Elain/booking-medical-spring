@@ -19,48 +19,55 @@ const LoginPage = () => {
   const navigate = useNavigate(); // 5. Khởi tạo navigate
 
   // 6. HÀM XỬ LÝ ĐĂNG NHẬP THẬT
+  // 6. HÀM XỬ LÝ ĐĂNG NHẬP THẬT (ĐÃ SỬA LOGIC CHUYỂN HƯỚNG)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Xóa mọi lỗi cũ
 
     try {
+      // Dữ liệu gửi đi phải khớp với LoginRequest.java
       const loginData = {
         phoneNumber: phoneNumber,
         password: password,
       };
 
-      // response bây giờ là: { token: "...", fullName: "..." }
+      // response bây giờ là: { token: "...", fullName: "...", role: "ADMIN" }
       const response = await loginUser(loginData); // Gọi API
 
-      // 1. Lưu token (giữ nguyên)
+      // Đăng nhập thành công:
+      // 1. Lưu tất cả thông tin vào localStorage
       localStorage.setItem('jwtToken', response.token);
+      localStorage.setItem('userName', response.fullName);
+      localStorage.setItem('userRole', response.role);
 
-      // 2. SỬA CHỖ NÀY: Lưu fullName thay vì SĐT
-      localStorage.setItem('userName', response.fullName); 
-      
-      // 3. Xóa SĐT cũ (nếu có) để dọn dẹp
-      localStorage.removeItem('userPhone');
-
-      // 4. Xử lý "Ghi nhớ mật khẩu" (giữ nguyên)
+      // 2. Xử lý "Ghi nhớ mật khẩu"
       if (rememberMe) {
         localStorage.setItem('rememberedPhone', phoneNumber);
       } else {
         localStorage.removeItem('rememberedPhone');
       }
 
-      // 5. Thông báo và chuyển hướng (giữ nguyên)
+      // 3. Thông báo
       alert('Đăng nhập thành công!');
-      navigate('/'); // Chuyển về trang chủ
+
+      // 4. KIỂM TRA ROLE VÀ CHUYỂN HƯỚNG (ĐÃ SỬA)
+      if (response.role === 'ADMIN') {
+        navigate('/admin'); // Chuyển đến trang Admin
+      } else {
+        // (Bao gồm BENHNHAN và BACSI)
+        navigate('/'); // Chuyển về trang chủ
+      }
 
     } catch (err) {
-      // ... (Phần catch xử lý lỗi giữ nguyên)
+      // BẮT LỖI TỪ BACKEND (do UserService ném ra)
       console.error('Lỗi đăng nhập:', err);
       if (
         err.response &&
-        (err.response.status === 401 || 
-          err.response.status === 403 || 
-          err.response.status === 500) 
+        (err.response.status === 401 || // Unauthorized
+          err.response.status === 403 || // Forbidden
+          err.response.status === 500) // Lỗi server (thường do sai SĐT/mật khẩu)
       ) {
+        // Dùng chung một thông báo lỗi bảo mật
         setError('Sai số điện thoại hoặc mật khẩu.');
       } else if (err.code === 'ERR_NETWORK') {
         setError('Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại!');

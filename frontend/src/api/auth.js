@@ -8,7 +8,7 @@ export const registerUser = async (data) => {
     const response = await axios.post(`${AUTH_API_URL}/register`, data);
     return response.data;
   } catch (error) {
-    throw error.response?.data || error.message;
+    throw error;
   }
 };
 
@@ -18,6 +18,6 @@ export const loginUser = async (data) => {
     const response = await axios.post(`${AUTH_API_URL}/login`, data);
     return response.data; 
   } catch (error) {
-    throw error.response?.data || error.message;
+    throw error;
   }
 };

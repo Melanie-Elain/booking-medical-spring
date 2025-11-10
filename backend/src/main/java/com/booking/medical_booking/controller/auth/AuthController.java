@@ -1,18 +1,16 @@
 package com.booking.medical_booking.controller.auth;
 
-// 1. Import DTOs (chỉ cần LoginRequest)
 import com.booking.medical_booking.dto.LoginRequest;
-// import com.booking.medical_booking.dto.LoginResponse; // BỎ import này
 import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.service.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map; // Đảm bảo đã import Map
+import java.util.Map; 
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000") // Đã sửa thành an toàn hơn
+@CrossOrigin(origins = "http://localhost:3000") 
 public class AuthController {
 
     private final UserService userService;
@@ -29,7 +27,7 @@ public class AuthController {
         return ResponseEntity.ok(userService.registerUser(user));
     }
 
-    // === SỬA HÀM LOGIN TỪ ĐÂY ===
+
     @PostMapping("/login")
     // 1. Sửa kiểu trả về (từ LoginResponse -> Map)
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
@@ -44,5 +42,5 @@ public class AuthController {
         // { "token": "...", "fullName": "..." }
         return ResponseEntity.ok(responseMap);
     }
-    // === SỬA HÀM LOGIN TỚI ĐÂY ===
+
 }

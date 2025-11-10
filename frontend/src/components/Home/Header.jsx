@@ -9,9 +9,9 @@ const Header = () => {
 
   // 1. Kiểm tra trạng thái đăng nhập từ localStorage
   const token = localStorage.getItem('jwtToken');
-  // Lấy SĐT (sau này bạn có thể đổi thành tên thật)
   const userName = localStorage.getItem('userName');
-  const isLoggedIn = !!token; // Chuyển thành true/false
+  const userRole = localStorage.getItem('userRole');
+  const isLoggedIn = !!token; 
 
   // 2. Hàm Đăng xuất
   const handleLogout = () => {
@@ -96,25 +96,24 @@ const Header = () => {
 
           {/* === LOGIC HIỂN THỊ ĐỘNG === */}
           {isLoggedIn ? (
-            // ===== NẾU ĐÃ ĐĂNG NHẬP (Giống Ảnh 1) =====
+            // ===== NẾU ĐÃ ĐĂNG NHẬP =====
             <div className="nav-item dropdown">
-              {/* Nút bấm (Giống Ảnh 1: icon + tên + caret) */}
               <button className="dropdown-label user-dropdown-toggle">
                 <FaRegUserCircle size={20} />
                 <span>{userName || 'Tài khoản'}</span>
                 <span className="caret">▾</span>
               </button>
               
-              {/* Menu dropdown (Đã sửa nội dung + căn lề) */}
+              {/* Menu dropdown  */}
               <div className="dropdown-panel user-dropdown-menu">
                 <div className="dropdown-inner">
-                  <Link to="/lich-kham" className="dropdown-row">
+                  <Link to="/user/appointments" className="dropdown-row">
                     <div className="row-title">Lịch khám</div>
                   </Link>
-                  <Link to="/lich-su-thanh-toan" className="dropdown-row">
+                  <Link to="/user/payment-history" className="dropdown-row">
                     <div className="row-title">Lịch sử thanh toán</div>
                   </Link>
-                  <Link to="/ho-so" className="dropdown-row">
+                  <Link to="/user/profile" className="dropdown-row">
                     <div className="row-title">Hồ sơ</div>
                   </Link>
                   <div className="dropdown-divider"></div> 
