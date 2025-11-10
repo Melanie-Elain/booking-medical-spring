@@ -16,9 +16,10 @@ const Header = () => {
   // 2. Hàm Đăng xuất
   const handleLogout = () => {
     localStorage.removeItem('jwtToken');
-    localStorage.removeItem('userPhone');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole');
     localStorage.removeItem('rememberedPhone');
-    window.location.href = '/'; // Tải lại trang
+    window.location.href = '/'; 
   };
 
   return (
@@ -93,6 +94,13 @@ const Header = () => {
 
           <a href="#tro-ly" className="nav-item">Trợ lý y khoa</a>
           <a href="#danh-cho-bs" className="nav-item">Dành cho Bác sĩ</a>
+
+          {/* 2. THÊM LINK ADMIN (NẾU LÀ ADMIN) */}
+          {isLoggedIn && userRole === 'ADMIN' && (
+            <Link to="/admin" className="nav-item admin-link">
+              Quản lý (Admin)
+            </Link>
+          )}
 
           {/* === LOGIC HIỂN THỊ ĐỘNG === */}
           {isLoggedIn ? (

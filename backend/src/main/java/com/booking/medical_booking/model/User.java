@@ -37,10 +37,14 @@ public class User {
     private String referralCode;
     private String occupation;
 
+    
+
     public enum UserRole {
         BENHNHAN,
         BACSI,
-        ADMIN
+        ADMIN,
+        BENHVIEN,   
+        PHONGKHAM
     }
 
     @Enumerated(EnumType.STRING) 

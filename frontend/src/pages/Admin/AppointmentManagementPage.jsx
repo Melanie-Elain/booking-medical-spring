@@ -4,20 +4,67 @@ import {
   updateAppointmentStatus 
 } from '../../api/adminService'; 
 
+// === COMPONENT CON: PaginationControls ===
+const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
+  if (totalPages <= 1) return null;
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+
+  return (
+    <div className="mt-6 flex justify-center items-center gap-2">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 0}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Trước
+      </button>
+      {pageNumbers.map(number => (
+        <button
+          key={number}
+          onClick={() => onPageChange(number)}
+          className={`px-3 py-1 rounded-md ${currentPage === number ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+        >
+          {number + 1}
+        </button>
+      ))}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages - 1}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Sau
+      </button>
+    </div>
+  );
+};
+
+// === COMPONENT CHA: TRANG QUẢN LÝ (ĐÃ SỬA LỖI) ===
 const AppointmentManagementPage = () => {
-  const [appointments, setAppointments] = useState([]);
+  const [appointments, setAppointments] = useState([]); // Sẽ chứa mảng [content]
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
+  // 1. THÊM STATE PHÂN TRANG
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
-  const fetchAppointments = async () => {
+  // 2. SỬA useEffect (để tải lại khi 'currentPage' thay đổi)
+  useEffect(() => {
+    fetchAppointments(currentPage);
+  }, [currentPage]);
+
+  // 3. SỬA HÀM FETCH
+  const fetchAppointments = async (page) => {
     try {
       setLoading(true);
-      const response = await getAllAppointments();
-      setAppointments(response.data);
+      // Gọi API với page và size (10)
+      const response = await getAllAppointments(page, 10);
+      
+      // 4. SỬA LỖI Ở ĐÂY: Lấy 'content' từ object 'Page'
+      setAppointments(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setCurrentPage(response.data.number);
+
     } catch (err) {
       setError('Không thể tải danh sách lịch hẹn.');
     } finally {
@@ -30,12 +77,17 @@ const AppointmentManagementPage = () => {
     if (window.confirm(`Bạn có chắc muốn ${newStatus === 'Đã xác nhận' ? 'XÁC NHẬN' : 'HỦY'} lịch hẹn này?`)) {
       try {
         await updateAppointmentStatus(id, newStatus);
-        // Tải lại danh sách
-        fetchAppointments(); 
+        // Tải lại trang hiện tại
+        fetchAppointments(currentPage); 
       } catch (err) {
         alert('Lỗi khi cập nhật: ' + (err.response?.data || err.message));
       }
     }
+  };
+
+  // 5. HÀM MỚI
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   if (loading) return <div>Đang tải danh sách...</div>;
@@ -59,6 +111,7 @@ const AppointmentManagementPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
+            {/* 6. Biến 'appointments' bây giờ là mảng, .map() sẽ chạy */}
             {appointments.map((app) => (
               <tr key={app.id}>
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
@@ -80,7 +133,6 @@ const AppointmentManagementPage = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
-                  {/* Chỉ hiển thị nút nếu đang 'Đang chờ' */}
                   {app.status === 'Đang chờ' && (
                     <>
                       <button
@@ -103,6 +155,13 @@ const AppointmentManagementPage = () => {
           </tbody>
         </table>
       </div>
+
+      {/* 7. THÊM BỘ ĐIỀU KHIỂN TRANG */}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

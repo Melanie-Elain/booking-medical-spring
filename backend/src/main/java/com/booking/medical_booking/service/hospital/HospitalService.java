@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class HospitalService {
@@ -20,8 +22,8 @@ public class HospitalService {
     @Autowired
     private SpecialtyRepository specialtyRepository;
 
-    public List<Hospital> getAllHospitals() {
-        return hospitalRepository.findAll();
+    public Page<Hospital> getAllHospitals(Pageable pageable) {
+        return hospitalRepository.findAll(pageable);
     }
 
     @Transactional

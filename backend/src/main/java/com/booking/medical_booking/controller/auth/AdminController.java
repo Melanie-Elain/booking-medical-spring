@@ -1,3 +1,4 @@
+// 1. SỬA LẠI PACKAGE: Bỏ ".auth"
 package com.booking.medical_booking.controller.auth; 
 
 import com.booking.medical_booking.model.User;
@@ -8,7 +9,7 @@ import com.booking.medical_booking.dto.DoctorRequestDTO;
 import com.booking.medical_booking.service.auth.UserService;
 import com.booking.medical_booking.service.specialty.SpecialtyService;
 import com.booking.medical_booking.service.doctor.DoctorService;
-import com.booking.medical_booking.repository.UserRepository;
+// (Bỏ import UserRepository vì đã dùng UserService)
 import com.booking.medical_booking.model.Hospital;
 import com.booking.medical_booking.dto.HospitalRequestDTO;
 import com.booking.medical_booking.service.hospital.HospitalService;
@@ -20,20 +21,26 @@ import com.booking.medical_booking.service.appointment.AppointmentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+// <-- THÊM IMPORT NÀY
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
+
+// Import thư viện Pageable
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/admin") // API gốc của Admin
 @CrossOrigin(origins = "http://localhost:3000")
 public class AdminController {
 
+    // 2. Đã dọn dẹp các ký tự lỗi (khoảng trắng ẩn)
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
+    // (Xóa UserRepository vì đã dùng UserService cho phân trang)
 
     @Autowired
     private SpecialtyService specialtyService;
@@ -50,30 +57,29 @@ public class AdminController {
     @Autowired
     private AppointmentService appointmentService;
 
-    /**
-     * API Lấy tất cả user (cho trang Quản lý User)
-     */
+    // --- QUẢN LÝ USER ---
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return ResponseEntity.ok(users);
+    public ResponseEntity<Page<User>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userService.adminGetAllUsers(pageable); // Gọi service 
+        return ResponseEntity.ok(userPage);
     }
     
-    // === THÊM USER ===
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody UserRequestDTO request) {
         User newUser = userService.adminCreateUser(request);
         return ResponseEntity.ok(newUser);
     }
     
-    // === CẬP NHẬT USER ===
     @PutMapping("/users/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO request) {
         User updatedUser = userService.adminUpdateUser(id, request);
         return ResponseEntity.ok(updatedUser);
     }
     
-    // ===  XÓA USER ===
     @DeleteMapping("/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
@@ -85,29 +91,32 @@ public class AdminController {
     }
 
 
-
-    /**
-     * API Lấy tất cả Chuyên khoa
-     * Frontend sẽ gọi: GET /api/admin/specialties
-     */
+    // --- QUẢN LÝ CHUYÊN KHOA ---
     @GetMapping("/specialties")
-    public ResponseEntity<List<Specialty>> getAllSpecialties() {
-        return ResponseEntity.ok(specialtyService.getAllSpecialties());
+    public ResponseEntity<Page<Specialty>> getAllSpecialties(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Specialty> specialtyPage = specialtyService.getAllSpecialties(pageable); 
+        return ResponseEntity.ok(specialtyPage);
+    }
+
+    @GetMapping("/specialties/all")
+    public ResponseEntity<List<Specialty>> getAllSpecialtiesList() {
+        return ResponseEntity.ok(specialtyService.getAllSpecialtiesList());
     }
     
-        // === THÊM Chuyên khoa ===
     @PostMapping("/specialties")
     public ResponseEntity<Specialty> createSpecialty(@RequestBody Specialty specialty) {
         return ResponseEntity.ok(specialtyService.createSpecialty(specialty));
     }
 
-    // === CẬP NHẬT Chuyên khoa ===
     @PutMapping("/specialties/{id}")
     public ResponseEntity<Specialty> updateSpecialty(@PathVariable Integer id, @RequestBody Specialty specialtyDetails) {
         return ResponseEntity.ok(specialtyService.updateSpecialty(id, specialtyDetails));
     }
 
-    // ===  XÓA Chuyên khoa ===
     @DeleteMapping("/specialties/{id}")
     public ResponseEntity<?> deleteSpecialty(@PathVariable Integer id) {
         try {
@@ -118,16 +127,17 @@ public class AdminController {
         }
     }
 
-
-    // === 2. THÊM KHỐI API MỚI CHO BÁC SĨ (DOCTOR) ===
-
-    
+    // --- QUẢN LÝ BÁC SĨ ---
     @GetMapping("/doctors")
-    public ResponseEntity<List<Doctor>> getAllDoctors() {
-        return ResponseEntity.ok(doctorService.getAllDoctors());
+    public ResponseEntity<Page<Doctor>> getAllDoctors(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Doctor> doctorPage = doctorService.getAllDoctors(pageable);
+        return ResponseEntity.ok(doctorPage);
     }
 
-    // === THÊM Bác sĩ ===
     @PostMapping("/doctors")
     public ResponseEntity<Doctor> createDoctor(@RequestBody DoctorRequestDTO request) {
         try {
@@ -138,14 +148,12 @@ public class AdminController {
         }
     }
 
-    // === CẬP NHẬT Bác sĩ ===
     @PutMapping("/doctors/{id}")
     public ResponseEntity<Doctor> updateDoctor(@PathVariable Long id, @RequestBody DoctorRequestDTO request) {
         Doctor updatedDoctor = doctorService.updateDoctor(id, request);
         return ResponseEntity.ok(updatedDoctor);
     }
 
-    // === XÓA Bác sĩ ===
     @DeleteMapping("/doctors/{id}")
     public ResponseEntity<?> deleteDoctor(@PathVariable Long id) {
         try {
@@ -155,10 +163,16 @@ public class AdminController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    // === 2. THÊM KHỐI API CHO BỆNH VIỆN (HOSPITAL) ===
+
+    // --- QUẢN LÝ BỆNH VIỆN ---
     @GetMapping("/hospitals")
-    public ResponseEntity<List<Hospital>> getAllHospitals() {
-        return ResponseEntity.ok(hospitalService.getAllHospitals());
+    public ResponseEntity<Page<Hospital>> getAllHospitals(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Hospital> hospitalPage = hospitalService.getAllHospitals(pageable);
+        return ResponseEntity.ok(hospitalPage);
     }
 
     @PostMapping("/hospitals")
@@ -181,10 +195,15 @@ public class AdminController {
         }
     }
 
-    // === 3. THÊM KHỐI API CHO PHÒNG KHÁM (CLINIC) ===
+    // --- QUẢN LÝ PHÒNG KHÁM ---
     @GetMapping("/clinics")
-    public ResponseEntity<List<Clinic>> getAllClinics() {
-        return ResponseEntity.ok(clinicService.getAllClinics());
+    public ResponseEntity<Page<Clinic>> getAllClinics(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Clinic> clinicPage = clinicService.getAllClinics(pageable);
+        return ResponseEntity.ok(clinicPage);
     }
 
     @PostMapping("/clinics")
@@ -207,22 +226,17 @@ public class AdminController {
         }
     }
 
-    // === 2. THÊM KHỐI API CHO LỊCH HẸN (APPOINTMENT) ===
-
-    /**
-     * API Lấy tất cả Lịch hẹn
-     * Frontend sẽ gọi: GET /api/admin/appointments
-     */
+    // --- QUẢN LÝ LỊCH HẸN ---
     @GetMapping("/appointments")
-    public ResponseEntity<List<Appointment>> getAllAppointments() {
-        return ResponseEntity.ok(appointmentService.getAllAppointments());
-    }   
+    public ResponseEntity<Page<Appointment>> getAllAppointments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Appointment> appointmentPage = appointmentService.getAllAppointments(pageable);
+        return ResponseEntity.ok(appointmentPage);
+    } 
 
-    /**
-     * API Cập nhật Trạng thái Lịch hẹn (Xác nhận / Hủy)
-     * Frontend sẽ gọi: PUT /api/admin/appointments/{id}/status
-     * Body gửi đi: { "status": "Đã xác nhận" }
-     */
     @PutMapping("/appointments/{id}/status")
     public ResponseEntity<Appointment> updateAppointmentStatus(@PathVariable Integer id, @RequestBody Map<String, String> request) {
         try {

@@ -1,9 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { 
   getAllHospitals, createHospital, updateHospital, deleteHospital,
-  getAllSpecialties // Cần gọi API này
+  getAllSpecialtiesList // Gọi hàm /all
 } from '../../api/adminService'; 
 import Select from 'react-select'; // Dùng chung thư viện
+
+// === COMPONENT CON: PaginationControls ===
+const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
+  if (totalPages <= 1) return null;
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+
+  return (
+    <div className="mt-6 flex justify-center items-center gap-2">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 0}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Trước
+      </button>
+      {pageNumbers.map(number => (
+        <button
+          key={number}
+          onClick={() => onPageChange(number)}
+          className={`px-3 py-1 rounded-md ${currentPage === number ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+        >
+          {number + 1}
+        </button>
+      ))}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages - 1}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Sau
+      </button>
+    </div>
+  );
+};
+
 
 // === COMPONENT CON: MODAL FORM (Form Thêm/Sửa Bệnh viện) ===
 const HospitalFormModal = ({ hospital, onClose, onSave }) => {
@@ -24,7 +59,7 @@ const HospitalFormModal = ({ hospital, onClose, onSave }) => {
   useEffect(() => {
     const fetchSpecialties = async () => {
       try {
-        const response = await getAllSpecialties();
+        const response = await getAllSpecialtiesList(); 
         setSpecialtyOptions(response.data.map(s => ({ value: s.id, label: s.name })));
       } catch (err) {
         console.error("Lỗi tải chuyên khoa:", err);
@@ -93,7 +128,7 @@ const InputRow = ({ label, name, value, onChange, type = "text", required = fals
   <div>
     <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
     <input
-      type={type} id={name} name={name} value={value}
+      type={type} id={name} name={name} value={value || ''}
       onChange={onChange} required={required}
       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm"
     />
@@ -106,18 +141,27 @@ const HospitalManagementPage = () => {
   const [hospitals, setHospitals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // State Phân trang
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingHospital, setEditingHospital] = useState(null);
 
   useEffect(() => {
-    fetchHospitals();
-  }, []);
+    fetchHospitals(currentPage);
+  }, [currentPage]); // Tải lại khi 'currentPage' thay đổi
 
-  const fetchHospitals = async () => {
+  const fetchHospitals = async (page) => {
     try {
       setLoading(true);
-      const response = await getAllHospitals();
-      setHospitals(response.data);
+      const response = await getAllHospitals(page, 10);
+      
+      setHospitals(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setCurrentPage(response.data.number);
+
     } catch (err) {
       setError('Không thể tải danh sách bệnh viện.');
     } finally {
@@ -129,7 +173,7 @@ const HospitalManagementPage = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa bệnh viện này?')) {
       try {
         await deleteHospital(id);
-        fetchHospitals();
+        fetchHospitals(currentPage); // Tải lại trang hiện tại
       } catch (err) {
         alert('Lỗi khi xóa: ' + (err.response?.data || err.message));
       }
@@ -142,7 +186,11 @@ const HospitalManagementPage = () => {
     } else {
       await createHospital(formData);
     }
-    fetchHospitals();
+    fetchHospitals(currentPage); // Tải lại trang hiện tại
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   if (loading) return <div>Đang tải danh sách...</div>;
@@ -162,9 +210,46 @@ const HospitalManagementPage = () => {
       
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
-          {/* (Tương tự table của Doctor/Specialty, bạn tự điền các cột) */}
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tên Bệnh viện</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Địa chỉ</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Điện thoại</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {hospitals.map((hospital) => (
+              <tr key={hospital.id}>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900">{hospital.name}</td>
+                <td className="px-6 py-4 text-sm text-gray-500">{hospital.address}</td>
+                <td className="px-6 py-4 text-sm text-gray-500">{hospital.phone}</td>
+                <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
+                  <button
+                    onClick={() => { setEditingHospital(hospital); setIsModalOpen(true); }}
+                    className="text-indigo-600 hover:text-indigo-900"
+                  >
+                    Sửa
+                  </button>
+                  <button
+                    onClick={() => handleDelete(hospital.id)}
+                    className="ml-4 text-red-600 hover:text-red-900"
+                  >
+                    Xóa
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </div>
+
+      {/* Thêm bộ điều khiển trang */}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {isModalOpen && (
         <HospitalFormModal

@@ -7,6 +7,7 @@ public class DoctorRequestDTO {
     // Thông tin cho User
     private String phoneNumber;
     private String password;
+    private String email; //
     
     // Thông tin cho Doctor
     private String name;

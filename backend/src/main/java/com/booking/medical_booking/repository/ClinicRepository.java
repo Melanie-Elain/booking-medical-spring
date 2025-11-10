@@ -1,4 +1,4 @@
-package com.booking.medical_booking.repository; // (Sửa package)
+package com.booking.medical_booking.repository; 
 
 import com.booking.medical_booking.model.Clinic;
 import org.springframework.data.jpa.repository.JpaRepository;

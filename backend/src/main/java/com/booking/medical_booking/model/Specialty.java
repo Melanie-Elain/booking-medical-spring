@@ -17,6 +17,6 @@ public class Specialty {
     private String name;
 
     @Lob 
-    @Column(name = "MoTa") 
+    @Column(name = "mo_ta") 
     private String description;
 }

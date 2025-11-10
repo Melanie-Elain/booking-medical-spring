@@ -1,9 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { 
   getAllDoctors, createDoctor, updateDoctor, deleteDoctor,
-  getAllSpecialties // <-- Cần gọi API này
+  getAllSpecialtiesList // <-- SỬA LẠI: Gọi hàm /all
 } from '../../api/adminService'; 
-import Select from 'react-select'; // Cài đặt: npm install react-select
+import Select from 'react-select'; 
+
+// === COMPONENT CON: PaginationControls ===
+const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
+  if (totalPages <= 1) return null;
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+
+  return (
+    <div className="mt-6 flex justify-center items-center gap-2">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 0}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Trước
+      </button>
+      {pageNumbers.map(number => (
+        <button
+          key={number}
+          onClick={() => onPageChange(number)}
+          className={`px-3 py-1 rounded-md ${currentPage === number ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
+        >
+          {number + 1}
+        </button>
+      ))}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages - 1}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Sau
+      </button>
+    </div>
+  );
+};
 
 // === COMPONENT CON: MODAL FORM (Form Thêm/Sửa Bác sĩ) ===
 const DoctorFormModal = ({ doctor, onClose, onSave }) => {
@@ -11,27 +45,25 @@ const DoctorFormModal = ({ doctor, onClose, onSave }) => {
     phoneNumber: doctor?.user?.phoneNumber || '',
     password: '',
     name: doctor?.name || '',
-    specialty: doctor?.specialty || '', // Text chuyên môn
+    email: doctor?.user?.email || '', // THÊM EMAIL
+    specialty: doctor?.specialty || '', 
     address: doctor?.address || '',
     workplace: doctor?.workplace || '',
     image: doctor?.image || '',
     experienceYear: doctor?.experienceYear || 0,
     description: doctor?.description || '',
-    specialtyIds: doctor?.specialties?.map(s => s.id) || [], // Mảng [1, 2]
+    specialtyIds: doctor?.specialties?.map(s => s.id) || [],
   });
   const [error, setError] = useState('');
-  
-  // State để lưu danh sách chuyên khoa
   const [specialtyOptions, setSpecialtyOptions] = useState([]);
-
   const isEditMode = !!doctor;
 
   // 1. Tải danh sách chuyên khoa khi Modal mở
   useEffect(() => {
     const fetchSpecialties = async () => {
       try {
-        const response = await getAllSpecialties();
-        // Chuyển đổi data sang dạng { value: 1, label: 'Tim mạch' }
+        // SỬA LẠI: Gọi hàm /all (không phân trang)
+        const response = await getAllSpecialtiesList();
         const options = response.data.map(s => ({ value: s.id, label: s.name }));
         setSpecialtyOptions(options);
       } catch (err) {
@@ -46,7 +78,6 @@ const DoctorFormModal = ({ doctor, onClose, onSave }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // 2. Hàm xử lý riêng cho thư viện 'react-select'
   const handleSpecialtyChange = (selectedOptions) => {
     const ids = selectedOptions.map(option => option.value);
     setFormData(prev => ({ ...prev, specialtyIds: ids }));
@@ -55,6 +86,10 @@ const DoctorFormModal = ({ doctor, onClose, onSave }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    if (!formData.phoneNumber) {
+      setError('Số điện thoại là bắt buộc');
+      return;
+    }
     if (!isEditMode && !formData.password) {
       setError('Mật khẩu là bắt buộc khi tạo mới');
       return;
@@ -74,13 +109,12 @@ const DoctorFormModal = ({ doctor, onClose, onSave }) => {
           {isEditMode ? 'Cập nhật Bác sĩ' : 'Thêm Bác sĩ Mới'}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Thông tin đăng nhập (Chỉ khi tạo mới) */}
+          {/* Thông tin đăng nhập */}
+          <InputRow label="Số điện thoại (Đăng nhập)" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required disabled={isEditMode} />
           {!isEditMode && (
-            <>
-              <InputRow label="Số điện thoại (Đăng nhập)" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
               <InputRow label="Mật khẩu (Tạo mới)" name="password" value={formData.password} onChange={handleChange} type="password" required />
-            </>
           )}
+          <InputRow label="Email (Đăng nhập)" name="email" value={formData.email} onChange={handleChange} type="email" />
           
           {/* Thông tin hồ sơ */}
           <InputRow label="Tên Bác sĩ (Hồ sơ)" name="name" value={formData.name} onChange={handleChange} required />
@@ -95,7 +129,6 @@ const DoctorFormModal = ({ doctor, onClose, onSave }) => {
             <textarea name="description" value={formData.description} onChange={handleChange} rows="3" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm" />
           </div>
 
-          {/* 3. Dropdown chọn nhiều Chuyên khoa */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Liên kết Chuyên khoa (Specialties)</label>
             <Select
@@ -133,23 +166,34 @@ const InputRow = ({ label, name, value, onChange, type = "text", disabled = fals
 );
 
 
-// === COMPONENT CHA: TRANG QUẢN LÝ ===
+// === COMPONENT CHA: TRANG QUẢN LÝ (ĐÃ SỬA PHÂN TRANG) ===
 const DoctorManagementPage = () => {
-  const [doctors, setDoctors] = useState([]);
+  const [doctors, setDoctors] = useState([]); // Sẽ chứa mảng [content]
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // State Phân trang
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDoctor, setEditingDoctor] = useState(null);
 
   useEffect(() => {
-    fetchDoctors();
-  }, []);
+    fetchDoctors(currentPage);
+  }, [currentPage]); // Tải lại khi 'currentPage' thay đổi
 
-  const fetchDoctors = async () => {
+  const fetchDoctors = async (page) => {
     try {
       setLoading(true);
-      const response = await getAllDoctors();
-      setDoctors(response.data);
+      // Gọi API với page và size (10)
+      const response = await getAllDoctors(page, 10);
+      
+      // Lấy 'content' từ object 'Page'
+      setDoctors(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setCurrentPage(response.data.number);
+
     } catch (err) {
       setError('Không thể tải danh sách bác sĩ.');
     } finally {
@@ -161,7 +205,7 @@ const DoctorManagementPage = () => {
     if (window.confirm('Bạn có chắc chắn muốn XÓA bác sĩ này (bao gồm cả tài khoản user)?')) {
       try {
         await deleteDoctor(id);
-        fetchDoctors();
+        fetchDoctors(currentPage); // Tải lại trang hiện tại
       } catch (err) {
         alert('Lỗi khi xóa: ' + (err.response?.data || err.message));
       }
@@ -170,11 +214,18 @@ const DoctorManagementPage = () => {
 
   const handleSave = async (formData, id) => {
     if (id) {
+      // Sửa: Logic cập nhật Doctor cần gửi ID, không phải formData
+      // (Backend DoctorService của bạn chưa có logic cập nhật User,
+      // nên chúng ta chỉ gửi thông tin Doctor)
       await updateDoctor(id, formData);
     } else {
       await createDoctor(formData);
     }
-    fetchDoctors();
+    fetchDoctors(currentPage); // Tải lại trang hiện tại
+  };
+  
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   if (loading) return <div>Đang tải danh sách...</div>;
@@ -229,6 +280,13 @@ const DoctorManagementPage = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Thêm bộ điều khiển trang */}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {isModalOpen && (
         <DoctorFormModal

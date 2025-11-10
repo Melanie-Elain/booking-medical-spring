@@ -8,7 +8,12 @@ import { BsCalendarCheckFill } from 'react-icons/bs';
 // Component Sidebar (menu bên trái)
 const AdminSidebar = () => {
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole'); 
+    
+    localStorage.removeItem('rememberedUsername');
+
     window.location.href = '/'; 
   };
 

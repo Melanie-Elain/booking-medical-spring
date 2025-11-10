@@ -6,6 +6,48 @@ import {
   deleteSpecialty 
 } from '../../api/adminService'; // Import API Chuyên khoa
 
+// === COMPONENT MỚI: NÚT ĐIỀU KHIỂN TRANG ===
+const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
+  if (totalPages <= 1) return null; // Ẩn nếu chỉ có 1 trang
+  const pageNumbers = [];
+  for (let i = 0; i < totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  return (
+    <div className="mt-6 flex justify-center items-center gap-2">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 0}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Trước
+      </button>
+      {pageNumbers.map(number => (
+        <button
+          key={number}
+          onClick={() => onPageChange(number)}
+          className={`px-3 py-1 rounded-md ${
+            currentPage === number 
+              ? 'bg-blue-600 text-white' 
+              : 'bg-gray-200 hover:bg-gray-300'
+          }`}
+        >
+          {number + 1}
+        </button>
+      ))}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages - 1}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Sau
+      </button>
+    </div>
+  );
+};
+
+
 // === COMPONENT CON: MODAL FORM (Form Thêm/Sửa) ===
 const SpecialtyFormModal = ({ specialty, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -79,23 +121,36 @@ const SpecialtyFormModal = ({ specialty, onClose, onSave }) => {
 };
 
 
-// === COMPONENT CHA: TRANG QUẢN LÝ ===
+// === COMPONENT CHA: TRANG QUẢN LÝ (ĐÃ SỬA LỖI) ===
 const SpecialtyManagementPage = () => {
-  const [specialties, setSpecialties] = useState([]);
+  const [specialties, setSpecialties] = useState([]); // Sẽ chứa mảng [content]
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // 1. THÊM STATE PHÂN TRANG
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSpecialty, setEditingSpecialty] = useState(null);
 
+  // 2. SỬA useEffect (để tải lại khi 'currentPage' thay đổi)
   useEffect(() => {
-    fetchSpecialties();
-  }, []);
+    fetchSpecialties(currentPage);
+  }, [currentPage]);
 
-  const fetchSpecialties = async () => {
+  // 3. SỬA HÀM FETCH
+  const fetchSpecialties = async (page) => {
     try {
       setLoading(true);
-      const response = await getAllSpecialties();
-      setSpecialties(response.data);
+      // Gọi API với page và size (10)
+      const response = await getAllSpecialties(page, 10);
+      
+      // 4. SỬA LỖI Ở ĐÂY: Lấy 'content' từ object 'Page'
+      setSpecialties(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setCurrentPage(response.data.number);
+
     } catch (err) {
       setError('Không thể tải danh sách chuyên khoa.');
     } finally {
@@ -107,7 +162,7 @@ const SpecialtyManagementPage = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa chuyên khoa này?')) {
       try {
         await deleteSpecialty(id);
-        fetchSpecialties(); // Tải lại danh sách
+        fetchSpecialties(currentPage); // Tải lại trang hiện tại
       } catch (err) {
         alert('Lỗi khi xóa: ' + (err.response?.data || err.message));
       }
@@ -125,7 +180,12 @@ const SpecialtyManagementPage = () => {
     } else {
       await createSpecialty(formData);
     }
-    fetchSpecialties(); // Tải lại danh sách
+    fetchSpecialties(currentPage); // Tải lại trang hiện tại
+  };
+
+  // 5. HÀM MỚI
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   if (loading) return <div>Đang tải danh sách...</div>;
@@ -154,6 +214,7 @@ const SpecialtyManagementPage = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
+            {/* 6. Biến 'specialties' bây giờ là mảng, nên .map() sẽ chạy */}
             {specialties.map((spec) => (
               <tr key={spec.id}>
                 <td className="px-6 py-4 text-sm text-gray-500">{spec.id}</td>
@@ -178,6 +239,13 @@ const SpecialtyManagementPage = () => {
           </tbody>
         </table>
       </div>
+
+      {/* 7. THÊM BỘ ĐIỀU KHIỂN TRANG */}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {isModalOpen && (
         <SpecialtyFormModal

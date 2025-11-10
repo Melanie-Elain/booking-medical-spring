@@ -5,7 +5,9 @@ import com.booking.medical_booking.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Map; // Import
+import java.util.Map; 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class AppointmentService {
@@ -13,17 +15,10 @@ public class AppointmentService {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
-    /**
-     * Lấy tất cả lịch hẹn (cho Admin)
-     */
-    public List<Appointment> getAllAppointments() {
-        // (Nâng cao: Sau này bạn nên dùng Pageable thay vì List)
-        return appointmentRepository.findAllByOrderByAppointmentDateDesc();
+    public Page<Appointment> getAllAppointments(Pageable pageable) {
+        return appointmentRepository.findAll(pageable);
     }
 
-    /**
-     * Admin cập nhật trạng thái lịch hẹn
-     */
     public Appointment updateAppointmentStatus(Integer id, Map<String, String> request) {
         String status = request.get("status");
         if (status == null || status.isEmpty()) {
