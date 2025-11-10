@@ -13,6 +13,7 @@ import HospitalProfile from "../pages/Booking/HospitalProfile";
 import ClinicProfile from "../pages/Booking/ClinicProfile";
 import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
 import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
+import CompleteBookingDoctor from "../pages/Booking/CompleteBookingDoctor";
 
 const AppRoutes = () => {
   return (
@@ -39,6 +40,7 @@ const AppRoutes = () => {
       />
       <Route path="/dat-kham/bac-si/search" element={<BookingSearch />} />
       <Route path="/dat-kham/bac-si/:id" element={<DoctorProfile />} />
+      <Route path="/dat-kham/bac-si/:id/hoan-tat-dat-kham" element={<CompleteBookingDoctor />} />
 
       {/* Đặt khám Bệnh viện */}
       <Route

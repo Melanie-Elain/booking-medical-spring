@@ -110,7 +110,7 @@ const DoctorProfile = () => {
                                     }`}
                                     >
                                     <span className="block text-base">{day}</span>
-                                    <span className="block text-sm text-green-500 font-normal">42 khung giờ</span>
+                                    <span className="block text-sm text-green-500 font-normal">{day.length} khung giờ</span>
                                     {day === selectedDay && (
                                         <span className="absolute bottom-0 left-0 w-full h-[3px] bg-blue-600 rounded-t"></span>
                                     )}

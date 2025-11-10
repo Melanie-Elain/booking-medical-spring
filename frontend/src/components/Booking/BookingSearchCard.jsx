@@ -3,14 +3,21 @@ import { useNavigate } from "react-router-dom";
 
 const BookingSearchCard = ({ item }) => {
     const navigate = useNavigate();
+    const handleBookClick = (e) => {
+        e.stopPropagation();
+        navigate(`/dat-kham/bac-si/${item.id}/hoan-tat-dat-kham`);
+    }
+
+    const handleCardClick = () => {
+        navigate(`/dat-kham/bac-si/${item.id}`);
+    }
     return (
         <>
             <div
               key={item.id}
               className="flex items-center justify-between border-t   p-4  "
-              onClick={() => navigate(`/dat-kham/bac-si/${item.id}`)}
+              onClick={() => handleCardClick()}
             >
-              {/* Ảnh bác sĩ */}
               <div className="flex items-center gap-4">
                 <img
                   src={item.image}
@@ -40,7 +47,9 @@ const BookingSearchCard = ({ item }) => {
               </div>
 
               {/* Nút đặt khám */}
-              <button className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+              <button className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+                    onClick={(e) => handleBookClick(e)}
+              >
                 Đặt khám
               </button>
         </div>
