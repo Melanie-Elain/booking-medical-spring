@@ -197,7 +197,9 @@ const DoctorProfile = () => {
                         <p className="font-semibold">1900-2805</p>
 
                     </div>
-                    <button className="w-4/5 bg-blue-600 rounded-lg text-white text-lg">
+                    <button className="w-4/5 bg-blue-600 rounded-lg text-white text-lg"
+                        onClick={() => navigate(`/dat-kham/bac-si/${doctor.id}/hoan-tat-dat-kham`)}
+                    >
                         ĐẶT KHÁM NGAY
                     </button>
                 </div>
