@@ -1,7 +1,8 @@
 
 
-import React, { useState } from "react";
-import axios from 'axios';
+import React, { useState, useEffect } from "react"; 
+import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../../api/auth';
 
 // === PHẦN DÀNH CHO CÁC COMPONENT CON (để code chính gọn gàng) ===
 
@@ -49,6 +50,8 @@ const SelectField = ({ label, name, value, onChange, required, children }) => (
 // ================================================================
 const Step3Info = ({ fullName, phone, password }) => {
   // Nhận props từ RegisterPage (như đã setup ở bước trước)
+
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     // Cột 1
@@ -85,70 +88,56 @@ const Step3Info = ({ fullName, phone, password }) => {
     }));
   };
 
-  const handleSubmit = async (e) => { // Chuyển hàm thành async
-    e.preventDefault(); 
-    // Đã xóa đoạn text lỗi ở đây
+  const handleSubmit = async (e) => { 
+    e.preventDefault();
 
-    // 1. Kiểm tra validation
-    if (!formData.fullName || !formData.dob) {
-      return alert("Vui lòng nhập đầy đủ thông tin bắt buộc!");
-    }
+    if (!formData.fullName || !formData.dob) {
+      return alert("Vui lòng nhập đầy đủ thông tin bắt buộc!");
+    }
 
-    // 2. Gom tất cả dữ liệu lại để gửi đi
-    // (Bao gồm dữ liệu từ props và từ state của form này)
-    const registrationData = {
-      // Dữ liệu từ props (Step 1 & 2)
-      fullName: fullName,
-      phoneNumber: phone,
-      password: password,
-      
-      // Dữ liệu từ state (Step 3)
-      dob: formData.dob,
-      idCard: formData.idCard,
-      gender: formData.gender,
-      email: formData.email,
-      ethnicity: formData.ethnicity,
-      healthInsurance: formData.healthInsurance,
-      province: formData.province,
-      district: formData.district,
-      ward: formData.ward,
-      address: formData.address,
-      referralCode: formData.referralCode,
-      occupation: formData.occupation
-    };
+    // Đảm bảo tên key khớp với User.java (ví dụ: phoneNumber)
+    const registrationData = {
+      fullName: fullName,
+      phoneNumber: phone, 
+      password: password,
+      dob: formData.dob,
+      idCard: formData.idCard,
+      gender: formData.gender,
+      email: formData.email,
+      ethnicity: formData.ethnicity,
+      healthInsurance: formData.healthInsurance,
+      province: formData.province,
+      district: formData.district,
+      ward: formData.ward,
+      address: formData.address,
+      referralCode: formData.referralCode,
+      occupation: formData.occupation
+      // role sẽ được set mặc định ở backend
+    };
 
-    console.log("Dữ liệu chuẩn bị gửi đi:", registrationData);
+    console.log("Dữ liệu chuẩn bị gửi đi:", registrationData);
 
-    try {
-      // 3. GỌI API BACKEND
+    try {
+      const response = await registerUser(registrationData); 
 
-      const response = await axios.post('http://localhost:8080/api/auth/register', registrationData);
+      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      navigate('/login'); // Chuyển đến trang đăng nhập
 
-      // 4. Xử lý khi backend trả về thành công
-      if (response.status === 201 || response.status === 200) {
-        alert("Đăng ký thành công!");
-        // (Chuyển hướng người dùng đến trang đăng nhập/trang chủ ở đây)
-      } else {
-        // Xử lý các trường hợp thành công nhưng không phải 200/201
-        alert("Đăng ký hoàn tất (mã: " + response.status + ")");
-      }
-
-    } catch (error) {
-      // 5. Xử lý khi backend BÁO LỖI (lỗi 400, 500...)
-      console.error('Lỗi khi gọi API đăng ký:', error);
-      
-      if (error.response) {
-        // Lỗi có phản hồi từ server (ví dụ: email đã tồn tại)
-        alert(`Đăng ký thất bại: ${error.response.data.message || 'Lỗi từ server'}`);
-      } else if (error.request) {
-        // Không kết nối được tới server
-        alert('Đăng ký thất bại: Không thể kết nối tới máy chủ.');
-      } else {
-        // Lỗi gì đó ở phía frontend
-        alert('Đăng ký thất bại: Lỗi không xác định.');
-      }
-    }
-  };
+    } catch (err) {
+      console.error('Lỗi khi gọi API đăng ký:', err);
+      
+      // 5. SỬA LẠI LOGIC BẮT LỖI
+      if (err.response && err.response.status === 400) {
+        // Lỗi 400 (Bad Request) - Backend trả về message
+        // (err.response.data là "Email đã tồn tại" hoặc "SĐT đã tồn tại")
+        alert(`Đăng ký thất bại: ${err.response.data}`); 
+      } else if (err.code === 'ERR_NETWORK') {
+        alert('Đăng ký thất bại: Không thể kết nối tới máy chủ.');
+      } else {
+        alert('Đăng ký thất bại: Lỗi không xác định.');
+      }
+    }
+  };
 
   return (
     <div className="w-full">

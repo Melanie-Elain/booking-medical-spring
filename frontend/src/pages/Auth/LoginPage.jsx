@@ -1,74 +1,66 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // 1. Import useNavigate
+import { useNavigate, Link } from 'react-router-dom'; // 1. Import useNavigate
 import { loginUser } from '../../api/auth'; // 
 import Header from '../../components/Home/Header';
 import HomeFooter from '../../components/Home/HomeFooter';
 
 const LoginPage = () => {
-  // 3. Tự động điền SĐT nếu người dùng đã chọn "Ghi nhớ"
-  const [phoneNumber, setPhoneNumber] = useState(
-    localStorage.getItem('rememberedPhone') || ''
+  const [username, setUsername] = useState(
+    localStorage.getItem('rememberedUsername') || '' // Sửa tên "remembered"
   );
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(
-    !!localStorage.getItem('rememberedPhone') // Tự động check nếu đã lưu SĐT
+    !!localStorage.getItem('rememberedUsername')
   );
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(''); // 4. Thêm state để hiển thị lỗi
-  const navigate = useNavigate(); // 5. Khởi tạo navigate
+  const [error, setError] = useState(''); 
+  const navigate = useNavigate(); 
 
-  // 6. HÀM XỬ LÝ ĐĂNG NHẬP THẬT
-  // 6. HÀM XỬ LÝ ĐĂNG NHẬP THẬT (ĐÃ SỬA LOGIC CHUYỂN HƯỚNG)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Xóa mọi lỗi cũ
+    setError(''); 
 
     try {
-      // Dữ liệu gửi đi phải khớp với LoginRequest.java
+      // 2. Sửa ở đây: gửi username
       const loginData = {
-        phoneNumber: phoneNumber,
+        username: username, 
         password: password,
       };
 
-      // response bây giờ là: { token: "...", fullName: "...", role: "ADMIN" }
-      const response = await loginUser(loginData); // Gọi API
+      const response = await loginUser(loginData); 
 
-      // Đăng nhập thành công:
-      // 1. Lưu tất cả thông tin vào localStorage
       localStorage.setItem('jwtToken', response.token);
       localStorage.setItem('userName', response.fullName);
       localStorage.setItem('userRole', response.role);
 
-      // 2. Xử lý "Ghi nhớ mật khẩu"
+      // 3. Sửa xử lý "Ghi nhớ"
       if (rememberMe) {
-        localStorage.setItem('rememberedPhone', phoneNumber);
+        localStorage.setItem('rememberedUsername', username);
       } else {
-        localStorage.removeItem('rememberedPhone');
+        localStorage.removeItem('rememberedUsername');
       }
 
-      // 3. Thông báo
       alert('Đăng nhập thành công!');
 
-      // 4. KIỂM TRA ROLE VÀ CHUYỂN HƯỚNG (ĐÃ SỬA)
+      // 4. Chuyển hướng theo Role
       if (response.role === 'ADMIN') {
-        navigate('/admin'); // Chuyển đến trang Admin
+        navigate('/admin', { replace: true });
       } else {
-        // (Bao gồm BENHNHAN và BACSI)
-        navigate('/'); // Chuyển về trang chủ
+        navigate('/', { replace: true });
       }
 
     } catch (err) {
-      // BẮT LỖI TỪ BACKEND (do UserService ném ra)
       console.error('Lỗi đăng nhập:', err);
+      // 5. Cập nhật logic bắt lỗi
       if (
         err.response &&
         (err.response.status === 401 || // Unauthorized
-          err.response.status === 403 || // Forbidden
-          err.response.status === 500) // Lỗi server (thường do sai SĐT/mật khẩu)
+         err.response.status === 403 || // Forbidden
+         err.response.status === 404 || // Not Found (từ UsernameNotFoundException)
+         err.response.status === 500)  // Internal Error (từ Sai mật khẩu)
       ) {
-        // Dùng chung một thông báo lỗi bảo mật
-        setError('Sai số điện thoại hoặc mật khẩu.');
+        setError('Sai tên đăng nhập hoặc mật khẩu.');
       } else if (err.code === 'ERR_NETWORK') {
         setError('Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại!');
       } else {
@@ -112,17 +104,17 @@ const LoginPage = () => {
               {/* Số điện thoại */}
               <div>
                 <label
-                  htmlFor="phone"
+                  htmlFor="username"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Số điện thoại
+                  Số điện thoại / Email
                 </label>
                 <input
-                  id="phone"
+                  id="username"
                   type="text"
-                  placeholder="Nhập số điện thoại của bạn"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Nhập số điện thoại hoặc email của bạn"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
                 />
@@ -197,12 +189,12 @@ const LoginPage = () => {
               {/* Đăng ký */}
               <p className="mt-6 text-center text-sm text-gray-600">
                 Chưa có tài khoản?{' '}
-                <a
-                  href="/register"
+                <Link
+                  to="/register"
                   className="font-bold text-indigo-600 hover:text-indigo-500 transition duration-150"
                 >
                   Đăng ký ngay
-                </a>
+                </Link>
               </p>
             </form>
           </div>

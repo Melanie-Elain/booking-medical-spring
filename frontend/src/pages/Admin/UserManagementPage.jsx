@@ -1,9 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { getAllUsers, createUser, updateUser, deleteUser } from '../../api/adminService'; 
 
+// === COMPONENT MỚI: NÚT ĐIỀU KHIỂN TRANG ===
+const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
+  if (totalPages <= 1) return null; // Ẩn nếu chỉ có 1 trang
+
+  const pageNumbers = [];
+  for (let i = 0; i < totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  return (
+    <div className="mt-6 flex justify-center items-center gap-2">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 0}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Trước
+      </button>
+      {pageNumbers.map(number => (
+        <button
+          key={number}
+          onClick={() => onPageChange(number)}
+          className={`px-3 py-1 rounded-md ${
+            currentPage === number 
+              ? 'bg-blue-600 text-white' 
+              : 'bg-gray-200 hover:bg-gray-300'
+          }`}
+        >
+          {number + 1}
+        </button>
+      ))}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages - 1}
+        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
+      >
+        Sau
+      </button>
+    </div>
+  );
+};
+
 // === COMPONENT CON: MODAL FORM (Form Thêm/Sửa) ===
 const UserFormModal = ({ user, onClose, onSave }) => {
-  // 1. State nội bộ của Form
   const [formData, setFormData] = useState({
     fullName: user?.fullName || '',
     phoneNumber: user?.phoneNumber || '',
@@ -13,38 +54,37 @@ const UserFormModal = ({ user, onClose, onSave }) => {
   });
   const [error, setError] = useState('');
 
-  const isEditMode = !!user; // true nếu 'user' được truyền vào (chế độ Sửa)
+  const isEditMode = !!user; 
 
-  // 2. Hàm xử lý gõ
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // 3. Hàm xử lý "Lưu"
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    // Kiểm tra mật khẩu nếu là tạo mới
+    // === VALIDATION (Kiểm tra lỗi frontend) ===
+    if (!formData.phoneNumber) {
+      setError('Số điện thoại là bắt buộc');
+      return;
+    }
     if (!isEditMode && !formData.password) {
       setError('Mật khẩu là bắt buộc khi tạo mới');
       return;
     }
     
     try {
-      // Gọi hàm onSave (được truyền từ cha)
       await onSave(formData, user?.id);
-      onClose(); // Đóng modal nếu thành công
+      onClose(); 
     } catch (err) {
       setError(err.response?.data || 'Đã xảy ra lỗi');
     }
   };
 
   return (
-    // Lớp phủ mờ (Backdrop)
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      {/* Nội dung Modal */}
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
         <h3 className="text-lg font-semibold mb-4">
           {isEditMode ? 'Cập nhật Người dùng' : 'Thêm Người dùng Mới'}
@@ -52,7 +92,8 @@ const UserFormModal = ({ user, onClose, onSave }) => {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <InputRow label="Họ và tên" name="fullName" value={formData.fullName} onChange={handleChange} />
-          <InputRow label="Số điện thoại" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} disabled={isEditMode} />
+          {/* Sửa: Bỏ 'disabled={isEditMode}' để cho phép sửa SĐT (vì backend đã xử lý) */}
+          <InputRow label="Số điện thoại" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} />
           <InputRow label="Email" name="email" value={formData.email} onChange={handleChange} type="email" />
           
           {!isEditMode && (
@@ -70,12 +111,13 @@ const UserFormModal = ({ user, onClose, onSave }) => {
               <option value="BENHNHAN">BENHNHAN</option>
               <option value="BACSI">BACSI</option>
               <option value="ADMIN">ADMIN</option>
+              <option value="BENHVIEN">BENHVIEN</option>
+              <option value="PHONGKHAM">PHONGKHAM</option>
             </select>
           </div>
 
           {error && <div className="text-sm text-red-600">{error}</div>}
 
-          {/* Nút bấm */}
           <div className="flex justify-end gap-4 pt-4">
             <button
               type="button"
@@ -114,26 +156,35 @@ const InputRow = ({ label, name, value, onChange, type = "text", disabled = fals
 );
 
 
-// === COMPONENT CHA: TRANG QUẢN LÝ ===
+// === COMPONENT CHA: TRANG QUẢN LÝ (ĐÃ CẬP NHẬT) ===
 const UserManagementPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // State cho Modal
+  // 1. STATE MỚI CHO PAGINATION
+  const [currentPage, setCurrentPage] = useState(0); // Spring pages là 0-indexed
+  const [totalPages, setTotalPages] = useState(0);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState(null); // null: Thêm mới, object: Sửa
+  const [editingUser, setEditingUser] = useState(null);
 
+  // 2. SỬA LẠI useEffect (chạy khi currentPage thay đổi)
   useEffect(() => {
-    fetchUsers(); // Gọi hàm tải data
-  }, []);
+    fetchUsers(currentPage);
+  }, [currentPage]); // Tải lại khi 'currentPage' thay đổi
 
-  // Hàm tải danh sách Users
-  const fetchUsers = async () => {
+  // 3. SỬA LẠI HÀM FETCH (nhận page)
+  const fetchUsers = async (page) => {
     try {
       setLoading(true);
-      const response = await getAllUsers();
-      setUsers(response.data);
+      // Gọi API với page và size (10)
+      const response = await getAllUsers(page, 10);
+      
+      // 4. LẤY DATA TỪ PAGE OBJECT
+      setUsers(response.data.content); // Mảng dữ liệu
+      setTotalPages(response.data.totalPages); // Tổng số trang
+      setCurrentPage(response.data.number); // Trang hiện tại
     } catch (err) {
       setError('Không thể tải danh sách người dùng. Bạn có phải là Admin?');
     } finally {
@@ -146,32 +197,35 @@ const UserManagementPage = () => {
     if (window.confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
       try {
         await deleteUser(userId);
-        // Tải lại danh sách sau khi xóa
-        fetchUsers();
+        // 5. Tải lại trang hiện tại sau khi Xóa
+        fetchUsers(currentPage); 
       } catch (err) {
         alert('Lỗi khi xóa người dùng: ' + (err.response?.data || err.message));
       }
     }
   };
 
-  // Hàm mở Modal (Thêm: user=null, Sửa: user=object)
+  // Hàm mở Modal
   const handleOpenModal = (user = null) => {
     setEditingUser(user);
     setIsModalOpen(true);
   };
 
-  // Hàm xử lý Lưu (từ Modal)
+  // Hàm xử lý Lưu
   const handleSave = async (formData, userId) => {
-    // Nếu có userId -> Cập nhật (PUT)
     if (userId) {
       await updateUser(userId, formData);
     } 
-    // Nếu không -> Tạo mới (POST)
     else {
       await createUser(formData);
     }
-    // Tải lại danh sách
-    fetchUsers();
+    // 6. Tải lại trang hiện tại sau khi Lưu
+    fetchUsers(currentPage); 
+  };
+
+  // 7. HÀM MỚI ĐỂ CHUYỂN TRANG
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   if (loading) return <div>Đang tải danh sách...</div>;
@@ -182,7 +236,7 @@ const UserManagementPage = () => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gray-800">Quản lý Người dùng</h2>
         <button
-          onClick={() => handleOpenModal(null)} // Mở modal ở chế độ "Thêm mới"
+          onClick={() => handleOpenModal(null)}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
         >
           + Thêm User
@@ -213,15 +267,16 @@ const UserManagementPage = () => {
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                     user.role === 'ADMIN' ? 'bg-red-100 text-red-800' 
                     : user.role === 'BACSI' ? 'bg-blue-100 text-blue-800'
+                    : user.role === 'BENHVIEN' ? 'bg-purple-100 text-purple-800'
+                    : user.role === 'PHONGKHAM' ? 'bg-indigo-100 text-indigo-800'
                     : 'bg-green-100 text-green-800'
                   }`}>
                     {user.role}
                   </span>
                 </td>
-                {/* Cột Hành động */}
                 <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
                   <button
-                    onClick={() => handleOpenModal(user)} // Mở modal ở chế độ "Sửa"
+                    onClick={() => handleOpenModal(user)} 
                     className="text-indigo-600 hover:text-indigo-900"
                   >
                     Sửa
@@ -239,7 +294,13 @@ const UserManagementPage = () => {
         </table>
       </div>
 
-      {/* 4. Hiển thị Modal (nếu isModalOpen là true) */}
+      {/* 8. THÊM BỘ ĐIỀU KHIỂN TRANG */}
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+
       {isModalOpen && (
         <UserFormModal
           user={editingUser}

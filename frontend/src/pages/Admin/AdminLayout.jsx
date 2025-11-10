@@ -2,12 +2,18 @@ import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import Header from '../../components/Home/Header';
 import HomeFooter from '../../components/Home/HomeFooter';
-import { FaUsers, FaUserMd } from 'react-icons/fa'; // Icons for Admin
+import { FaUsers, FaUserMd, FaStethoscope, FaHospital, FaClinicMedical } from 'react-icons/fa';
+import { BsCalendarCheckFill } from 'react-icons/bs';
 
 // Component Sidebar (menu bên trái)
 const AdminSidebar = () => {
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole'); 
+    
+    localStorage.removeItem('rememberedUsername');
+
     window.location.href = '/'; 
   };
 
@@ -32,11 +38,27 @@ const AdminSidebar = () => {
           <FaUsers size={18} />
           <span>Quản lý Người dùng</span>
         </NavLink>
-        {/* Bạn có thể thêm các link khác ở đây */}
-        {/* <NavLink to="/admin/doctors" className={getNavLinkClass}>
+        <NavLink to="/admin/specialties" className={getNavLinkClass}>
+          <FaStethoscope size={18} />
+          <span>Quản lý Chuyên khoa</span>
+        </NavLink>
+        <NavLink to="/admin/doctors" className={getNavLinkClass}>
           <FaUserMd size={18} />
           <span>Quản lý Bác sĩ</span>
-        </NavLink> */}
+        </NavLink>
+        <NavLink to="/admin/hospitals" className={getNavLinkClass}>
+          <FaHospital size={18} />
+          <span>Quản lý Bệnh viện</span>
+        </NavLink>
+        <NavLink to="/admin/clinics" className={getNavLinkClass}>
+          <FaClinicMedical size={18} />
+          <span>Quản lý Phòng khám</span>
+        </NavLink>
+        <NavLink to="/admin/appointments" className={getNavLinkClass}>
+          <BsCalendarCheckFill size={18} />
+          <span>Quản lý Lịch hẹn</span>
+        </NavLink>
+
         
         <div className="border-t border-gray-200 my-2"></div>
         
