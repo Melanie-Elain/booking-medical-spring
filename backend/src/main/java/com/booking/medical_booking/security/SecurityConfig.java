@@ -1,4 +1,3 @@
-
 package com.booking.medical_booking.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import com.booking.medical_booking.security.JwtAuthFilter; 
 import org.springframework.security.core.userdetails.UserDetailsService; 
-
 
 import java.util.List;
 
@@ -47,19 +45,14 @@ public class SecurityConfig {
             
             // 3. PHÂN QUYỀN
             .authorizeHttpRequests(auth -> auth
-                // Cho phép API Auth (Login/Register)
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                
-                // Chỉ ADMIN mới được vào /api/admin/
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                
-                // Chỉ USER (BENHNHAN) mới được vào /api/user/
-                .requestMatchers("/api/user/**").hasRole("BENHNHAN") 
-                
-                .anyRequest().authenticated() 
+                .requestMatchers("/api/user/**").hasRole("BENHNHAN")
+                .anyRequest().authenticated()
             )
-            .userDetailsService(userDetailsService)
+
+            // 4. THÊM JWT FILTER
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
