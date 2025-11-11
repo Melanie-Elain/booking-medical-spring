@@ -1,5 +1,5 @@
-// 1. SỬA LẠI PACKAGE: Bỏ ".auth"
-package com.booking.medical_booking.controller.auth; 
+
+package com.booking.medical_booking.controller; 
 
 import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.model.Doctor;
@@ -9,7 +9,6 @@ import com.booking.medical_booking.dto.DoctorRequestDTO;
 import com.booking.medical_booking.service.auth.UserService;
 import com.booking.medical_booking.service.specialty.SpecialtyService;
 import com.booking.medical_booking.service.doctor.DoctorService;
-// (Bỏ import UserRepository vì đã dùng UserService)
 import com.booking.medical_booking.model.Hospital;
 import com.booking.medical_booking.dto.HospitalRequestDTO;
 import com.booking.medical_booking.service.hospital.HospitalService;
@@ -21,7 +20,6 @@ import com.booking.medical_booking.service.appointment.AppointmentService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-// <-- THÊM IMPORT NÀY
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -30,17 +28,16 @@ import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestParam; 
 
 @RestController
 @RequestMapping("/api/admin") // API gốc của Admin
 @CrossOrigin(origins = "http://localhost:3000")
 public class AdminController {
 
-    // 2. Đã dọn dẹp các ký tự lỗi (khoảng trắng ẩn)
+    
     @Autowired
     private UserService userService;
-
-    // (Xóa UserRepository vì đã dùng UserService cho phân trang)
 
     @Autowired
     private SpecialtyService specialtyService;
@@ -243,7 +240,7 @@ public class AdminController {
             Appointment updatedAppointment = appointmentService.updateAppointmentStatus(id, request);
             return ResponseEntity.ok(updatedAppointment);
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null); // (Nên trả về e.getMessage())
+            return ResponseEntity.badRequest().body(null); 
         }
     }
 }

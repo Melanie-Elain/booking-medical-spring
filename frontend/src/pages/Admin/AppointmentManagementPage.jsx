@@ -38,29 +38,23 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
   );
 };
 
-// === COMPONENT CHA: TRANG QUẢN LÝ (ĐÃ SỬA LỖI) ===
+// === COMPONENT CHA: TRANG QUẢN LÝ ===
 const AppointmentManagementPage = () => {
-  const [appointments, setAppointments] = useState([]); // Sẽ chứa mảng [content]
+  const [appointments, setAppointments] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // 1. THÊM STATE PHÂN TRANG
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  // 2. SỬA useEffect (để tải lại khi 'currentPage' thay đổi)
   useEffect(() => {
     fetchAppointments(currentPage);
   }, [currentPage]);
 
-  // 3. SỬA HÀM FETCH
   const fetchAppointments = async (page) => {
     try {
       setLoading(true);
-      // Gọi API với page và size (10)
       const response = await getAllAppointments(page, 10);
       
-      // 4. SỬA LỖI Ở ĐÂY: Lấy 'content' từ object 'Page'
       setAppointments(response.data.content);
       setTotalPages(response.data.totalPages);
       setCurrentPage(response.data.number);
@@ -72,12 +66,10 @@ const AppointmentManagementPage = () => {
     }
   };
 
-  // Hàm xử lý Cập nhật trạng thái
   const handleUpdateStatus = async (id, newStatus) => {
     if (window.confirm(`Bạn có chắc muốn ${newStatus === 'Đã xác nhận' ? 'XÁC NHẬN' : 'HỦY'} lịch hẹn này?`)) {
       try {
         await updateAppointmentStatus(id, newStatus);
-        // Tải lại trang hiện tại
         fetchAppointments(currentPage); 
       } catch (err) {
         alert('Lỗi khi cập nhật: ' + (err.response?.data || err.message));
@@ -85,10 +77,20 @@ const AppointmentManagementPage = () => {
     }
   };
 
-  // 5. HÀM MỚI
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  // === HÀM HELPER MỚI: Lấy tên Đối tượng (BS/BV/PK) ===
+  const getProviderName = (app) => {
+    const loaiDoiTuong = app.lichGio?.lichTong?.loaiDoiTuong;
+    const maDoiTuong = app.lichGio?.lichTong?.maDoiTuong;
+    
+    if (!loaiDoiTuong) return '(Không rõ)';
+    
+    // (Đây là logic tạm thời, lý tưởng nhất là backend nên trả về tên)
+    return `${loaiDoiTuong} (ID: ${maDoiTuong})`; 
+  }
 
   if (loading) return <div>Đang tải danh sách...</div>;
   if (error) return <div className="text-red-600">{error}</div>;
@@ -104,7 +106,8 @@ const AppointmentManagementPage = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bệnh nhân</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bác sĩ</th>
+              {/* Sửa: Đối tượng khám */}
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Đối tượng khám</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày giờ hẹn</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
@@ -113,36 +116,47 @@ const AppointmentManagementPage = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {/* 6. Biến 'appointments' bây giờ là mảng, .map() sẽ chạy */}
             {appointments.map((app) => (
-              <tr key={app.id}>
+              
+              // === SỬA LỖI 1: Sửa 'app.id' -> 'app.maLichHen' ===
+              <tr key={app.maLichHen}> 
+                
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
                   {app.user?.fullName || '(Không rõ)'}
                 </td>
+                
                 <td className="px-6 py-4 text-sm text-gray-500">
-                  {app.doctor?.name || '(Không rõ)'}
+                  {/* (Chúng ta sẽ sửa logic này sau để nó hiển thị tên) */}
+                  {app.lichGio?.lichTong?.loaiDoiTuong} (ID: {app.lichGio?.lichTong?.maDoiTuong})
                 </td>
+
                 <td className="px-6 py-4 text-sm text-gray-500">
-                  {app.appointmentDate} - {app.appointmentTime}
+                  {app.lichGio?.lichTong?.ngay} - {app.lichGio?.khungGio}
                 </td>
+                
                 <td className="px-6 py-4 text-sm">
+                  {/* Sửa: Dùng tên trường Java 'trangThai' */}
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    app.status === 'Đã xác nhận' ? 'bg-green-100 text-green-800' 
-                    : app.status === 'Đã hủy' ? 'bg-red-100 text-red-800'
+                    app.trangThai === 'Đã xác nhận' ? 'bg-green-100 text-green-800' 
+                    : app.trangThai === 'Đã hủy' ? 'bg-red-100 text-red-800'
                     : 'bg-yellow-100 text-yellow-800'
                   }`}>
-                    {app.status}
+                    {app.trangThai}
                   </span>
                 </td>
+
                 <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
-                  {app.status === 'Đang chờ' && (
+                  {app.trangThai === 'Đang chờ' && (
                     <>
                       <button
-                        onClick={() => handleUpdateStatus(app.id, 'Đã xác nhận')}
+                        // === SỬA LỖI 2: Sửa 'app.id' -> 'app.maLichHen' ===
+                        onClick={() => handleUpdateStatus(app.maLichHen, 'Đã xác nhận')}
                         className="text-green-600 hover:text-green-900"
                       >
                         Xác nhận
                       </button>
                       <button
-                        onClick={() => handleUpdateStatus(app.id, 'Đã hủy')}
+                        // === SỬA LỖI 3: Sửa 'app.id' -> 'app.maLichHen' ===
+                        onClick={() => handleUpdateStatus(app.maLichHen, 'Đã hủy')}
                         className="ml-4 text-red-600 hover:text-red-900"
                       >
                         Hủy
@@ -156,7 +170,6 @@ const AppointmentManagementPage = () => {
         </table>
       </div>
 
-      {/* 7. THÊM BỘ ĐIỀU KHIỂN TRANG */}
       <PaginationControls
         currentPage={currentPage}
         totalPages={totalPages}

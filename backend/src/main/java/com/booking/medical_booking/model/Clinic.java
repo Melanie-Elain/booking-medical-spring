@@ -27,7 +27,7 @@ public class Clinic {
     
     // Lưu trữ JSON (danh sách ảnh) dưới dạng String
     @Lob
-    @Column(name = "imagesIntro")
+    @Column(name = "images_intro")
     private String imagesIntro; 
 
     // Quan hệ N-N với Chuyên khoa (Specialty)

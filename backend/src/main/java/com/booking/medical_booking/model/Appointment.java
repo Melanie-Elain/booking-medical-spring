@@ -1,9 +1,38 @@
-package com.booking.medical_booking.model; 
+// package com.booking.medical_booking.model;
+
+// import jakarta.persistence.*;
+// import lombok.Data;
+
+// @Entity
+// @Data
+// @Table(name = "lichhen")
+// public class Appointment {
+
+//     @Id
+//     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//     @Column(name = "ma_lich_hen") // <-- CHỈ ĐỊNH RÕ RÀNG
+//     private Integer id;
+
+//     @Column(name = "trang_thai", length = 50) // <-- CHỈ ĐỊNH RÕ RÀNG
+//     private String status;
+
+//     @Lob
+//     @Column(name = "ghi_chu") // <-- CHỈ ĐỊNH RÕ RÀNG
+//     private String notes;
+
+// @ManyToOne(fetch = FetchType.EAGER) // Sửa: LAZY -> EAGER
+//     @JoinColumn(name = "user_id", nullable = false)
+//     private User user;
+
+//     @OneToOne(fetch = FetchType.EAGER) // Sửa: LAZY -> EAGER
+//     @JoinColumn(name = "ma_gio", nullable = false, unique = true)
+//     private LichGio lichGio;
+// }
+
+package com.booking.medical_booking.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Entity
 @Data
@@ -12,31 +41,21 @@ public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MaLich")
-    private Integer id;
+    private Integer maLichHen;
 
-    @Column(name = "NgayHen", nullable = false)
-    private LocalDate appointmentDate;
-
-    @Column(name = "GioHen", nullable = false)
-    private LocalTime appointmentTime;
-
-    @Column(name = "TrangThai", length = 50)
-    private String status;
-
+    private String trangThai;
     @Lob
-    @Column(name = "GhiChu")
-    private String notes;
+    private String ghiChu;
 
-    // --- MỐI QUAN HỆ ---
-
-    // Liên kết với User (Bệnh nhân)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    // 1. SỬA THÀNH EAGER
+    // (Khi tải Lịch hẹn, chúng ta luôn muốn biết của User nào)
+    @ManyToOne(fetch = FetchType.EAGER) 
+    @JoinColumn(name = "user_id")
     private User user;
 
-    // Liên kết với Bác sĩ
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MaBS", nullable = false)
-    private Doctor doctor;
+    // 2. SỬA THÀNH EAGER
+    // (Khi tải Lịch hẹn, chúng ta luôn muốn biết Khung giờ nào)
+    @OneToOne(fetch = FetchType.EAGER) 
+    @JoinColumn(name = "ma_gio", unique = true)
+    private LichGio lichGio;
 }
