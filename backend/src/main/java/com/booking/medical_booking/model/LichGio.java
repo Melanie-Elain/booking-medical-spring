@@ -1,8 +1,11 @@
+
+
 // package com.booking.medical_booking.model;
 
 // import jakarta.persistence.*;
 // import lombok.Data;
-// // import java.util.Set; // (Import nếu cần)
+// // 1. IMPORT THƯ VIỆN JSON
+// import com.fasterxml.jackson.annotation.JsonIgnore;
 
 // @Entity
 // @Data
@@ -11,21 +14,19 @@
 
 //     @Id
 //     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//     @Column(name = "ma_gio") // <-- CHỈ ĐỊNH RÕ RÀNG
 //     private Integer maGio;
 
-//     @Column(name = "khung_gio", nullable = false, length = 20) // <-- CHỈ ĐỊNH RÕ RÀNG
 //     private String khungGio;
-
-//     @Column(name = "status", nullable = false, length = 20)
 //     private String status;
 
-//     @ManyToOne(fetch = FetchType.EAGER) // Sửa: LAZY -> EAGER
+//     // 2. SỬA THÀNH EAGER
+//     // (Khi tải 1 khung giờ, chúng ta luôn muốn biết nó của Lịch Tổng nào)
+//     @ManyToOne(fetch = FetchType.EAGER) 
 //     @JoinColumn(name = "ma_lich") 
 //     private LichTong lichTong;
     
-//     // (mappedBy nên là LAZY để tránh vòng lặp vô hạn, nhưng
-//     // vì chúng ta dùng DTO ở Frontend nên vẫn ổn)
+//     // 3. THÊM @JsonIgnore ĐỂ NGẮT VÒNG LẶP
+//     @JsonIgnore 
 //     @OneToOne(mappedBy = "lichGio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //     private Appointment appointment;
 // }
@@ -34,7 +35,6 @@ package com.booking.medical_booking.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-// 1. IMPORT THƯ VIỆN JSON
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -49,13 +49,11 @@ public class LichGio {
     private String khungGio;
     private String status;
 
-    // 2. SỬA THÀNH EAGER
-    // (Khi tải 1 khung giờ, chúng ta luôn muốn biết nó của Lịch Tổng nào)
-    @ManyToOne(fetch = FetchType.EAGER) 
+    // SỬA LẠI: Trở về LAZY
+    @ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name = "ma_lich") 
     private LichTong lichTong;
     
-    // 3. THÊM @JsonIgnore ĐỂ NGẮT VÒNG LẶP
     @JsonIgnore 
     @OneToOne(mappedBy = "lichGio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Appointment appointment;
