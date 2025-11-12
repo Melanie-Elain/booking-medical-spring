@@ -34,6 +34,8 @@ const LoginPage = () => {
       localStorage.setItem('userName', response.fullName);
       localStorage.setItem('userRole', response.role);
 
+      window.dispatchEvent(new Event('authChange'));
+
       // 3. Sửa xử lý "Ghi nhớ"
       if (rememberMe) {
         localStorage.setItem('rememberedUsername', username);
