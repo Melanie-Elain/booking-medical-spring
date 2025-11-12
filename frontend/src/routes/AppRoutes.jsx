@@ -8,7 +8,6 @@ import BookingPage from "../pages/Booking/BookingPage";
 import BookingSearch from "../pages/Booking/BookingSearch";
 import LoginPage from "../pages/Auth/LoginPage";
 import RegisterPage from "../pages/Auth/RegisterPage";
-
 import DoctorProfile from "../pages/Booking/DoctorProfile";
 import HospitalProfile from "../pages/Booking/HospitalProfile";
 import ClinicProfile from "../pages/Booking/ClinicProfile";
@@ -28,7 +27,7 @@ import PaymentHistoryPage from "../pages/UserDashboard/PaymentHistoryPage";
 import ProfilePage from "../pages/UserDashboard/ProfilePage";
 import AccountPage from "../pages/UserDashboard/AccountPage";
 
-// === IMPORT ADMIN ===
+// 1. IMPORT ADMIN 
 import AdminRoute from './AdminRoute';
 import AdminLayout from '../pages/Admin/AdminLayout'; 
 import UserManagementPage from '../pages/Admin/UserManagementPage';
