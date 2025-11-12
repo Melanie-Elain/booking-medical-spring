@@ -92,7 +92,13 @@ const Header = () => {
           >Tin Y tế</a>
 
           <a href="#tro-ly" className="nav-item">Trợ lý y khoa</a>
-          <a href="#danh-cho-bs" className="nav-item">Dành cho Bác sĩ</a>
+
+          {/* Chuyển đổi sang dành cho bác sĩ */}
+          <a href="" className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/doctor-workspace");
+            }}>Dành cho Bác sĩ</a>
 
           {/* === LOGIC HIỂN THỊ ĐỘNG === */}
           {isLoggedIn ? (
@@ -104,7 +110,7 @@ const Header = () => {
                 <span>{userName || 'Tài khoản'}</span>
                 <span className="caret">▾</span>
               </button>
-              
+
               {/* Menu dropdown (Đã sửa nội dung + căn lề) */}
               <div className="dropdown-panel user-dropdown-menu">
                 <div className="dropdown-inner">
@@ -117,7 +123,7 @@ const Header = () => {
                   <Link to="/ho-so" className="dropdown-row">
                     <div className="row-title">Hồ sơ</div>
                   </Link>
-                  <div className="dropdown-divider"></div> 
+                  <div className="dropdown-divider"></div>
                   <button onClick={handleLogout} className="dropdown-row logout-btn">
                     <div className="row-title">Thoát</div>
                   </button>

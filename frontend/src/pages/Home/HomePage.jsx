@@ -9,6 +9,7 @@ import SuggestionSection from "../../components/Home/SuggestionSection";
 import DownloadApp from "../../components/Home/DownloadApp";
 import HomeFooter from "../../components/Home/HomeFooter";
 import HomeNews from "../../components/Home/HomeNews";
+import DoctorWorkspace from "../DoctorWorkspace/DocterWorkspacePage";
 
 
 const HomePage = () => {
@@ -19,6 +20,7 @@ const HomePage = () => {
       <HomeClinic />
       <HomeSpecialty />
       <HomeNews />
+      <DoctorWorkspace />
       <SuggestionSection />
     </div>
   );

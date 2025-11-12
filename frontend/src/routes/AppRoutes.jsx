@@ -13,6 +13,7 @@ import HospitalProfile from "../pages/Booking/HospitalProfile";
 import ClinicProfile from "../pages/Booking/ClinicProfile";
 import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
 import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
+import DoctorWorkspace from "../pages/DoctorWorkspace/DocterWorkspacePage";
 
 const AppRoutes = () => {
   return (
@@ -27,7 +28,7 @@ const AppRoutes = () => {
         }
       />
 
-{/* Menu Booking */}
+      {/* Menu Booking */}
       {/* Đặt khám Bác sĩ (mặc định) */}
       <Route
         path="/dat-kham/bac-si"
@@ -81,7 +82,7 @@ const AppRoutes = () => {
           </MainLayout>
         }
       />
-{/* End Menu Booking */}
+      {/* End Menu Booking */}
 
       {/* OnlineConsultation  */}
       <Route
@@ -102,6 +103,9 @@ const AppRoutes = () => {
           </MainLayout>
         }
       />
+
+      {/* DocterWorkspace */}
+      <Route path="/doctor-workspace" element={<DoctorWorkspace />} />
 
       {/* Auth */}
       <Route path="/login" element={<LoginPage />} />
