@@ -8,7 +8,7 @@ const DoctorWorkspacePage = () => {
     const closeMenu = () => setMenuOpen(false);
 
     return (
-        <>
+        <div className="doctor-workspace-page">
             {/* HEADER */}
             <header className="header">
                 <div className="header-container">
@@ -136,7 +136,7 @@ const DoctorWorkspacePage = () => {
                 <h1>Doctor Workspace Landing Page</h1>
                 <p>Đây là phần nội dung chính của trang.</p>
             </main>
-        </>
+        </div>
     );
 };
 

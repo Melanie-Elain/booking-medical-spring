@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoLogInOutline } from 'react-icons/io5';
 import { FaRegUserCircle } from 'react-icons/fa';
 import '../../assets/Home/Header.css';
@@ -7,19 +7,58 @@ import { useNavigate, Link } from 'react-router-dom';
 const Header = () => {
   const navigate = useNavigate();
 
-  // 1. Kiểm tra trạng thái đăng nhập từ localStorage
-  const token = localStorage.getItem('jwtToken');
-  const userName = localStorage.getItem('userName');
-  const userRole = localStorage.getItem('userRole');
-  const isLoggedIn = !!token; 
+  // // 1. Kiểm tra trạng thái đăng nhập từ localStorage
+  // const token = localStorage.getItem('jwtToken');
+  // const userName = localStorage.getItem('userName');
+  // const userRole = localStorage.getItem('userRole');
+  // const isLoggedIn = !!token; 
 
-  // 2. Hàm Đăng xuất
+  // // 2. Hàm Đăng xuất
+  // const handleLogout = () => {
+  //   localStorage.removeItem('jwtToken');
+  //   localStorage.removeItem('userName');
+  //   localStorage.removeItem('userRole');
+  //   localStorage.removeItem('rememberedPhone');
+  //   window.location.href = '/'; 
+  // };
+  // Đọc giá trị ban đầu từ localStorage
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('jwtToken'));
+  const [userName, setUserName] = useState(localStorage.getItem('userName'));
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole'));
+
+  // === 2. THÊM LOGIC: LẮNG NGHE SỰ KIỆN ===
+  // Tự động cập nhật Header khi đăng nhập/đăng xuất ở trang khác
+  useEffect(() => {
+    const handleAuthChange = () => {
+      console.log("Header: Đã nhận tín hiệu 'authChange', đang cập nhật...");
+      setIsLoggedIn(!!localStorage.getItem('jwtToken'));
+      setUserName(localStorage.getItem('userName'));
+      setUserRole(localStorage.getItem('userRole'));
+    };
+
+    // Đăng ký lắng nghe
+    window.addEventListener('authChange', handleAuthChange);
+
+    // Dọn dẹp khi component bị gỡ bỏ
+    return () => {
+      window.removeEventListener('authChange', handleAuthChange);
+    };
+  }, []); // Mảng rỗng [] đảm bảo chỉ chạy 1 lần
+
+  // === 3. SỬA HÀM ĐĂNG XUẤT ===
   const handleLogout = () => {
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('userName');
     localStorage.removeItem('userRole');
     localStorage.removeItem('rememberedPhone');
-    window.location.href = '/'; 
+    
+    // Cập nhật state nội bộ để UI thay đổi ngay
+    setIsLoggedIn(false);
+    setUserName(null);
+    setUserRole(null);
+
+    // Dùng navigate để chuyển trang mượt hơn
+    navigate('/'); 
   };
 
   return (

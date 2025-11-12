@@ -16,6 +16,8 @@
   position: relative;
   overflow: hidden;
   padding: 20px 0;
+  position: relative; /* (Rất quan trọng để z-index có hiệu lực) */
+  z-index: 1100;
 }
 
 .banner-content {

@@ -20,7 +20,7 @@ import BookingSuccessPage from "../pages/Booking/BookingSuccessPage";
 import CompleteBookingClinic from "../pages/Booking/CompleteBookingClinic";
 import CompleteBookingHospital from "../pages/Booking/CompleteBookingHospital";
 
-// === IMPORT CÁC TRANG DASHBOARD ===
+// === IMPORT CÁC TRANG DASHBOARD  ===
 import UserDashboardLayout from "../pages/UserDashboard/UserDashboardLayout";
 import AppointmentsPage from "../pages/UserDashboard/AppointmentsPage";
 import PaymentHistoryPage from "../pages/UserDashboard/PaymentHistoryPage";
@@ -38,13 +38,10 @@ import ClinicManagementPage from '../pages/Admin/ClinicManagementPage';
 import AppointmentManagementPage from '../pages/Admin/AppointmentManagementPage';
 
 
-/**
- * Component PrivateRoute:
- * Kiểm tra xem user đã đăng nhập (có token) chưa.
- * Nếu chưa, điều hướng về trang /login.
- */
+
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('jwtToken');
+  // replace: thay thế trang hiện tại trong lịch sử (user không thể back lại)
   return token ? children : <Navigate to="/login" replace />; 
 };
 
@@ -61,9 +58,8 @@ const AppRoutes = () => {
         }
       />
 
-      {/* --- Menu Booking (Đã gộp code) --- */}
-      
-      {/* Đặt khám Bác sĩ (mặc định) */}
+
+      {/* Menu Booking  */}
       <Route
         path="/dat-kham/bac-si"
         element={
@@ -78,6 +74,7 @@ const AppRoutes = () => {
       <Route path="/dat-kham/phieu-kham" element={<BookingSuccessPage />} />
 
       {/* Đặt khám Bệnh viện */}
+
       <Route
         path="/dat-kham/benh-vien"
         element={
@@ -88,8 +85,6 @@ const AppRoutes = () => {
       />
       <Route path="/dat-kham/benh-vien/:id" element={<HospitalProfile />} />
       <Route path="/dat-kham/benh-vien/:id/hoan-tat-dat-kham" element={<CompleteBookingHospital />} />
-
-      {/* Đặt khám Phòng khám */}
       <Route
         path="/dat-kham/phong-kham"
         element={
@@ -100,8 +95,6 @@ const AppRoutes = () => {
       />
       <Route path="/dat-kham/phong-kham/:id" element={<ClinicProfile />} />
       <Route path="/dat-kham/phong-kham/:id/hoan-tat-dat-kham" element={<CompleteBookingClinic />} />
-
-      {/* Đặt lịch tiêm chủng (Từ nhánh BaoHuy) */}
       <Route
         path="/dat-kham/tiem-chung"
         element={
@@ -110,8 +103,6 @@ const AppRoutes = () => {
           </MainLayout>
         }
       />
-
-      {/* Đặt lịch xét nghiệm (Từ nhánh BaoHuy) */}
       <Route
         path="/dat-kham/xet-nghiem"
         element={
@@ -120,9 +111,9 @@ const AppRoutes = () => {
           </MainLayout>
         }
       />
-      {/* --- End Menu Booking --- */}
+      {/* End Menu Booking */}
 
-      {/* OnlineConsultation */}
+      {/* OnlineConsultation  */}
       <Route
         path="/tu-van-truc-tuyen"
         element={
@@ -132,7 +123,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* MedicalNews */}
+      {/* MedicalNews  */}
       <Route
         path="/tin-y-te"
         element={
@@ -142,15 +133,19 @@ const AppRoutes = () => {
         }
       />
 
-      {/* DocterWorkspace (Từ nhánh BaoHuy) */}
+      {/* DocterWorkspace */}
       <Route path="/doctor-workspace" element={<DoctorWorkspace />} />
 
-      {/* Auth */}
+      {/* Auth  */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
 
-      {/* --- CÁC ROUTE CÁ NHÂN (YÊU CẦU ĐĂNG NHẬP) --- */}
+      {/* 3. THÊM KHỐI ROUTE CÁ NHÂN (YÊU CẦU ĐĂNG NHẬP) */}
+      {/* Tất cả các route con bên trong sẽ:
+        1. Được bảo vệ bởi <PrivateRoute>
+        2. Dùng chung layout <UserDashboardLayout> 
+      */}
       <Route
         path="/user"
         element={
@@ -159,14 +154,17 @@ const AppRoutes = () => {
           </PrivateRoute>
         }
       >
+        {/* Khi user vào /user, tự động chuyển đến /user/appointments */}
         <Route index element={<Navigate to="appointments" replace />} />
+        
+        {/* Các trang con trong dashboard */}
         <Route path="appointments" element={<AppointmentsPage />} />
         <Route path="payment-history" element={<PaymentHistoryPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="account" element={<AccountPage />} />
       </Route>
 
-      {/* --- ADMIN --- */}
+      {/* 2. ADMIN */}
       <Route
         path="/admin"
         element={
@@ -175,6 +173,7 @@ const AppRoutes = () => {
           </AdminRoute>
         }
       >
+        {/* Trang mặc định của admin (ví dụ: /admin) */}
         <Route index element={<UserManagementPage />} /> 
         <Route path="users" element={<UserManagementPage />} />
         <Route path="specialties" element={<SpecialtyManagementPage />} />
