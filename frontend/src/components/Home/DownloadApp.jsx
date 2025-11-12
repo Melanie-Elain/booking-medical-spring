@@ -42,7 +42,7 @@ const DownloadApp = ({isBookingPage =false}) => {
                             alt="Play: Video"
                             id="fallbackPlaceholder"
                             loading="lazy"
-                            referrerpolicy="origin"
+                            referrerPolicy="origin"
                         />
                         <div className="video-overlay">
                             <div className="bell-icon"></div>
