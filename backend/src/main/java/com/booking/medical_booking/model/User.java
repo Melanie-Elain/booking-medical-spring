@@ -36,4 +36,26 @@ public class User {
     private String address;
     private String referralCode;
     private String occupation;
+
+    
+
+    public enum UserRole {
+        BENHNHAN,
+        BACSI,
+        ADMIN,
+        BENHVIEN,   
+        PHONGKHAM
+    }
+
+    @Enumerated(EnumType.STRING) 
+    @Column(name = "role", nullable = false) 
+    private UserRole role;
+
+    
+    @PrePersist
+    public void prePersist() {
+        if (role == null) {
+            role = UserRole.BENHNHAN;
+        }
+    }
 }

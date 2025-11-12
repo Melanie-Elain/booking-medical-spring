@@ -1,24 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { Search, MapPin, Stethoscope, LocateFixed , ChevronDown, X } from "lucide-react";
 import Header from '../../components/Home/Header';
 import DownloadApp from "../../components/Home/DownloadApp";
 import HomeFooter from "../../components/Home/HomeFooter";
 import ReactPaginate from "react-paginate";
 import doctorsData from "../../data/doctorsData";
-
-
-
-    const specialties = [
-      { id: 1, name: "Dị ứng - miễn dịch", icon: "🛡️" },
-      { id: 2, name: "Y học cổ truyền", icon: "🌿" },
-      { id: 3, name: "Lao - bệnh phổi", icon: "🫁" },
-      { id: 4, name: "Y học thể thao", icon: "🏃‍♂️" },
-      { id: 5, name: "Tim mạch", icon: "❤️" },
-      { id: 6, name: "Thần kinh", icon: "🧠" },
-      { id: 7, name: "Nhi khoa", icon: "👶" },
-      { id: 8, name: "Da liễu", icon: "🧴" },
-    ];
-    
+import specialtiesData from "../../data/specialtiesData";
 
 
 const BookingDoctor = () => {
@@ -35,6 +22,8 @@ const BookingDoctor = () => {
     const doctorsPerPage = 6; 
 
     const doctors = doctorsData;
+
+    const specialties = specialtiesData;
 
     const filteredDoctors = doctors.filter((doctor) =>
         doctor.name.toLowerCase().includes(search.toLowerCase()) 
@@ -60,6 +49,10 @@ const BookingDoctor = () => {
     const filtered = specialties.filter((s) =>
       s.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    useEffect(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, []);
 
     return (
         <>

@@ -63,7 +63,8 @@ const ClinicProfile = () => {
                 </div>               
             </div>
             <div className="max-w-5xl mx-auto flex justify-end">
-                <button className="w-2/5 bg-blue-600 rounded-lg py-2 text-white font-semibold">
+                <button className="w-2/5 bg-blue-600 rounded-lg py-2 text-white font-semibold"
+                onClick={()=> navigate(`/dat-kham/phong-kham/${clinic.id}/hoan-tat-dat-kham`)}>
                     Đặt khám ngay
                 </button>
             </div>
