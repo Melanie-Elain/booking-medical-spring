@@ -43,15 +43,3 @@ export const getAllAppointments = (page, size) => getPaginated('/admin/appointme
 export const updateAppointmentStatus = (id, status) => {
   return axiosInstance.put(`/admin/appointments/${id}/status`, { status: status });
 };
-
-// === API CHO BỆNH NHÂN (USER) ===
-
-export const getMyAppointments = (page, size, keyword) => {
-  let url = `/user/appointments?page=${page}&size=${size}`;
-  
-  // Nếu có keyword, thêm nó vào URL
-  if (keyword) {
-    url += `&keyword=${keyword}`;
-  }
-  return axiosInstance.get(url);
-};
