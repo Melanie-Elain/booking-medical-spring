@@ -93,7 +93,13 @@ const Header = () => {
           >Tin Y tế</a>
 
           <a href="#tro-ly" className="nav-item">Trợ lý y khoa</a>
-          <a href="#danh-cho-bs" className="nav-item">Dành cho Bác sĩ</a>
+
+          {/* Chuyển đổi sang dành cho bác sĩ */}
+          <a href="" className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/doctor-workspace");
+            }}>Dành cho Bác sĩ</a>
 
           {/* 2. THÊM LINK ADMIN (NẾU LÀ ADMIN) */}
           {isLoggedIn && userRole === 'ADMIN' && (
@@ -111,6 +117,7 @@ const Header = () => {
                 <span>{userName || 'Tài khoản'}</span>
                 <span className="caret">▾</span>
               </button>
+
               
               {/* Menu dropdown  */}
               <div className="dropdown-panel user-dropdown-menu">
@@ -124,7 +131,7 @@ const Header = () => {
                   <Link to="/user/profile" className="dropdown-row">
                     <div className="row-title">Hồ sơ</div>
                   </Link>
-                  <div className="dropdown-divider"></div> 
+                  <div className="dropdown-divider"></div>
                   <button onClick={handleLogout} className="dropdown-row logout-btn">
                     <div className="row-title">Thoát</div>
                   </button>
