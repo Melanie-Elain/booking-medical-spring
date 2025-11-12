@@ -1,8 +1,6 @@
-package com.booking.medical_booking.repository;
+package com.booking.medical_booking.dto;
 
 import com.booking.medical_booking.model.Appointment;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalTime;
