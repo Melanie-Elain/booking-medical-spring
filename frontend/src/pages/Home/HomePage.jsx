@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react"; 
+import { useNavigate } from "react-router-dom"; 
+
 import Header from "../../components/Home/Header";
 import HomeBanner from "../../components/Home/HomeBanner";
 import HomeDoctor from "../../components/Home/HomeDoctor";
@@ -13,6 +15,18 @@ import DoctorWorkspace from "../DoctorWorkspace/DocterWorkspacePage";
 
 
 const HomePage = () => {
+  const navigate = useNavigate(); 
+
+  // 4. THÊM LOGIC KIỂM TRA ADMIN
+  useEffect(() => {
+    const userRole = localStorage.getItem('userRole');
+
+    // Nếu là ADMIN, lập tức chuyển hướng
+    if (userRole === 'ADMIN') {
+      navigate('/admin', { replace: true }); 
+    }
+  }, [navigate]); 
+
   return (
     <div>
       <HomeDoctor isBookingPage={false} />

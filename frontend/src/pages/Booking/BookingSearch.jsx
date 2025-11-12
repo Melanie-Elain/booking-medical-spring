@@ -7,7 +7,7 @@ import ReactPaginate from "react-paginate";
 import doctorsData from "../../data/doctorsData";
 import hospitalsData from "../../data/hospitalsData";
 import clinicsData from "../../data/clinicsData";
-import BookingSearchCard from "../../components/BookingSearchCard";
+import BookingSearchCard from "../../components/Booking/BookingSearchCard";
 
 
     const specialties = [
@@ -47,6 +47,10 @@ const BookingSearch = () => {
     const filteredClinic = clinicsData.filter((clinic) =>
         clinic.name.toLowerCase().includes(search.toLowerCase())
     );
+
+    useEffect(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, []);
 
     
     const totalData = (() => {

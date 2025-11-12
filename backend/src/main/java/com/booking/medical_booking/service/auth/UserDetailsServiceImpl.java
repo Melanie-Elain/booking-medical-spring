@@ -1,8 +1,4 @@
-// File này "dạy" Spring Security cách tìm User trong database bằng số điện thoại.
-
 package com.booking.medical_booking.service.auth; // (Sửa package cho đúng)
-
-
 
 import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.repository.UserRepository;
@@ -11,7 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList; // Import
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.Collections;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -21,15 +18,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // "username" ở đây chính là "phoneNumber"
-        User user = userRepository.findByPhoneNumber(username)
+        
+        // === SỬA LỖI Ở ĐÂY ===
+        // "username" có thể là SĐT hoặc Email,
+        // nên chúng ta dùng hàm findByPhoneNumberOrEmail
+        User user = userRepository.findByPhoneNumberOrEmail(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy User: " + username));
 
-        // Trả về một đối tượng UserDetails mà Spring Security hiểu được
+        String roleName = "ROLE_" + user.getRole().name();
+        
         return new org.springframework.security.core.userdetails.User(
-            user.getPhoneNumber(),
+            user.getPhoneNumber(), // Luôn dùng SĐT làm "chủ thể" (principal)
             user.getPassword(),
-            new ArrayList<>() // Bỏ qua Roles nếu bạn chưa dùng
+            Collections.singletonList(new SimpleGrantedAuthority(roleName))
         );
     }
 }
