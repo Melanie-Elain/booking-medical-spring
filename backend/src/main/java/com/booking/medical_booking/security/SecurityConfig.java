@@ -45,11 +45,19 @@ public class SecurityConfig {
             
             // 3. PHÂN QUYỀN
             .authorizeHttpRequests(auth -> auth
+                // 1. Cho phép API Auth (Login/Register) và OPTIONS
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                
+                // 2. Chỉ ADMIN mới được vào /api/admin/
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/user/**").hasRole("BENHNHAN")
-                .anyRequest().authenticated()
+                
+                //  Dùng /api/user/** (với 2 dấu sao)
+                // /api/user/appointments VÀ /api/user/appointments?keyword=...
+                .requestMatchers("/api/user/**").hasRole("BENHNHAN") 
+                
+                // 4. Mọi request khác (nếu có) phải đăng nhập
+                .anyRequest().authenticated() 
             )
 
             // 4. THÊM JWT FILTER
