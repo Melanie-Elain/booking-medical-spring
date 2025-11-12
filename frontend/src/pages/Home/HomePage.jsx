@@ -34,7 +34,6 @@ const HomePage = () => {
       <HomeClinic />
       <HomeSpecialty />
       <HomeNews />
-      <DoctorWorkspace />
       <SuggestionSection />
     </div>
   );
