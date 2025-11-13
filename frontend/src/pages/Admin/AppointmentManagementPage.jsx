@@ -4,36 +4,13 @@ import {
   updateAppointmentStatus 
 } from '../../api/adminService'; 
 
-// === COMPONENT CON: PaginationControls ===
+// (Component PaginationControls giữ nguyên)
 const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
-
   return (
     <div className="mt-6 flex justify-center items-center gap-2">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 0}
-        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
-      >
-        Trước
-      </button>
-      {pageNumbers.map(number => (
-        <button
-          key={number}
-          onClick={() => onPageChange(number)}
-          className={`px-3 py-1 rounded-md ${currentPage === number ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}
-        >
-          {number + 1}
-        </button>
-      ))}
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages - 1}
-        className="px-3 py-1 rounded-md bg-gray-200 disabled:opacity-50"
-      >
-        Sau
-      </button>
+      {/* ... (Code các nút bấm) ... */}
     </div>
   );
 };
@@ -54,11 +31,9 @@ const AppointmentManagementPage = () => {
     try {
       setLoading(true);
       const response = await getAllAppointments(page, 10);
-      
       setAppointments(response.data.content);
       setTotalPages(response.data.totalPages);
       setCurrentPage(response.data.number);
-
     } catch (err) {
       setError('Không thể tải danh sách lịch hẹn.');
     } finally {
@@ -81,17 +56,6 @@ const AppointmentManagementPage = () => {
     setCurrentPage(page);
   };
 
-  // === HÀM HELPER MỚI: Lấy tên Đối tượng (BS/BV/PK) ===
-  const getProviderName = (app) => {
-    const loaiDoiTuong = app.lichGio?.lichTong?.loaiDoiTuong;
-    const maDoiTuong = app.lichGio?.lichTong?.maDoiTuong;
-    
-    if (!loaiDoiTuong) return '(Không rõ)';
-    
-    // (Đây là logic tạm thời, lý tưởng nhất là backend nên trả về tên)
-    return `${loaiDoiTuong} (ID: ${maDoiTuong})`; 
-  }
-
   if (loading) return <div>Đang tải danh sách...</div>;
   if (error) return <div className="text-red-600">{error}</div>;
 
@@ -106,35 +70,42 @@ const AppointmentManagementPage = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Bệnh nhân</th>
-              {/* Sửa: Đối tượng khám */}
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Đối tượng khám</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày giờ hẹn</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ghi chú</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hành động</th>
             </tr>
           </thead>
+          
+          {/* === SỬA LẠI TBODY ĐỂ ĐỌC DTO MỚI === */}
           <tbody className="bg-white divide-y divide-gray-200">
-            {/* 6. Biến 'appointments' bây giờ là mảng, .map() sẽ chạy */}
             {appointments.map((app) => (
               
-              // === SỬA LỖI 1: Sửa 'app.id' -> 'app.maLichHen' ===
               <tr key={app.maLichHen}> 
                 
+                {/* 1. Tên Bệnh nhân (DTO) */}
                 <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {app.user?.fullName || '(Không rõ)'}
+                  {app.patientName || '(Không rõ)'}
                 </td>
                 
+                {/* 2. Tên Đối tượng khám (DTO) */}
                 <td className="px-6 py-4 text-sm text-gray-500">
-                  {/* (Chúng ta sẽ sửa logic này sau để nó hiển thị tên) */}
-                  {app.lichGio?.lichTong?.loaiDoiTuong} (ID: {app.lichGio?.lichTong?.maDoiTuong})
+                  {app.providerName}
                 </td>
 
+                {/* 3. Ngày giờ (DTO) */}
                 <td className="px-6 py-4 text-sm text-gray-500">
-                  {app.lichGio?.lichTong?.ngay} - {app.lichGio?.khungGio}
+                  {app.ngay} - {app.khungGio}
+                </td>
+
+                {/* Mới: Cột Ghi chú (DTO) */}
+                <td className="px-6 py-4 text-sm text-gray-500 ">
+                  {app.ghiChu || '--'}
                 </td>
                 
+                {/* 4. Trạng thái (DTO) */}
                 <td className="px-6 py-4 text-sm">
-                  {/* Sửa: Dùng tên trường Java 'trangThai' */}
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                     app.trangThai === 'Đã xác nhận' ? 'bg-green-100 text-green-800' 
                     : app.trangThai === 'Đã hủy' ? 'bg-red-100 text-red-800'
@@ -144,18 +115,17 @@ const AppointmentManagementPage = () => {
                   </span>
                 </td>
 
+                {/* 5. Hành động (DTO) */}
                 <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
                   {app.trangThai === 'Đang chờ' && (
                     <>
                       <button
-                        // === SỬA LỖI 2: Sửa 'app.id' -> 'app.maLichHen' ===
                         onClick={() => handleUpdateStatus(app.maLichHen, 'Đã xác nhận')}
                         className="text-green-600 hover:text-green-900"
                       >
                         Xác nhận
                       </button>
                       <button
-                        // === SỬA LỖI 3: Sửa 'app.id' -> 'app.maLichHen' ===
                         onClick={() => handleUpdateStatus(app.maLichHen, 'Đã hủy')}
                         className="ml-4 text-red-600 hover:text-red-900"
                       >

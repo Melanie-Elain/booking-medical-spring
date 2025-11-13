@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Cấu hình local, không bao giờ push
+application.properties
+application-local.properties

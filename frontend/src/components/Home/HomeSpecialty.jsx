@@ -8,6 +8,12 @@ const specialtyData = [
   { id: 4, name: "Lão khoa", icon: "/images/Laokhoa.png" },
   { id: 5, name: "Chấn thương chỉnh hình", icon: "/images/Chanthuongchinhhinh.png" },
   { id: 6, name: "Hồi sức - cấp cứu", icon: "/images/Hoisuccapcuu.png" },
+  { id: 7, name: "Y học cổ truyền", icon: "/images/Yhoccotruyen.png" },
+  { id: 8, name: "Truyền nhiễm", icon: "/images/Truyennhiem.png" },
+  { id: 9, name: "Tim mạch", icon: "/images/Timmach.png" },
+  { id: 10, name: "Lão khoa", icon: "/images/Laokhoa.png" },
+  { id: 11, name: "Chấn thương chỉnh hình", icon: "/images/Chanthuongchinhhinh.png" },
+  { id: 12, name: "Hồi sức - cấp cứu", icon: "/images/Hoisuccapcuu.png" },
 ];
 
 const HomeSpecialty = ({isBookingPage = false}) => {

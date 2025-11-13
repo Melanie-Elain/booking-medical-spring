@@ -17,6 +17,7 @@ import com.booking.medical_booking.dto.ClinicRequestDTO;
 import com.booking.medical_booking.service.clinic.ClinicService;
 import com.booking.medical_booking.model.Appointment;
 import com.booking.medical_booking.service.appointment.AppointmentService;
+import com.booking.medical_booking.dto.AppointmentResponseDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,7 @@ import java.util.Map;
 // Import thư viện Pageable
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestParam; 
+import org.springframework.data.domain.Pageable; 
 
 @RestController
 @RequestMapping("/api/admin") // API gốc của Admin
@@ -225,12 +225,12 @@ public class AdminController {
 
     // --- QUẢN LÝ LỊCH HẸN ---
     @GetMapping("/appointments")
-    public ResponseEntity<Page<Appointment>> getAllAppointments(
+    public ResponseEntity<Page<AppointmentResponseDTO>> getAllAppointments( // <-- SỬA Ở ĐÂY
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Appointment> appointmentPage = appointmentService.getAllAppointments(pageable);
+        Page<AppointmentResponseDTO> appointmentPage = appointmentService.getAllAppointments(pageable); // <-- SỬA Ở ĐÂY
         return ResponseEntity.ok(appointmentPage);
     } 
 

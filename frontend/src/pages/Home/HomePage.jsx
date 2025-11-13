@@ -13,6 +13,7 @@ import HomeFooter from "../../components/Home/HomeFooter";
 import HomeNews from "../../components/Home/HomeNews";
 
 
+
 const HomePage = () => {
   const navigate = useNavigate(); 
 

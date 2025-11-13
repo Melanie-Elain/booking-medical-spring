@@ -8,6 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.booking.medical_booking.dto.AppointmentResponseDTO; 
+import com.booking.medical_booking.service.appointment.AppointmentService; 
+import org.springframework.data.domain.Page; 
+import org.springframework.data.domain.PageRequest; 
+import org.springframework.data.domain.Pageable; 
+
+
 @RestController
 @RequestMapping("/api/user") // API gốc cho user
 @CrossOrigin(origins = "http://localhost:3000")
@@ -15,6 +22,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private AppointmentService appointmentService;
 
     /**
      * API Lấy thông tin user hiện tại (cho trang Hồ sơ và Tài khoản)
@@ -49,5 +58,19 @@ public class UserController {
     public ResponseEntity<User> updateMyProfile(@RequestBody UpdateProfileRequest request) {
         User updatedUser = userService.updateProfile(request);
         return ResponseEntity.ok(updatedUser);
+    }
+    
+    // === 2. API  CHO LỊCH KHÁM CÁ NHÂN ===
+    @GetMapping("/appointments")
+    public ResponseEntity<Page<AppointmentResponseDTO>> getMyAppointments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            // 1. Thêm tham số keyword (không bắt buộc)
+            @RequestParam(required = false) String keyword 
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        // 2. Truyền keyword vào service
+        Page<AppointmentResponseDTO> appointmentPage = appointmentService.getMyAppointments(pageable, keyword);
+        return ResponseEntity.ok(appointmentPage);
     }
 }
