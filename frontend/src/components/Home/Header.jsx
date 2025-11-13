@@ -118,7 +118,6 @@ const Header = () => {
                 <span className="caret">▾</span>
               </button>
 
-              
               {/* Menu dropdown  */}
               <div className="dropdown-panel user-dropdown-menu">
                 <div className="dropdown-inner">
