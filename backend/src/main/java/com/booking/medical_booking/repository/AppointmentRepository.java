@@ -9,7 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
     
-    // === SỬA LỖI 1 ===
-    // Tên hàm phải khớp với tên trường (field) 'maLichHen' trong Entity
     Page<Appointment> findAllByOrderByMaLichHenDesc(Pageable pageable);
 }

@@ -34,12 +34,17 @@ package com.booking.medical_booking.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
+
 // 1. IMPORT THƯ VIỆN JSON
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
 @Table(name = "lich_gio")
+@EqualsAndHashCode(exclude = {"appointment", "lichTong"}) // Cần THUỘC TÍNH JAVA
+@ToString(exclude = {"appointment", "lichTong"}) // Ngắt toString()
 public class LichGio {
 
     @Id
@@ -53,6 +58,7 @@ public class LichGio {
     // (Khi tải 1 khung giờ, chúng ta luôn muốn biết nó của Lịch Tổng nào)
     @ManyToOne(fetch = FetchType.EAGER) 
     @JoinColumn(name = "ma_lich") 
+    @JsonIgnore
     private LichTong lichTong;
     
     // 3. THÊM @JsonIgnore ĐỂ NGẮT VÒNG LẶP

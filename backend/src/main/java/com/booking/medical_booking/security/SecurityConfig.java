@@ -45,6 +45,10 @@ public class SecurityConfig {
             
             // 3. PHÂN QUYỀN
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/doctors/**").permitAll()
+                .requestMatchers("/api/hospitals/**").permitAll()
+                .requestMatchers("/api/clinics/**").permitAll()
+                .requestMatchers("/api/specialties/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")

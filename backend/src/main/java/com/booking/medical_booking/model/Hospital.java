@@ -43,4 +43,6 @@ public class Hospital {
         inverseJoinColumns = @JoinColumn(name = "MaCK") 
     )
     private Set<Specialty> specialties;
+
+    
 }

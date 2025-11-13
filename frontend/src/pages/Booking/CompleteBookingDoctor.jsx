@@ -6,37 +6,77 @@ import BookingDownloadApp from "../../components/Booking/BookingDownloadApp";
 import DateSelector from "../../components/Booking/DateSelector";
 import { Check } from "lucide-react";
 import { useParams, useNavigate } from "react-router-dom";
-import doctorsData from "../../data/doctorsData";
+import { DoctorService } from "../../api/DoctorService";
+import { UserService } from "../../api/userService";
+import { appointmentService } from "../../api/appointmentService";
 
 const CompleteBookingDoctor = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const doctor = doctorsData.find((d) => d.id === Number(id));
+
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
+    const [selectedMaGio, setSelectedMaGio] = useState(null);
+
+    const [doctor, setDoctor] = useState();
+    const [patient, setPatient] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const [currentStep, setCurrentStep] = useState(1); 
     const [isStepOneOpen, setIsStepOneOpen] = useState(true);
     const [noteContent, setNoteContent] = useState('');
+
+        React.useEffect(() => {
+        const fetchDoctorDetails = async () => {
+            try {
+                setLoading(true);
+                const doctorData = await DoctorService.getDoctorById(id);
+                setDoctor(doctorData);
+                console.log("Doctor data:", doctorData);
+
+                const patientData = await UserService.getUserCurrent();
+                setPatient(patientData);
+                console.log("Patient data:", patientData);
+
+            } catch (err) {
+                console.error("Lỗi khi tải thông tin bác sĩ:", err);
+                const errorMessage = err.response?.data?.message || err.message || "Không thể tải thông tin bác sĩ từ server.";
+                setError(errorMessage);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchDoctorDetails();
+    }, [id]);
+    if (loading) {
+        return <div className="text-gray-500 p-8 text-center">Đang tải thông tin bác sĩ...</div>;
+    }
+
+    
     if (!doctor) {
         return <div className="text-red-500 p-8 text-center">Đang tải hoặc không tìm thấy thông tin bác sĩ.</div>;
     }
     
-    const patientDetails = {
-        name: "Thanh Hằng", 
-        dob: "04/01/2004",
-        gender: "Nữ",
-        address: "Xã Phước Kiển, Huyện Nhà Bè, Hồ Chí Minh",
+    const patientDetails = patient ?{
+        name: patient.fullName, 
+        dob: patient.dob,
+        gender: patient.gender,
+        address: patient.address,
         note: noteContent,
-    };
+    }:null;
+
     const patientName = patientDetails.name; 
 
-    const handleTimeSelection = (date, time) => {
+    // A. CẬP NHẬT PROPS nhận từ DateSelector
+    const handleTimeSelection = (date, time, maGio) => { // <-- NHẬN THÊM maGio
         setSelectedDate(date);
         setSelectedTime(time);
+        setSelectedMaGio(maGio); // <-- LƯU ID
         
-        if (date && time) {
-            setCurrentStep(2); 
-            setIsStepOneOpen(false); 
+        if (date && time && maGio) { // Kiểm tra maGio
+            setCurrentStep(2);
+            setIsStepOneOpen(false);
         } else {
             setCurrentStep(1);
             setIsStepOneOpen(true);
@@ -50,20 +90,35 @@ const CompleteBookingDoctor = () => {
         }
     };
 
-    const handleBooking = () => {
-        const successData = {
-            mainName: doctor.name,      
-            mainAddress: doctor.address,  
-            mainImage: doctor.image,  
-        
-            stt: 5,
-            code: `YMA${Math.floor(Math.random() * 1000000)}`, 
-            date: selectedDate, 
-            time: selectedTime, 
-            patient: patientDetails
+    const handleBooking = async () => {
+
+        if (!isReadyToBook || !patientDetails) return;
+    
+        const bookingData = {
+            maGio: selectedMaGio, 
+            userId: patient.id, 
+            ghiChu: noteContent,
         };
-        
+
+        try
+        {
+            const response = await appointmentService.bookDoctorAppointment(bookingData);
+            const successData = {
+                mainName: doctor.name,      
+                mainAddress: doctor.address,  
+                mainImage: doctor.image,  
+            
+                code: `YMA${Math.floor(Math.random() * 1000000)}`, 
+                date: selectedDate, 
+                time: selectedTime, 
+                patient: patientDetails
+            };
+
         navigate(`/dat-kham/phieu-kham`, { state: successData });
+
+        }catch (e) {
+            alert("Đặt lịch không thành công: " + e.response.data.message);
+        }
     };
 
     const isReadyToBook = selectedDate && selectedTime && currentStep === 2;
@@ -107,7 +162,7 @@ const CompleteBookingDoctor = () => {
                         </div>
                         {isStepOneOpen && (
                             <div className="mt-4">
-                                <DateSelector onTimeSelect={handleTimeSelection} />
+                                <DateSelector onTimeSelect={handleTimeSelection} doctorId={doctor.id} />
                             </div>
                         )}
                         </div>
@@ -126,7 +181,7 @@ const CompleteBookingDoctor = () => {
                                 <div className="space-y-4 mt-4"> 
                                     <div className="border border-blue-400 p-4 rounded-lg bg-blue-50">
                                         <div className="font-semibold">{patientName}</div>
-                                        <div className="text-sm text-gray-600">04/01/2004</div>
+                                        <div className="text-sm text-gray-600">{patient.dob}</div>
                                     </div>
                                     <div>
                                         <label className="font-medium text-sm">Thông tin bổ sung (không bắt buộc)</label>

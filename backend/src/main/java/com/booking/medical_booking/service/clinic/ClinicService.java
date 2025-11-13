@@ -1,16 +1,24 @@
 package com.booking.medical_booking.service.clinic;
 
 import com.booking.medical_booking.dto.ClinicRequestDTO;
+import com.booking.medical_booking.dto.ScheduleTimeDTO;
 import com.booking.medical_booking.model.Clinic;
+import com.booking.medical_booking.model.LichTong;
 import com.booking.medical_booking.model.Specialty;
+import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.repository.ClinicRepository;
+import com.booking.medical_booking.repository.LichTongRepository;
 import com.booking.medical_booking.repository.SpecialtyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,9 +29,20 @@ public class ClinicService {
     private ClinicRepository clinicRepository;
     @Autowired
     private SpecialtyRepository specialtyRepository;
+    @Autowired
+    private LichTongRepository lichTongRepository;
 
     public Page<Clinic> getAllClinics(Pageable pageable) {
         return clinicRepository.findAll(pageable);
+    }
+
+    public List<Clinic> getAllClinicsList() {
+        return clinicRepository.findAll();
+    }
+
+    public Clinic getClinicById(Integer id) {
+        return clinicRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy Clinic ID: " + id));
     }
 
     @Transactional
@@ -67,4 +86,40 @@ public class ClinicService {
             .orElseThrow(() -> new RuntimeException("Không tìm thấy Clinic ID: " + id));
         clinicRepository.delete(clinic);
     }
+
+    @Transactional(readOnly = true)
+    public Map<String, List<ScheduleTimeDTO>> getClinicSchedules(Long clinicId) {
+        
+        List<LichTong> clinicSchedules = lichTongRepository.findSchedulesWithLichGiosByDoctor(
+            User.UserRole.PHONGKHAM, 
+            clinicId
+        );
+        
+        if (clinicSchedules.isEmpty()) {
+            return new LinkedHashMap<>();
+        }
+        
+        Map<String, List<ScheduleTimeDTO>> formattedSchedules = new LinkedHashMap<>(); 
+        
+        for (LichTong lichTong : clinicSchedules) {
+            String tenNgay = lichTong.getTenNgay(); 
+            
+            List<ScheduleTimeDTO> availableTimes = lichTong.getLichGios().stream()
+                 .filter(lichGio -> "Available".equalsIgnoreCase(lichGio.getStatus())) 
+                 .map(lichGio -> {
+                     ScheduleTimeDTO dto = new ScheduleTimeDTO();
+                     dto.setId(lichGio.getMaGio());     
+                     dto.setTime(lichGio.getKhungGio()); 
+                     return dto;
+                 })
+                 .collect(Collectors.toList());
+                
+            if (!availableTimes.isEmpty()) {
+                formattedSchedules.put(tenNgay, availableTimes);
+            }
+        }
+
+        return formattedSchedules;
+    }
+
 }

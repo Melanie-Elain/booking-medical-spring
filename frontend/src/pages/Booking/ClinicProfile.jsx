@@ -2,14 +2,47 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import Header from "../../components/Home/Header";
 import HomeFooter from "../../components/Home/HomeFooter";
-import  clinicsData  from "../../data/clinicsData";
 import {ArrowUpRight, CircleCheck} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { clinicsData } from "../../data/clinicsData";
+import { clinicService } from "../../api/clinicService";
 
 const ClinicProfile = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const clinic = clinicsData.find((h) => h.id === Number(id));
+
+    const [clinic, setClinic] = React.useState(null);
+    const [specialties, setSpecialties] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState(null);
+    React.useEffect(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        const fetchClinicData = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const clinicInfo =await clinicService.getClinicById(id);
+                if (!clinicInfo) {
+                    setError("Không tìm thấy dữ liệu phòng khám với ID này.");
+                    return;
+                }
+                setClinic(clinicInfo);
+
+                const fetchedSpecialties = clinicInfo.specialties || [];
+                setSpecialties(fetchedSpecialties);
+
+                console.log("Clinic Specialties:", fetchedSpecialties);
+                
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu phòng khám:", err);
+                setError("Không thể tải dữ liệu phòng khám từ server.");
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchClinicData();
+    }, [id]);
+
     if (!clinic) {
         return <div className="p-6 text-center text-gray-500">Không tìm thấy phòng khám nào.</div>;
     }
@@ -44,7 +77,7 @@ const ClinicProfile = () => {
             </div>
             <div className="max-w-5xl mx-auto py-5">
                 <div className="grid md:grid-cols-5 gap-2 w-full rounded-lg overflow-hidden">
-                    {clinic.imageIntro.map((img, index) => 
+                    {clinic.imageIntro?.map((img, index) => 
                         index === 0 ? (
                             <div className="md:col-span-3 md:row-span-2 relative">
                                 <img
@@ -80,7 +113,7 @@ const ClinicProfile = () => {
                 <div  className="max-w-5xl mx-auto ">
                     <h2 className="font-semibold text-lg">Dịch vụ</h2>
                     <div className="pt-5 grid grid-cols-5 gap-x-8 gap-y-4">
-                    {clinic.specialty.map((spec, index) => (
+                    {specialties.map((spec, index) => (
                         <div>
                             <button
                             key={index}
@@ -88,7 +121,7 @@ const ClinicProfile = () => {
                             onClick={() => navigate(`/dat-kham/bac-si/search`)}
                             >
                             <CircleCheck className="mr-2 text-gray-700" size={18} />
-                            {spec}
+                            {spec.name}
                             </button>
                         </div>
                         

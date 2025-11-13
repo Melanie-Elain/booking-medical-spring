@@ -27,9 +27,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         
+        final String requestPath = request.getRequestURI();
+        if (requestPath.startsWith("/api/doctors") || 
+            requestPath.startsWith("/api/hospitals") || 
+            requestPath.startsWith("/api/clinics") ||
+            requestPath.startsWith("/api/specialties") || 
+            requestPath.startsWith("/api/auth")) {
+            // Đồng thời bỏ qua cả CORS pre-flight requests (OPTIONS)
+            if ("OPTIONS".equals(request.getMethod())) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                return;
+            }
+            filterChain.doFilter(request, response);
+            return; // Rất quan trọng: Thoát khỏi filter này
+       }
+
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String phoneNumber;
+
+        
 
         // 1. Kiểm tra xem có Header và có 'Bearer ' không
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {

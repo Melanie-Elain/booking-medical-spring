@@ -4,8 +4,8 @@ import { Check, ChevronRight, ChevronLeft } from "lucide-react";
 import Header from "../../components/Home/Header";
 import HomeFooter from "../../components/Home/HomeFooter";
 import BookingDownloadApp from "../../components/Booking/BookingDownloadApp";
-import hospitalsData from "../../data/hospitalsData"; 
-
+import { HospitalService } from "../../api/hospitalService";
+import { UserService } from "../../api/userService";
 
 const OptionBox = ({ id, label, price, description, isChecked, onChange }) => {
     const formatPrice = (p) => {
@@ -65,35 +65,39 @@ const OptionBox = ({ id, label, price, description, isChecked, onChange }) => {
 
 const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
     
-    const TODAY_DAY = 10;
-    const THIS_MONTH = 11;
-    const THIS_YEAR = 2025;
+    const today = new Date();
+    const TODAY_DAY = today.getDate();
+    const THIS_MONTH = today.getMonth() + 1; 
+    const THIS_YEAR = today.getFullYear();
     const weekdays = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
     
-    
-    const START_DAY_OF_MONTH = 1; 
-    const PADDING_DAYS = 5; // Số ô trống trước ngày 1 (T7 = 6, T2 = 1. T7 là ngày đầu, nên cần 5 ô trống)
-    const DAYS_IN_MONTH = 30;
+    const DAYS_IN_MONTH = new Date(THIS_YEAR, THIS_MONTH, 0).getDate();
+    const firstDayOfMonth = new Date(THIS_YEAR, today.getMonth(), 1);
+    let startDayIndex = firstDayOfMonth.getDay();
+    if (startDayIndex === 0) {
+        startDayIndex = 7; 
+    }
+    const PADDING_DAYS = startDayIndex - 1;
 
+    // --- 1. TẠO MAP DỮ LIỆU LỊCH (OK) ---
     const dateMap = {};
     Object.keys(schedules || {}).forEach(key => {
-        // Ví dụ key: "Th 2, 03-11"
         const dayMatch = key.match(/(\d{2})-\d{2}$/); // Lấy ngày (vd: 03)
         
         if (dayMatch) {
             const dayOfMonth = parseInt(dayMatch[1]);
-            const status = schedules[key].length > 0 ? 'AVAILABLE' : 'FULL';
+            // Logic status dựa trên số lượng khung giờ (length của List<ScheduleTimeDTO>)
+            const status = schedules[key].length > 0 ? 'AVAILABLE' : 'FULL'; 
             
             dateMap[dayOfMonth] = { 
                 status, 
                 scheduleKey: key,
-                count: schedules[key].length // Số lượng khung giờ còn lại
+                count: schedules[key].length 
             };
         }
     });
 
-
-    // --- 2. XỬ LÝ LƯỚI LỊCH ---
+    // --- 2. XỬ LÝ LƯỚI LỊCH (OK) ---
     const calendarGrid = [];
     
     // Thêm các ô trống đầu tiên (Padding)
@@ -106,7 +110,7 @@ const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
         const fullDateString = `${day}/${THIS_MONTH}/${THIS_YEAR}`;
         const data = dateMap[day];
         
-        let status = 'NONE'; // Mặc định không có trong schedules
+        let status = 'NONE'; 
         if (data) status = data.status;
 
         calendarGrid.push({
@@ -118,33 +122,28 @@ const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
         });
     }
 
-    // --- 3. LOGIC STYLING ---
+    // --- 3. LOGIC STYLING (OK) ---
     const getDayStyles = (dayData) => {
         if (!dayData.day) return 'bg-white';
         
-        // Ngày đang chọn
         if (selectedDate === dayData.fullDateString) {
             return 'bg-blue-600 text-white font-bold shadow-lg';
         }
         
-        // Ngày hôm nay
         if (dayData.isToday) {
             return 'bg-blue-100 text-blue-600 font-semibold cursor-pointer hover:bg-blue-200';
         }
         
-        // Ngày có sẵn
         if (dayData.status === 'AVAILABLE') {
             return 'text-gray-800 font-semibold cursor-pointer hover:bg-gray-100';
         }
 
-        // Ngày đã đầy / Không có lịch
         return 'text-gray-400 cursor-not-allowed';
     };
 
     const handleDayClick = (dayData) => {
         if (!dayData.day || dayData.status === 'FULL' || dayData.status === 'NONE') return;
         
-        // Gửi ngày và key schedule lên component cha
         onSelectDay({ 
             date: dayData.fullDateString, 
             scheduleKey: dayData.scheduleKey 
@@ -216,24 +215,99 @@ const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
 };
 
 
-const TimeSlotSelector = ({ onSelectTime, selectedTime }) => {
-    // Khung giờ giả định
-    const mockTimeSlots = ["16:50-17:00", "17:00-17:10", "17:10-17:20", "17:20-17:30", "17:30-17:40", "17:40-17:50"];
+// const TimeSlotSelector = ({times,  onSelectTime, selectedTime }) => {
     
+//     const timeSlots = times || [];
+
+//     return (
+//         <div className="mt-4">
+//             <p className="font-semibold text-gray-700 mb-2">☀️ Buổi chiều</p>
+//             <div className="grid grid-cols-6 gap-2">
+//                 {mockTimeSlots.map(time => (
+//                     <button
+//                         key={time}
+//                         onClick={() => onSelectTime(time)}
+//                         className={`border rounded-lg py-3 transition text-sm font-medium ${selectedTime === time ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'border-gray-300 hover:bg-blue-500 hover:text-white'}`}
+//                     >
+//                         {time}
+//                     </button>
+//                 ))}
+//             </div>
+//         </div>
+//     );
+// };
+
+const TimeSlotSelector = ({ times, onSelectTime, selectedTime }) => {
+    
+    // Nếu times là undefined/null, khởi tạo mảng rỗng để tránh lỗi map
+    const timeSlots = times || []; 
+
+    // Hàm phân loại giờ (Đơn giản: Chia trước 12h là Sáng, sau 12h là Chiều)
+    const categorizeTime = (timeString) => {
+        // timeString: "08:00 - 08:15"
+        const startTime = parseInt(timeString.split('-')[0].trim().split(':')[0]);
+        if (startTime < 12) {
+            return 'Sáng';
+        } else {
+            return 'Chiều';
+        }
+    };
+    
+    const groupedTimes = timeSlots.reduce((acc, slot) => {
+        const category = categorizeTime(slot.time);
+        if (!acc[category]) {
+            acc[category] = [];
+        }
+        acc[category].push(slot);
+        return acc;
+    }, {});
+
+
+    const renderTimeButtons = (slots) => (
+        <div className="grid grid-cols-6 gap-2">
+            {slots.map(slot => (
+                <button
+                    key={slot.id} 
+                    onClick={() =>{onSelectTime(slot)
+                        console.log("khung giờ đã chọn ID:", slot.id); 
+                        console.log("khung giờ đã chọn TIME:", slot.time)}  }
+                    className={`border rounded-lg py-3 transition text-sm font-medium ${
+                        // So sánh theo chuỗi giờ (time) hoặc ID, tùy thuộc selectedTime là gì
+                        selectedTime === slot.time 
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-md' 
+                            : 'border-gray-300 hover:bg-blue-500 hover:text-white'
+                    }`}
+                >
+                    {slot.time}
+                </button>
+            ))}
+        </div>
+    );
+    
+
     return (
         <div className="mt-4">
-            <p className="font-semibold text-gray-700 mb-2">☀️ Buổi chiều</p>
-            <div className="grid grid-cols-6 gap-2">
-                {mockTimeSlots.map(time => (
-                    <button
-                        key={time}
-                        onClick={() => onSelectTime(time)}
-                        className={`border rounded-lg py-3 transition text-sm font-medium ${selectedTime === time ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'border-gray-300 hover:bg-blue-500 hover:text-white'}`}
-                    >
-                        {time}
-                    </button>
-                ))}
-            </div>
+            
+            {/* Kiểm tra nếu không có khung giờ nào */}
+            {timeSlots.length === 0 && (
+                <p className="text-gray-500">Không có khung giờ trống cho ngày này.</p>
+            )}
+
+            {/* Render Buổi Sáng */}
+            {groupedTimes['Sáng'] && (
+                <div>
+                    <p className="font-semibold text-gray-700 mb-2">🌤️ Buổi sáng</p>
+                    {renderTimeButtons(groupedTimes['Sáng'])}
+                </div>
+            )}
+
+            {/* Render Buổi Chiều */}
+            {groupedTimes['Chiều'] && (
+                <div className={groupedTimes['Sáng'] ? "mt-4" : ""}>
+                    <p className="font-semibold text-gray-700 mb-2">☀️ Buổi chiều</p>
+                    {renderTimeButtons(groupedTimes['Chiều'])}
+                </div>
+            )}
         </div>
     );
 };
@@ -241,26 +315,69 @@ const TimeSlotSelector = ({ onSelectTime, selectedTime }) => {
 const CompleteBookingHospital = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const hospital = hospitalsData.find(c => c.id === Number(id));
     
+
     const [selectedOption, setSelectedOption] = useState(null); 
     const [selectedSpecialty, setSelectedSpecialty] = useState(null); 
 
+    const [hospital, setHospital] = useState(null);
+    const [patient, setPatient] = useState(null);
+    const [schedules,setSchedules]= useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
+    const [selectedMaGio, setSelectedMaGio] = useState(null);
     const [noteContent, setNoteContent] = useState(''); 
     const [currentStep, setCurrentStep] = useState(1); 
     const [selectedScheduleKey, setSelectedScheduleKey] = useState(null);
     
-    const patientDetails = {
-        name: "Thanh Hằng", 
-        dob: "04/01/2004",
-        gender: "Nữ",
-        address: "Xã Phước Kiển, Huyện Nhà Bè, Hồ Chí Minh",
-    };
-    const patientName = patientDetails.name; 
+    React.useEffect(() => {
+        const fetchHospitalData = async () => {
+            try {
+                setLoading(true);
+
+                const hospitalsData=await HospitalService.getHospitalById(id);
+                setHospital(hospitalsData);
+                setLoading(false);
+                console.log("Thông tin bệnh viện:",hospitalsData);
+
+
+                const schedulesData =await HospitalService.getHospitalSchedules(id);
+                setSchedules(schedulesData);
+                console.log("Lịch làm việc bệnh viện:");
+                
+                const patientData=await UserService.getUserCurrent();
+                setPatient(patientData);
+
+                console.log("Thông tin bệnh nhân:",patientData);
+
+            } catch (err) {
+                setError('Không thể tải thông tin bệnh viện.');
+                setLoading(false);
+            }
+        };
+        fetchHospitalData();
+    }, [id]);
+    if (loading) {
+        return <div className="text-center mt-20 text-gray-500">Đang tải thông tin bệnh viện...</div>;
+    }
+    if (error) {
+        return <div className="text-center mt-20 text-red-500">{error}</div>;
+    }
+
+
+    const patientDetails = patient ? {
+        name: patient.fullName, 
+        dob: patient.dob,
+        gender: patient.gender,
+        address: patient.address,
+    } : null;
+
+
+    // const patientName = patientDetails.name; 
 
     const handleOptionSelect = (optionId) => {
         setSelectedOption(optionId);
@@ -280,7 +397,8 @@ const CompleteBookingHospital = () => {
     };
     
     const handleTimeSelect = (time) => {
-        setSelectedTime(time);
+        setSelectedTime(time.time);
+        setSelectedMaGio(time.id);
         setCurrentStep(5); 
     };
 
@@ -290,23 +408,36 @@ const CompleteBookingHospital = () => {
         }
     };
     
-    const handleBooking = () => {
+    const handleBooking = async () => {
+        if (!isReadyToBook || !patientDetails) return;
         const patientDetailsWithNote = { ...patientDetails, note: noteContent };
 
-        const successData = {
-            
-            mainName: hospital.name,    
-            mainAddress: hospital.address, 
-            mainImage: hospital.image,  
-        
-            stt: 5, 
-            code: `YMA${Math.floor(Math.random() * 1000000)}`, 
-            date: selectedDate, 
-            time: selectedTime, 
-            patient: patientDetailsWithNote
+        const bookingData = {
+            maGio: selectedMaGio, 
+            userId: patient.id, 
+            ghiChu: noteContent,
         };
+
+        try{
+            const response =await HospitalService.bookAppointment(bookingData);
+            const successData = {
+            
+                mainName: hospital.name,    
+                mainAddress: hospital.address, 
+                mainImage: hospital.image,  
+            
+                code: `YMA${Math.floor(Math.random() * 1000000)}`, 
+                date: selectedDate, 
+                time: selectedTime, 
+                patient: patientDetailsWithNote
+            };
+            
+            navigate(`/dat-kham/phieu-kham`, { state: successData });
+        }catch(error){
+            console.error("Lỗi đặt khám:", error);
+            alert("Đặt khám thất bại. Vui lòng thử lại sau.");
+        }
         
-        navigate(`/dat-kham/phieu-kham`, { state: successData });
     };
 
     const isReadyToBook = selectedDate && selectedTime && currentStep === 5; 
@@ -317,10 +448,10 @@ const CompleteBookingHospital = () => {
         { id: 'bhyt', label: 'Khám BHYT', price: 0, description: 'Bệnh nhân đủ điều kiện hướng BHYT phải: – Có giấy chuyển tuyến hoặc phiếu hẹn tái khám hợp lệ – Bản chính CMND/CCCD, bằng lái xe,...' },
     ];
 
-    const specialties = hospital.specialty 
-        ? hospital.specialty.map(specName => ({
-            id: specName.toLowerCase().replace(/\s/g, '_'), // Tạo ID từ tên (vd: Da liễu -> da_lieu)
-            label: specName // Tên hiển thị là tên gốc
+    const specialties = hospital.specialties 
+        ? hospital.specialties.map(specObject => ({
+            id: (specObject.name || '').toLowerCase().replace(/\s/g, '_'),
+            label: specObject.name // Tên hiển thị là tên gốc
         })) 
         : [];
 
@@ -452,7 +583,7 @@ const CompleteBookingHospital = () => {
                             </div>
                             {currentStep === 3 && (
                                 <div className="mt-4">
-                                    <CalendarComponent onSelectDay={handleDaySelect} selectedDate={selectedDate} schedules={hospital.schedules}/> 
+                                    <CalendarComponent onSelectDay={handleDaySelect} selectedDate={selectedDate} schedules={schedules}/> 
                                 </div>
                             )}
                         </div>
@@ -476,10 +607,9 @@ const CompleteBookingHospital = () => {
                             {currentStep === 4 && (
                                 <div className="mt-4">
                                     <TimeSlotSelector 
-                                    schedules={hospital.schedules} 
-                                    selectedScheduleKey={selectedScheduleKey} 
+                                    times={schedules[selectedScheduleKey]|| []}
                                     onSelectTime={handleTimeSelect} 
-                                    selectedTime={selectedTime} />
+                                    selectedTime={selectedTime}/>
                                 </div>
                             )}
                         </div>
@@ -495,8 +625,8 @@ const CompleteBookingHospital = () => {
                             {currentStep === 5 && (
                                 <div className="space-y-4 mt-4"> 
                                     <div className="border border-blue-400 p-4 rounded-lg bg-blue-50">
-                                        <div className="font-semibold">{patientName}</div>
-                                        <div className="text-sm text-gray-600">04/01/2004</div>
+                                        <div className="font-semibold">{patientDetails.name}</div>
+                                        <div className="text-sm text-gray-600">{patientDetails.dob}</div>
                                     </div>
                                     <div className="mt-6">
                                         <label className="font-medium text-sm text-gray-700">Thông tin bổ sung (không bắt buộc)</label>
@@ -529,7 +659,7 @@ const CompleteBookingHospital = () => {
                                 </div>
                             </div>
                             {/* Bác sĩ phụ trách (Giữ nguyên hoặc thay bằng thông tin Bệnh viện) */}
-                            <div className="font-medium text-sm mt-1">BS. {hospital.doctorName}</div> 
+                            {/* <div className="font-medium text-sm mt-1">BS. {hospital.doctorName}</div>  */}
                         </div>
 
                         {/* Chi tiết Đặt khám (Loại hình, Chuyên khoa, Ngày, Giờ) */}
@@ -570,7 +700,7 @@ const CompleteBookingHospital = () => {
                                 <span className="text-gray-600">Bệnh nhân</span>
                                 <span className="font-semibold text-gray-800">
                                     {/* Hiển thị tên bệnh nhân nếu ở bước 5, nếu không thì hiển thị trạng thái */}
-                                    {currentStep === 5 ? patientName : 'Chọn hồ sơ'}
+                                    {currentStep === 5 ? patientDetails.name : 'Chọn hồ sơ'}
                                 </span>
                             </div>
                             
