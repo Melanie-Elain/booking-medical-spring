@@ -1,12 +1,26 @@
 package com.booking.medical_booking.service.appointment;
 
-import com.booking.medical_booking.dto.AppointmentResponseDTO; // <-- IMPORT DTO
+import com.booking.medical_booking.dto.AppointmentDTO;
 import com.booking.medical_booking.model.Appointment;
-import com.booking.medical_booking.model.User; // <-- IMPORT
+import com.booking.medical_booking.model.LichGio;
+import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.repository.AppointmentRepository;
-import com.booking.medical_booking.repository.DoctorRepository; // <-- IMPORT
-import com.booking.medical_booking.repository.HospitalRepository; // <-- IMPORT
-import com.booking.medical_booking.repository.ClinicRepository; // <-- IMPORT
+import com.booking.medical_booking.repository.LichGioRepository;
+import com.booking.medical_booking.repository.UserRepository;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.booking.medical_booking.dto.AppointmentResponseDTO; 
+import com.booking.medical_booking.model.Appointment;
+import com.booking.medical_booking.model.User; 
+import com.booking.medical_booking.repository.AppointmentRepository;
+import com.booking.medical_booking.repository.DoctorRepository; 
+import com.booking.medical_booking.repository.HospitalRepository; 
+import com.booking.medical_booking.repository.ClinicRepository; 
+import com.booking.medical_booking.repository.UserRepository; 
+import org.springframework.security.core.context.SecurityContextHolder; 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Map; 
@@ -25,8 +39,19 @@ public class AppointmentService {
     private HospitalRepository hospitalRepository;
     @Autowired
     private ClinicRepository clinicRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    // SỬA HÀM NÀY: Trả về Page<AppointmentResponseDTO>
+    @Autowired
+    private LichGioRepository   lichGioRepository;
+
+    
+
+    private final String TRANG_THAI_KHA_DUNG = "Available";
+    private final String TRANG_THAI_DA_DAT = "Booked";
+    private final String TRANG_THAI_CHO = "Đang chờ";
+
+   
     public Page<AppointmentResponseDTO> getAllAppointments(Pageable pageable) {
         
         // 1. Lấy trang (Page) Appointment gốc từ DB
@@ -53,7 +78,7 @@ public class AppointmentService {
                 providerName = clinicRepository.findById(id.intValue()).map(c -> c.getName()).orElse("(Phòng khám không tồn tại)");
             }
         } catch (Exception e) {
-            // (Bỏ qua nếu có lỗi, ví dụ lichGio bị null)
+            
         }
         
         // 4. Tạo DTO mới với tên đã tra cứu
@@ -74,4 +99,109 @@ public class AppointmentService {
         
         return appointmentRepository.save(appointment);
     }
+
+    @Transactional 
+    public Appointment createDoctorAppointment(AppointmentDTO appointmentDTO) {
+        
+        LichGio lichGio = lichGioRepository.findByMaGio(appointmentDTO.getMaGio())
+            .orElseThrow(() -> new RuntimeException("Khung giờ không hợp lệ."));
+            
+        if (!TRANG_THAI_KHA_DUNG.equalsIgnoreCase(lichGio.getStatus())) {
+            throw new RuntimeException("Khung giờ đã được đặt.");
+        }
+
+        
+        User patient = userRepository.findById(appointmentDTO.getUserId())
+            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại."));
+
+        lichGio.setStatus(TRANG_THAI_DA_DAT);
+        lichGioRepository.save(lichGio); 
+
+        Appointment newAppointment = new Appointment();
+        newAppointment.setUser(patient);
+        newAppointment.setLichGio(lichGio); 
+        newAppointment.setTrangThai(TRANG_THAI_CHO);
+        newAppointment.setGhiChu(appointmentDTO.getGhiChu());
+
+        return appointmentRepository.save(newAppointment);
+    }
+
+    @Transactional 
+    public Appointment createHospitalAppointment(AppointmentDTO appointmentDTO) {
+        
+        LichGio lichGio = lichGioRepository.findByMaGio(appointmentDTO.getMaGio())
+            .orElseThrow(() -> new RuntimeException("Khung giờ không hợp lệ."));
+            
+        if (!TRANG_THAI_KHA_DUNG.equalsIgnoreCase(lichGio.getStatus())) {
+            throw new RuntimeException("Khung giờ đã được đặt.");
+        }
+
+        
+        User patient = userRepository.findById(appointmentDTO.getUserId())
+            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại."));
+
+        lichGio.setStatus(TRANG_THAI_DA_DAT);
+        lichGioRepository.save(lichGio); 
+
+        Appointment newAppointment = new Appointment();
+        newAppointment.setUser(patient);
+        newAppointment.setLichGio(lichGio); 
+        newAppointment.setTrangThai(TRANG_THAI_CHO);
+        newAppointment.setGhiChu(appointmentDTO.getGhiChu());
+
+        return appointmentRepository.save(newAppointment);
+    }
+
+    @Transactional 
+    public Appointment createClinicAppointment(AppointmentDTO appointmentDTO) {
+        
+        LichGio lichGio = lichGioRepository.findByMaGio(appointmentDTO.getMaGio())
+            .orElseThrow(() -> new RuntimeException("Khung giờ không hợp lệ."));
+            
+        if (!TRANG_THAI_KHA_DUNG.equalsIgnoreCase(lichGio.getStatus())) {
+            throw new RuntimeException("Khung giờ đã được đặt.");
+        }
+
+        
+        User patient = userRepository.findById(appointmentDTO.getUserId())
+            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại."));
+
+        lichGio.setStatus(TRANG_THAI_DA_DAT);
+        lichGioRepository.save(lichGio); 
+
+        Appointment newAppointment = new Appointment();
+        newAppointment.setUser(patient);
+        newAppointment.setLichGio(lichGio); 
+        newAppointment.setTrangThai(TRANG_THAI_CHO);
+        newAppointment.setGhiChu(appointmentDTO.getGhiChu());
+
+        return appointmentRepository.save(newAppointment);
+    }
+
+
+    // ===  LẤY LỊCH HẸN CỦA TÔI (CHO BỆNH NHÂN) ===
+    @Transactional(readOnly = true) // readOnly=true để tối ưu tốc độ đọc
+    public Page<AppointmentResponseDTO> getMyAppointments(Pageable pageable, String keyword) {
+        User currentUser = getCurrentUser();
+        Page<Appointment> appointmentPage;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            // Hàm này (không có @EntityGraph) CẦN @Transactional
+            appointmentPage = appointmentRepository.searchMyAppointments(currentUser.getId(), keyword, pageable);
+        } else {
+            // Hàm này (có @EntityGraph) không thực sự cần, nhưng để @Transactional
+            appointmentPage = appointmentRepository.findByUserIdOrderByMaLichHenDesc(currentUser.getId(), pageable);
+        }
+        
+        // Nhờ @Transactional, hàm convertToDTO sẽ truy cập được các trường LAZY
+        return appointmentPage.map(this::convertToDTO);
+    }
+
+    // === HÀM TIỆN ÍCH ===
+    private User getCurrentUser() {
+        String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByPhoneNumberOrEmail(phoneNumber, phoneNumber) 
+            .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user: " + phoneNumber));
+    }
+
 }

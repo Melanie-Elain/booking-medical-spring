@@ -1,24 +1,60 @@
-import React, {useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import { useParams } from "react-router-dom";
 import Header from "../../components/Home/Header";
 import DownloadApp from "../../components/Home/DownloadApp";
 import HomeFooter from "../../components/Home/HomeFooter";
-import  hospitalsData  from "../../data/hospitalsData";
 import {Globe, ArrowUpRight, Phone, CircleCheck} from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { hospitalsData } from "../../data/hospitalsData";
+import { HospitalService } from "../../api/hospitalService";
 
 const HospitalProfile = () => {
     const navigate = useNavigate();
     const { id } = useParams();
 
+    const [hospital, setHospital] = useState(null);
+    const [specialties, setSpecialties] = useState([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(null);
+
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: "smooth" });
-      }, []);
 
-    const hospital = hospitalsData.find((h) => h.id === Number(id));
+        const fetchHospitalData = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+
+                console.log("Fetching hospital data for ID:", id);
+                const hospitalInfo =await HospitalService.getHospitalById(id);
+                if (!hospitalInfo || !hospitalInfo.id) {
+                    setError("Không tìm thấy dữ liệu bệnh viện với ID này.");
+                    return;
+                }
+                setHospital(hospitalInfo);
+                console.log("Hospital Info:", hospitalInfo);
+                
+                const fetchedSpecialties = hospitalInfo.specialties || [];
+                setSpecialties(fetchedSpecialties);
+                console.log("Hospital Specialties:", fetchedSpecialties);
+               
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu bệnh viện:", err);
+                setError("Không thể tải dữ liệu bệnh viện từ server.");
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchHospitalData();
+
+    }, []);
+
+
     if (!hospital) {
         return <div className="p-6 text-center text-gray-500">Không tìm thấy bệnh viện.</div>;
     }
+
+    const phoneDisplay = hospital.phone || 'Đang cập nhật';
     return (
         <>
             <Header />
@@ -43,7 +79,7 @@ const HospitalProfile = () => {
                                 <ArrowUpRight className="mr-2 text-blue-600" size={18}/> Đường đi
                             </button>
                             <button className="flex border rounded-2xl px-3 py-1 items-center  hover:text-blue-600">
-                                <Phone className="mr-2 text-blue-600" size={18}/> Tổng đài bệnh viện: 0123456789
+                                <Phone className="mr-2 text-blue-600" size={18}/> Tổng đài bệnh viện: ${phoneDisplay}
                             </button>
                         </div>
                     </div>
@@ -57,7 +93,7 @@ const HospitalProfile = () => {
             </div>
             <div className="max-w-5xl mx-auto pt-5">
                 <div className="grid md:grid-cols-5 gap-2 w-full rounded-lg overflow-hidden">
-                    {hospital.imageIntro.map((img, index) => 
+                    {hospital.imageIntro?.map((img, index) => 
                         index === 0 ? (
                             <div className="md:col-span-3 md:row-span-2 relative">
                                 <img
@@ -120,15 +156,15 @@ const HospitalProfile = () => {
                 <div  className="max-w-5xl mx-auto ">
                     <h2 className="font-semibold text-lg">Chuyên khoa</h2>
                     <div className="pt-5 grid grid-cols-5 gap-x-8 gap-y-4">
-                    {hospital.specialty.map((spec, index) => (
-                        <div>
+                    {specialties.map((spec, index) => (
+                        <div key={index}>
                             <button
-                            key={index}
+                            
                             className="inline-flex items-center bg-gray-200 text-gray-800 rounded-full px-4 py-1 text-base hover:bg-gray-300 transition"
                             onClick={() => navigate(`/dat-kham/bac-si/search`)}
                             >
                             <CircleCheck className="mr-2 text-gray-700" size={18} />
-                            {spec}
+                            {spec.name}
                             </button>
                         </div>
                         

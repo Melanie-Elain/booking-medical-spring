@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
-import hospitalsData from "../../data/hospitalsData";
+import { HospitalService } from "../../api/hospitalService";
 
 
 const BookingHospital = () => {
@@ -9,9 +9,27 @@ const BookingHospital = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const hospitalPerPage = 6; 
 
-    const hospitals= hospitalsData;
+    const [hospitalsData, setHospitalsData] = useState([]);
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState(null);
+    useEffect(() => {
+        const fetchHospitals = async () => {
+          try {
+            const response = await HospitalService.getAllHospitalsList();
+            setHospitalsData(response);
+
+          } catch (err) {
+            setError(err.message || "Something went wrong");
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchHospitals();
+      }, []);
+
+      const hospitals = hospitalsData || [];
     const startIndex = currentPage * hospitalPerPage;
-    const selectedHospitals = hospitalsData.slice(
+    const selectedHospitals = hospitals.slice(
       startIndex, 
       startIndex + hospitalPerPage
     );

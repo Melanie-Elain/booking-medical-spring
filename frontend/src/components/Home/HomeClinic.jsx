@@ -1,51 +1,78 @@
-import React from "react";
+import React ,{useState, useEffect} from "react";
 import "../../assets/Home/HomeClinic.css";
+import { useNavigate } from "react-router-dom";
+import { clinicService } from "../../api/clinicService";
 
-const clinicData = [
-    { 
-        id: 1, 
-        logo: 'logo-cao-thang.png', 
-        title: 'Phòng khám Sản Phụ Khoa 13 Cao Thắng', 
-        address: '13 Cao Thắng, Phường Bến Nghé, Q.1, TP.HCM' 
-    },
-    { 
-        id: 2, 
-        logo: 'logo-my-my.png', 
-        title: 'Phòng khám Nhi Mỹ Mỹ', 
-        address: '105/10 Nguyễn Thị Tú, P. Bình Hưng Hòa B, Q. Bình Tân, TP.HCM' 
-    },
-    { 
-        id: 3, 
-        logo: 'logo-chac.png', 
-        title: 'Trung Tâm Chăm Sóc Sức Khỏe Cộng Đồng - CHAC', 
-        address: '110A Ngô Quyền, P.5, Q.10, TP.HCM' 
-    },
-    { 
-        id: 4, 
-        logo: 'logo-shine.png', 
-        title: 'Shine Clinic By TS.BS Trần Ngọc Ánh since 1987', 
-        address: '06 Trương Quyền, P.6, Q.3, TP.HCM' 
-    },
-];
 
-const ClinicCard = ({ logo, title, address }) => (
-    <div className="clinic-card">
+const ClinicCard = ({ clinic, navigate }) => (
+    <div className="clinic-card"
+        onClick={() => navigate(`/dat-kham/phong-kham/${clinic.id}`)}
+    >
         <div className="logo-container">
-            {/* Giả định bạn đã có thư mục 'assets/logos' chứa ảnh */}
-            <img src={`/images/${logo}`} alt={title} className="clinic-logo" /> 
+            <img 
+                src={clinic.image} 
+                alt={clinic.name} 
+                className="clinic-logo" 
+            /> 
         </div>
         <div className="clinic-info">
-            <p className="clinic-card-title">{title}</p>
-            <p className="clinic-card-address">{address}</p>
+            <p className="clinic-card-title">{clinic.name}</p>
+            <p className="clinic-card-address">{clinic.address}</p>
         </div>
     </div>
 );
 
-const HomeClinic = () => {
+
+const HomeClinic = () => { 
+    const navigate = useNavigate();
+    const [clinics, setClinics] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const clinicCountToShow = 4; 
+    
+
+    useEffect(() => {
+        const fetchAndSetClinics = async () =>{
+            try {
+                setLoading(true);
+                setError(null);
+                console.log("Fetching clinics data...");
+                const fetchedData = await clinicService.getAllClinicsList();
+                if (Array.isArray(fetchedData)) {
+                    setClinics(fetchedData);
+                } else if (fetchedData && fetchedData.content && Array.isArray(fetchedData.content)) {
+                    setClinics(fetchedData.content);
+                } else {
+                    throw new Error("Phản hồi không phải là một danh sách phòng khám hợp lệ.");
+                }
+                console.log("Fetched clinics:", fetchedData);
+                
+            } catch (err) {
+                console.error("Lỗi khi tải phòng khám:", err);
+                setError("Không thể tải danh sách phòng khám từ server.");
+            } finally {
+                setLoading(false);
+            }
+        }
+       
+        fetchAndSetClinics();
+    }, [clinicService]);
+
+    const clinicsToShow = clinics.slice(0, clinicCountToShow);
+
+
+    if (loading) {
+        return <section className="home-clinic"><div className="container">Đang tải danh sách phòng khám...</div></section>;
+    }
+
+    if (error) {
+        return <section className="home-clinic"><div className="container text-red-600">Lỗi: {error}</div></section>;
+    }
+
+
     return (
         <section className="home-clinic">
             <div className="container">
-                {/*Header & Btn_viewAll*/}
                 <div className="clinic-header">
                     <div className="clinic-text">
                         <h2 className="title">Đặt khám phòng khám</h2>
@@ -53,21 +80,20 @@ const HomeClinic = () => {
                             Đa dạng phòng khám với nhiều chuyên khoa khác nhau như Sản - Nhi, Tai Mũi họng, Da Liễu, Tiêu Hoá...
                         </p>
                     </div>
-                    <button className="view-all-btn">
+                    <button className="view-all-btn"
+                    onClick={() => navigate("/dat-kham/phong-kham")}>
                         Xem thêm <span className="arrow-icon">
                             <div className="icon-default"><i class="fa-solid fa-chevron-right"></i></div>
                             <div className="icon-hover"><i class="fa-solid fa-arrow-right"></i></div>
                             </span>
                     </button>
                 </div>
-                {/*Clinic list*/}
                 <div className="clinic-list">
-                    {clinicData.map(clinic => (
+                    {clinicsToShow.map(clinic => (
                         <ClinicCard
                             key={clinic.id}
-                            logo={clinic.logo}
-                            title={clinic.title}
-                            address={clinic.address}
+                            clinic={clinic} 
+                             navigate={navigate}
                         />
                     ))}
                 </div>

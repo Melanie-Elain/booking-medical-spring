@@ -35,6 +35,8 @@ package com.booking.medical_booking.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import java.time.LocalDate;
 import java.util.Set;
 // 1. IMPORT THƯ VIỆN JSON
@@ -43,6 +45,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Data
 @Table(name = "lich_tong")
+@EqualsAndHashCode(exclude = {"lichGios"}) // Cần THUỘC TÍNH JAVA (số nhiều)
+@ToString(exclude = {"lichGios"}) // Ngắt toString()
 public class LichTong {
 
     @Id

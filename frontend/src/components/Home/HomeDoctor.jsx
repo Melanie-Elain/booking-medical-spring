@@ -1,14 +1,48 @@
-import React, { useRef} from "react";
+import React, { useRef, useState, useEffect} from "react";
 import DoctorCard from "../Booking/DoctorCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import doctorsData from "../../data/doctorsData";
+import {DoctorService} from "../../api/DoctorService";
 
 const HomeDoctor = ({ isBookingPage = false }) => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
 
-  const doctors = doctorsData;
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+        const fetchAndSetDoctors = async () => {
+          try {
+            setLoading(true); // Đặt loading ở đầu try block
+            
+            // 1. Gọi Service (dùng đối tượng DoctorService đã sửa ở trên)
+            const responseData = await DoctorService.getAllDoctorsList(); 
+            
+            // 2. Kiểm tra nếu dữ liệu là List<Doctor> (từ Spring Boot Controller)
+            if (Array.isArray(responseData)) {
+                 setDoctors(responseData); 
+            } else if (responseData && responseData.content && Array.isArray(responseData.content)) {
+                // Giữ lại trường hợp phân trang nếu bạn có thể thay đổi API sau này
+                setDoctors(responseData.content);
+            } else {
+                throw new Error("Phản hồi không phải là một danh sách bác sĩ hợp lệ.");
+            }
+          } catch (err) {
+            console.error("Lỗi khi tải bác sĩ:", err);
+            
+            // Lỗi từ Axios thường có object 'response'
+            const errorMessage = err.response?.data?.message || err.message || "Không thể tải danh sách bác sĩ từ server.";
+            setError(errorMessage); 
+          } finally {
+            setLoading(false);
+          }
+       };
+    
+        fetchAndSetDoctors();
+       }, [isBookingPage]);
+
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
   };

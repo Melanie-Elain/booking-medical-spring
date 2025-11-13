@@ -1,14 +1,41 @@
-import React, {useRef} from "react";
+import React, {useRef, useEffect, useState} from "react";
 import HospitalCard from "../Booking/HospitalCard";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import hospitalsData from "../../data/hospitalsData";
+import {HospitalService} from "../../api/hospitalService";
 
 const HomeHospital = () => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
 
-  const hospitals = hospitalsData;
+  const [hospitals, setHospitals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchAndSetDoctors = async () => {
+      try {
+        setLoading(true); 
+        const responseData = await HospitalService.getAllHospitalsList();
+
+        if (Array.isArray(responseData)) {
+          setHospitals(responseData);
+        } else if (responseData && responseData.content && Array.isArray(responseData.content)) {
+          setHospitals(responseData.content);
+        } else {
+          throw new Error("Phản hồi không phải là một danh sách bệnh viện hợp lệ.");
+        }
+      } catch (err) {
+        console.error("Lỗi khi tải bệnh viện:", err);
+        const errorMessage = err.response?.data?.message || err.message || "Không thể tải danh sách bệnh viện từ server.";
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAndSetDoctors();
+  }, []);
+
   const scrollLeft = () => {
     scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
   };

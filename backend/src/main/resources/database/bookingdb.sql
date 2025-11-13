@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 11, 2025 lúc 12:23 PM
+-- Thời gian đã tạo: Th10 13, 2025 lúc 04:54 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.0.30
+-- Phiên bản PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `bookingdb`
+-- Cơ sở dữ liệu: `medical_booking`
 --
 
 -- --------------------------------------------------------
@@ -44,16 +44,16 @@ CREATE TABLE `bacsi` (
 --
 
 INSERT INTO `bacsi` (`id`, `user_id`, `name`, `specialty`, `address`, `workplace`, `image`, `experience_year`, `description`) VALUES
-(1, 14, 'TS.BS Đào Bùi Quý Quyền', 'Nội thận - Tiết niệu', '201B Nguyễn Chí Thanh, Q. 5, TP.HCM', 'Bệnh viện Chợ Rẫy', '/images/doctor/quyen.webp', 22, 'Trưởng khoa Nội thận - Tiết niệu tại Bệnh viện Chợ Rẫy.'),
-(2, 8, 'BS. Trần Thị Bích Ngọc', 'Nội Tiêu hóa', '250 Nguyễn Xí, P. 13, Bình Thạnh, TP.HCM', 'Bệnh viện Đại học Y dược TP.HCM', '/images/doctor/ngoc.webp', 15, 'Chuyên gia về nội soi và các bệnh lý dạ dày.'),
-(3, 15, 'GS.TS.BS Võ Thành Nhân', 'Can thiệp Tim mạch', '6 Nguyễn Lương Bằng, Q. 7, TP.HCM', 'Bệnh viện FV', '/images/doctor/nhan.webp', 30, 'Chuyên gia hàng đầu Việt Nam về can thiệp tim mạch, TAVI.'),
-(4, 23, 'BS.CKII Trần Minh Khuyên', 'Nội Thần kinh', '527 Sư Vạn Hạnh, P. 12, Q. 10, TP.HCM', 'Bệnh viện Nhân dân 115', '/images/doctor/khuyen.webp', 20, 'Điều trị chuyên sâu về đột quỵ và các bệnh lý thần kinh.'),
-(5, 17, 'BS. Nguyễn Thị Hồng Hạnh', 'Tai Mũi Họng', '123 Võ Văn Tần, P. 6, Q. 3, TP.HCM', 'Phòng khám Bác sĩ Hạnh', '/images/doctor/hanh.webp', 18, 'Chuyên nội soi và điều trị viêm xoang, viêm họng mãn tính.'),
-(6, 18, 'BS. Trần Ngọc Ánh', 'Da liễu', '06 Trương Quyền, P.6, Q.3, TP.HCM', 'Shine Clinic', '/images/doctor/anh.webp', 35, 'Chuyên gia hàng đầu về điều trị da thẩm mỹ, laser.'),
-(7, 19, 'BS. Bùi Tiến Hùng', 'Nhãn khoa (Mắt)', '39B Hàng Bài, Q. Hoàn Kiếm, Hà Nội', 'Phòng khám Mắt Bác sĩ Hùng', '/images/doctor/hung.webp', 25, 'Chuyên phẫu thuật Phaco và Lasik, điều trị tật khúc xạ.'),
-(8, 20, 'PGS.TS.BS Tăng Hà Nam Anh', 'Cơ Xương Khớp', '16/2 Lý Thường Kiệt, P. 7, Q. Tân Bình', 'Phòng khám Bác sĩ Nam Anh', '/images/doctor/nam_anh.webp', 28, 'Chuyên gia về nội soi và chấn thương thể thao.'),
-(9, 21, 'ThS.BS Nguyễn Thị Tâm', 'Sản Phụ khoa', '284 Cống Quỳnh, Q. 1, TP.HCM', 'Bệnh viện Từ Dũ', '/images/doctor/tam.webp', 12, 'Chuyên theo dõi thai kỳ nguy cơ cao và đỡ đẻ.'),
-(10, 22, 'BS.CKI Nguyễn Vạn Thông', 'Nhi khoa', '341 Sư Vạn Hạnh, Q. 10, TP.HCM', 'Bệnh viện Nhi Đồng 1', '/images/doctor/thong.webp', 16, 'Chuyên điều trị các bệnh lý hô hấp và tiêu hóa ở trẻ em.');
+(1, 14, 'TS.BS Đào Bùi Quý Quyền', 'Nội thận - Tiết niệu', '201B Nguyễn Chí Thanh, Q. 5, TP.HCM', 'Bệnh viện Chợ Rẫy', 'https://cdn.youmed.vn/photos/931bb6a5-da4f-4f74-a442-a927d188bb98.jpg?width=100&aspect_ratio=1:1', 22, 'Trưởng khoa Nội thận - Tiết niệu tại Bệnh viện Chợ Rẫy.'),
+(2, 8, 'BS. Trần Thị Bích Ngọc', 'Nội Tiêu hóa', '250 Nguyễn Xí, P. 13, Bình Thạnh, TP.HCM', 'Bệnh viện Đại học Y dược TP.HCM', 'https://cdn.youmed.vn/photos/8d963988-516b-44ed-a7bf-49f26dcc88b7.jpg?width=100&aspect_ratio=1:1', 15, 'Chuyên gia về nội soi và các bệnh lý dạ dày.'),
+(3, 15, 'GS.TS.BS Võ Thành Nhân', 'Can thiệp Tim mạch', '6 Nguyễn Lương Bằng, Q. 7, TP.HCM', 'Bệnh viện FV', 'https://cdn.youmed.vn/photos/d9bdabb7-7afb-419a-8533-db34a775e504.jpg?width=100&aspect_ratio=1:1', 30, 'Chuyên gia hàng đầu Việt Nam về can thiệp tim mạch, TAVI.'),
+(4, 23, 'BS.CKII Trần Minh Khuyên', 'Nội Thần kinh', '527 Sư Vạn Hạnh, P. 12, Q. 10, TP.HCM', 'Bệnh viện Nhân dân 115', 'https://cdn.youmed.vn/photos/09f68f6c-131b-45ed-97d6-afdc89fa51e3.jpg?width=100&aspect_ratio=1:1', 20, 'Điều trị chuyên sâu về đột quỵ và các bệnh lý thần kinh.'),
+(5, 17, 'BS. Nguyễn Thị Hồng Hạnh', 'Tai Mũi Họng', '123 Võ Văn Tần, P. 6, Q. 3, TP.HCM', 'Phòng khám Bác sĩ Hạnh', 'https://cdn.youmed.vn/photos/68c2307d-18f8-4e97-9ef3-99fea20a286d.png?width=100&aspect_ratio=1:1', 18, 'Chuyên nội soi và điều trị viêm xoang, viêm họng mãn tính.'),
+(6, 18, 'BS. Trần Ngọc Ánh', 'Da liễu', '06 Trương Quyền, P.6, Q.3, TP.HCM', 'Shine Clinic', 'https://cdn.youmed.vn/photos/b7125d2f-c83d-45c4-bfa9-29a6eb863653.jpg?width=100&aspect_ratio=1:1', 35, 'Chuyên gia hàng đầu về điều trị da thẩm mỹ, laser.'),
+(7, 19, 'BS. Bùi Tiến Hùng', 'Nhãn khoa (Mắt)', '39B Hàng Bài, Q. Hoàn Kiếm, Hà Nội', 'Phòng khám Mắt Bác sĩ Hùng', 'https://cdn.youmed.vn/photos/5b6e849b-9836-4a3c-8355-b75da10be70b.JPG?width=100&aspect_ratio=1:1', 25, 'Chuyên phẫu thuật Phaco và Lasik, điều trị tật khúc xạ.'),
+(8, 20, 'PGS.TS.BS Tăng Hà Nam Anh', 'Cơ Xương Khớp', '16/2 Lý Thường Kiệt, P. 7, Q. Tân Bình', 'Phòng khám Bác sĩ Nam Anh', 'https://cdn.youmed.vn/photos/570c0b98-89cd-4788-90bf-9cbfb7711936.jpg?width=100&aspect_ratio=1:1', 28, 'Chuyên gia về nội soi và chấn thương thể thao.'),
+(9, 21, 'ThS.BS Nguyễn Thị Tâm', 'Sản Phụ khoa', '284 Cống Quỳnh, Q. 1, TP.HCM', 'Bệnh viện Từ Dũ', 'https://cdn.youmed.vn/photos/899be4cb-948f-4af5-b3d2-387fccb29a7d.jpg?width=100&aspect_ratio=1:1', 12, 'Chuyên theo dõi thai kỳ nguy cơ cao và đỡ đẻ.'),
+(10, 22, 'BS.CKI Nguyễn Vạn Thông', 'Nhi khoa', '341 Sư Vạn Hạnh, Q. 10, TP.HCM', 'Bệnh viện Nhi Đồng 1', 'https://cdn.youmed.vn/photos/305541b6-72ae-4fde-a3e8-647e2b171d63.jpg?width=100&aspect_ratio=1:1', 16, 'Chuyên điều trị các bệnh lý hô hấp và tiêu hóa ở trẻ em.');
 
 -- --------------------------------------------------------
 
@@ -105,16 +105,16 @@ CREATE TABLE `benhvien` (
 --
 
 INSERT INTO `benhvien` (`id`, `user_id`, `name`, `slogan`, `address`, `image`, `description`, `phone`, `banner`) VALUES
-(1, 10, 'Bệnh viện Chợ Rẫy', 'Nơi gửi trọn niềm tin', '201B Nguyễn Chí Thanh, P. 12, Q. 5, TP.HCM', '/images/hospital/cho_ray.webp', 'Bệnh viện đa khoa trung ương hàng đầu tại khu vực phía Nam.', '0123456777', '/images/hospital/banner/cho_ray.webp'),
-(2, 24, 'Bệnh viện Đại học Y Dược TP.HCM', 'Tiên phong - Đẳng cấp - Chuẩn mực', '215 Hồng Bàng, P. 11, Q. 5, TP.HCM', '/images/hospital/ydc.webp', 'Bệnh viện uy tín kết hợp giữa điều trị và giảng dạy y khoa.', '02838554269', '/images/hospital/banner/ydc.webp'),
-(3, 25, 'Bệnh viện Từ Dũ', 'Nơi khởi đầu sự sống', '284 Cống Quỳnh, P. Phạm Ngũ Lão, Q. 1, TP.HCM', '/images/hospital/tu_du.webp', 'Bệnh viện chuyên sản phụ khoa hàng đầu tại Việt Nam.', '02854042829', '/images/hospital/banner/tu_du.webp'),
-(4, 26, 'Bệnh viện Phụ sản Quốc tế Sài Gòn (SIH)', 'Nơi chắp cánh những thiên thần bé bỏng', '63 Bùi Thị Xuân, P. Phạm Ngũ Lão, Q. 1, TP.HCM', '/images/hospital/sih_logo.webp', 'Bệnh viện chuyên khoa sản phụ và sơ sinh hàng đầu, tiêu chuẩn quốc tế.', '02839253000', '/images/hospital/banner/sih.webp'),
-(5, 27, 'Bệnh viện Tâm thần Trung ương 2', 'Khỏe mạnh tinh thần, vững bước tương lai', '158 Hùng Vương, P. 2, TP. Biên Hòa, Đồng Nai', '/images/hospital/tamthan_tw2_logo.webp', 'Cơ sở y tế chuyên sâu về khám và điều trị các vấn đề tâm thần.', '02513822295', '/images/hospital/banner/tamthan.webp'),
-(6, 28, 'Bệnh viện Nhi Đồng 1', 'Tận tâm vì sức khỏe trẻ thơ', '341 Sư Vạn Hạnh, P. 10, Q. 10, TP.HCM', '/images/hospital/nhidong1_logo.webp', 'Bệnh viện Nhi khoa lớn và uy tín nhất Việt Nam.', '02839271119', '/images/hospital/banner/nhidong1.webp'),
-(7, 29, 'Bệnh viện Nhân dân 115', 'Chăm sóc bằng trái tim', '527 Sư Vạn Hạnh, P. 12, Q. 10, TP.HCM', '/images/hospital/115.webp', 'Bệnh viện đa khoa hạng I, mạnh về Ngoại thần kinh và Tim mạch.', '02838652368', '/images/hospital/banner/115.webp'),
-(8, 30, 'Bệnh viện Hùng Vương', 'Ân cần - Tận tụy', '128 Hồng Bàng, P. 12, Q. 5, TP.HCM', '/images/hospital/hung_vuong.webp', 'Một trong những bệnh viện phụ sản lâu đời và uy tín nhất.', '02838558532', '/images/hospital/banner/hung_vuong.webp'),
-(9, 31, 'Bệnh viện Vinmec Central Park', 'Chăm sóc tận tâm, Tiêu chuẩn quốc tế', '208 Nguyễn Hữu Cảnh, P. 22, Q. Bình Thạnh, TP.HCM', '/images/hospital/vinmec.webp', 'Bệnh viện đa khoa quốc tế thuộc hệ thống Vingroup.', '02836221166', '/images/hospital/banner/vinmec.webp'),
-(10, 32, 'Bệnh viện FV', 'Nơi bạn tin tưởng', '6 Nguyễn Lương Bằng, P. Tân Phú, Q. 7, TP.HCM', '/images/hospital/fv.webp', 'Bệnh viện quốc tế với nhiều chuyên khoa sâu.', '02854113333', '/images/hospital/banner/fv.webp'),
+(1, 10, 'Bệnh viện Chợ Rẫy', 'Nơi gửi trọn niềm tin', '201B Nguyễn Chí Thanh, P. 12, Q. 5, TP.HCM', 'https://cdn.youmed.vn/photos/14c1b0c8-1b44-48e6-ab0d-b4b989a86b45.png?width=100&aspect_ratio=1:1', 'Bệnh viện đa khoa trung ương hàng đầu tại khu vực phía Nam.', '0123456777', 'https://cdn.youmed.vn/photos/c90bc798-1748-4cfa-9472-53882038476c.png?width=300'),
+(2, 24, 'Bệnh viện Đại học Y Dược TP.HCM', 'Tiên phong - Đẳng cấp - Chuẩn mực', '215 Hồng Bàng, P. 11, Q. 5, TP.HCM', 'https://cdn.youmed.vn/photos/186f542e-45e0-416b-9050-b258bfd2317b.png?width=100&aspect_ratio=1:1', 'Bệnh viện uy tín kết hợp giữa điều trị và giảng dạy y khoa.', '02838554269', 'https://cdn.youmed.vn/photos/0eecce02-6958-4007-9fcc-78d5d644e33b.png?width=300'),
+(3, 25, 'Bệnh viện Từ Dũ', 'Nơi khởi đầu sự sống', '284 Cống Quỳnh, P. Phạm Ngũ Lão, Q. 1, TP.HCM', 'https://cdn.youmed.vn/photos/fb4179f1-d0e9-4e2a-98a2-26e6efe7add8.png?width=100&aspect_ratio=1:1', 'Bệnh viện chuyên sản phụ khoa hàng đầu tại Việt Nam.', '02854042829', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/08/yhct.jpg?width=300'),
+(4, 26, 'Bệnh viện Phụ sản Quốc tế Sài Gòn (SIH)', 'Nơi chắp cánh những thiên thần bé bỏng', '63 Bùi Thị Xuân, P. Phạm Ngũ Lão, Q. 1, TP.HCM', 'https://cdn.youmed.vn/photos/4d510848-8b6c-480b-b28f-a4c4a3ef1e4c.png?width=100&aspect_ratio=1:1', 'Bệnh viện chuyên khoa sản phụ và sơ sinh hàng đầu, tiêu chuẩn quốc tế.', '02839253000', 'https://cdn.youmed.vn/photos/ff27f5b6-4fe5-456b-a3be-ded96837a656.png?width=300'),
+(5, 27, 'Bệnh viện Tâm thần Trung ương 2', 'Khỏe mạnh tinh thần, vững bước tương lai', '158 Hùng Vương, P. 2, TP. Biên Hòa, Đồng Nai', 'https://cdn.youmed.vn/photos/5d25ccd4-9ed8-4455-81fa-dca65d1c2604.png?width=100&aspect_ratio=1:1', 'Cơ sở y tế chuyên sâu về khám và điều trị các vấn đề tâm thần.', '02513822295', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/08/rhmtphcm.jpg?width=300'),
+(6, 28, 'Bệnh viện Nhi Đồng 1', 'Tận tâm vì sức khỏe trẻ thơ', '341 Sư Vạn Hạnh, P. 10, Q. 10, TP.HCM', 'https://cdn.youmed.vn/photos/b7674b50-09f5-46ce-a7d3-abba422f62c6.png?width=100&aspect_ratio=1:1', 'Bệnh viện Nhi khoa lớn và uy tín nhất Việt Nam.', '02839271119', 'https://cdn.youmed.vn/photos/93bdf6dd-82c5-4faf-8f8a-eae0a4363814.png?width=300'),
+(7, 29, 'Bệnh viện Nhân dân 115', 'Chăm sóc bằng trái tim', '527 Sư Vạn Hạnh, P. 12, Q. 10, TP.HCM', 'https://cdn.youmed.vn/photos/b7674b50-09f5-46ce-a7d3-abba422f62c6.png?width=100&aspect_ratio=1:1', 'Bệnh viện đa khoa hạng I, mạnh về Ngoại thần kinh và Tim mạch.', '02838652368', 'https://cdn.youmed.vn/photos/93bdf6dd-82c5-4faf-8f8a-eae0a4363814.png?width=300'),
+(8, 30, 'Bệnh viện Hùng Vương', 'Ân cần - Tận tụy', '128 Hồng Bàng, P. 12, Q. 5, TP.HCM', 'https://cdn.youmed.vn/photos/fb4179f1-d0e9-4e2a-98a2-26e6efe7add8.png?width=100&aspect_ratio=1:1', 'Một trong những bệnh viện phụ sản lâu đời và uy tín nhất.', '02838558532', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2...\n'),
+(9, 31, 'Bệnh viện Vinmec Central Park', 'Chăm sóc tận tâm, Tiêu chuẩn quốc tế', '208 Nguyễn Hữu Cảnh, P. 22, Q. Bình Thạnh, TP.HCM', 'https://cdn.youmed.vn/photos/14c1b0c8-1b44-48e6-ab0d-b4b989a86b45.png?width=100&aspect_ratio=1:1', 'Bệnh viện đa khoa quốc tế thuộc hệ thống Vingroup.', '02836221166', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/08/rhmtphcm.jpg?width=300'),
+(10, 32, 'Bệnh viện FV', 'Nơi bạn tin tưởng', '6 Nguyễn Lương Bằng, P. Tân Phú, Q. 7, TP.HCM', 'https://cdn.youmed.vn/photos/186f542e-45e0-416b-9050-b258bfd2317b.png?width=100&aspect_ratio=1:1', 'Bệnh viện quốc tế với nhiều chuyên khoa sâu.', '02854113333', 'https://cdn.youmed.vn/photos/0eecce02-6958-4007-9fcc-78d5d644e33b.png?width=300'),
 (11, NULL, '123', '123', '1234', '', '', '0123654799', '');
 
 -- --------------------------------------------------------
@@ -199,7 +199,14 @@ INSERT INTO `lichhen` (`ma_lich_hen`, `user_id`, `ma_gio`, `trang_thai`, `ghi_ch
 (5, 4, 13, 'Đã hủy', 'Bệnh nhân bận việc'),
 (6, 6, 16, 'Đang chờ', 'Khám sức khỏe tổng quát cho công ty'),
 (8, 4, 22, 'Đã xác nhận', 'Khám da liễu'),
-(9, 6, 25, 'Đã xác nhận', 'Khám nội soi');
+(9, 6, 25, 'Đã xác nhận', 'Khám nội soi'),
+(11, 5, 2, 'Đang chờ', 'ho'),
+(12, 5, 17, 'Đang chờ', 'ho'),
+(13, 5, 15, 'Đang chờ', 'sổ mũi'),
+(14, 5, 24, 'Đang chờ', ''),
+(15, 5, 3, 'Đang chờ', ''),
+(16, 5, 14, 'Đang chờ', 'có vấn đề về tim mạch'),
+(17, 5, 23, 'Đang chờ', '');
 
 -- --------------------------------------------------------
 
@@ -220,8 +227,8 @@ CREATE TABLE `lich_gio` (
 
 INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
 (1, 1, '08:00 - 08:15', 'Booked'),
-(2, 1, '08:15 - 08:30', 'Available'),
-(3, 1, '08:30 - 08:45', 'Available'),
+(2, 1, '08:15 - 08:30', 'Booked'),
+(3, 1, '08:30 - 08:45', 'Booked'),
 (4, 2, '14:00 - 14:15', 'Booked'),
 (5, 2, '14:15 - 14:30', 'Available'),
 (6, 2, '14:30 - 14:45', 'Available'),
@@ -232,17 +239,17 @@ INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
 (11, 4, '10:15 - 10:30', 'Available'),
 (12, 4, '10:30 - 10:45', 'Available'),
 (13, 5, '08:00 - 08:15', 'Booked'),
-(14, 5, '08:15 - 08:30', 'Available'),
-(15, 5, '08:30 - 08:45', 'Available'),
+(14, 5, '08:15 - 08:30', 'Booked'),
+(15, 5, '08:30 - 08:45', 'Booked'),
 (16, 6, '13:00 - 13:15', 'Booked'),
-(17, 6, '13:15 - 13:30', 'Available'),
+(17, 6, '13:15 - 13:30', 'Booked'),
 (18, 6, '13:30 - 13:45', 'Available'),
 (19, 7, '07:00 - 07:15', 'Booked'),
 (20, 7, '07:15 - 07:30', 'Available'),
 (21, 7, '07:30 - 07:45', 'Available'),
 (22, 8, '17:00 - 17:15', 'Booked'),
-(23, 8, '17:15 - 17:30', 'Available'),
-(24, 8, '17:30 - 17:45', 'Available'),
+(23, 8, '17:15 - 17:30', 'Booked'),
+(24, 8, '17:30 - 17:45', 'Booked'),
 (25, 9, '18:00 - 18:15', 'Booked'),
 (26, 9, '18:15 - 18:30', 'Available'),
 (27, 9, '18:30 - 18:45', 'Available'),
@@ -258,7 +265,7 @@ INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
 
 CREATE TABLE `lich_tong` (
   `ma_lich` int(11) NOT NULL,
-  `loai_doi_tuong` enum('BACSI','PHONGKHAM','BENHVIEN') NOT NULL COMMENT 'Loại đối tượng (Bác sĩ, Phòng khám, BV)',
+  `loai_doi_tuong` varchar(50) NOT NULL,
   `ma_doi_tuong` bigint(20) NOT NULL COMMENT 'ID của bacsi, phongkham, hoặc benhvien',
   `ngay` date NOT NULL COMMENT 'Ngày làm việc',
   `ten_ngay` varchar(255) DEFAULT NULL
@@ -301,10 +308,10 @@ CREATE TABLE `phongkham` (
 --
 
 INSERT INTO `phongkham` (`id`, `user_id`, `name`, `address`, `image`, `description`, `images_intro`) VALUES
-(1, 33, 'Shine Clinic By TS.BS Trần Ngọc Ánh', '06 Trương Quyền, P.6, Q.3, TP.HCM', '/images/clinic/shine_logo.webp', 'Shine Clinic là tâm huyết của Tiến sĩ – Bác sĩ Trần Ngọc Ánh...', '[ \"/images/clinic/profile/shine_1.webp\"]'),
-(2, 34, 'Phòng Khám Nội Tổng Quát Sài Gòn', '152 Nguyễn Trãi, P. Bến Thành, Q.1, TP.HCM', '/images/clinic/saigon_general.webp', 'Chuyên cung cấp dịch vụ khám và điều trị nội khoa tổng quát...', '[]'),
-(3, NULL, 'Phòng Khám Nhi Đồng Tâm', '230 Đường 3/2, P.12, Q.10, TP.HCM', '/images/clinic/nhidongtam.webp', 'Chuyên khoa Nhi, cung cấp dịch vụ tiêm chủng...', '[]'),
-(4, NULL, 'Phòng khám Da liễu Pro Skin', '50-52 Ngô Quyền, P. 5, Q. 10, TP.HCM', '/images/clinic/proskin.webp', 'Chuyên trị mụn, sẹo rỗ, nám, tàn nhang bằng công nghệ cao.', '[]'),
+(1, 33, 'Shine Clinic By TS.BS Trần Ngọc Ánh', '06 Trương Quyền, P.6, Q.3, TP.HCM', 'https://cdn.youmed.vn/photos/cc099fec-bf59-4ec6-a222-1fc862d4f430.jpg?width=100&aspect_ratio=1:1', 'Shine Clinic là tâm huyết của Tiến sĩ – Bác sĩ Trần Ngọc Ánh...', '[ \"/images/clinic/profile/shine_1.webp\"]'),
+(2, 34, 'Phòng Khám Nội Tổng Quát Sài Gòn', '152 Nguyễn Trãi, P. Bến Thành, Q.1, TP.HCM', 'https://cdn.youmed.vn/photos/0a865d20-8ad2-4e8a-a5ee-c888ab2628b4.jpg?width=100&aspect_ratio=1:1', 'Chuyên cung cấp dịch vụ khám và điều trị nội khoa tổng quát...', '[]'),
+(3, NULL, 'Phòng Khám Nhi Đồng Tâm', '230 Đường 3/2, P.12, Q.10, TP.HCM', 'https://cdn.youmed.vn/photos/db03a22a-fe3b-46d9-b006-d84207b2ce62.jpg?width=100&aspect_ratio=1:1', 'Chuyên khoa Nhi, cung cấp dịch vụ tiêm chủng...', '[]'),
+(4, NULL, 'Phòng khám Da liễu Pro Skin', '50-52 Ngô Quyền, P. 5, Q. 10, TP.HCM', 'https://cdn.youmed.vn/photos/e2bfe920-070b-4c64-8594-b5f9a50591fc.jpg?width=100&aspect_ratio=1:1', 'Chuyên trị mụn, sẹo rỗ, nám, tàn nhang bằng công nghệ cao.', '[]'),
 (5, NULL, 'Phòng khám Mắt Bác sĩ Bùi Tiến Hùng', '39B Hàng Bài, Q. Hoàn Kiếm, Hà Nội', '/images/clinic/mat_hung.webp', 'BS. Hùng là chuyên gia hàng đầu về phẫu thuật Phaco và Lasik.', '[]'),
 (6, NULL, 'Phòng khám Tiêu hóa Bác sĩ Hậu', '270-272 Cộng Hòa, P. 13, Q. Tân Bình, TP.HCM', '/images/clinic/tieuhoa_hau.webp', 'Chuyên nội soi và điều trị các bệnh lý dạ dày, đại tràng.', '[]'),
 (7, NULL, 'Phòng khám Victoria Healthcare', '20-20Bis-22 Đinh Tiên Hoàng, P. Đa Kao, Q. 1, TP.HCM', '/images/clinic/victoria.webp', 'Phòng khám đa khoa quốc tế với nhiều bác sĩ nước ngoài.', '[]'),
@@ -505,7 +512,7 @@ ALTER TABLE `chuyenkhoa`
 -- AUTO_INCREMENT cho bảng `lichhen`
 --
 ALTER TABLE `lichhen`
-  MODIFY `ma_lich_hen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ma_lich_hen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT cho bảng `lich_gio`

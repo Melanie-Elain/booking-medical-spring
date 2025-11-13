@@ -6,9 +6,6 @@ const PaymentHistoryPage = () => {
     <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gray-800">Lịch sử thanh toán</h2>
-        <button className="py-2 px-4 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
-          Lọc
-        </button>
       </div>
       <input 
         type="text" 

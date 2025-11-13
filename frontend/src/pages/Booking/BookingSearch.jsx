@@ -4,37 +4,56 @@ import Header from "../../components/Home/Header";
 import DownloadApp from "../../components/Home/DownloadApp";
 import HomeFooter from "../../components/Home/HomeFooter";
 import ReactPaginate from "react-paginate";
-import doctorsData from "../../data/doctorsData";
-import hospitalsData from "../../data/hospitalsData";
-import clinicsData from "../../data/clinicsData";
 import BookingSearchCard from "../../components/Booking/BookingSearchCard";
-
-
-    const specialties = [
-      { id: 1, name: "Dị ứng - miễn dịch", icon: "🛡️" },
-      { id: 2, name: "Y học cổ truyền", icon: "🌿" },
-      { id: 3, name: "Lao - bệnh phổi", icon: "🫁" },
-      { id: 4, name: "Y học thể thao", icon: "🏃‍♂️" },
-      { id: 5, name: "Tim mạch", icon: "❤️" },
-      { id: 6, name: "Thần kinh", icon: "🧠" },
-      { id: 7, name: "Nhi khoa", icon: "👶" },
-      { id: 8, name: "Da liễu", icon: "🧴" },
-    ];
+import { DoctorService } from "../../api/DoctorService";
+import { HospitalService } from "../../api/hospitalService";
+import { clinicService } from "../../api/clinicService";
+import {SpecialtyService, specialtyService} from "../../api/specialtyService";
     
 
 
 const BookingSearch = () => {
     const [search, setSearch] = useState("");
     const [searchTerm, setSearchTerm] = React.useState("");
+
     const [isOpen, setIsOpen] = useState(false);
     const [isOpen1, setIsOpen1] = useState(false);
     const [isOpen2, setIsOpen2] = useState(false);
+
     const [selected, setSelected] = useState("Tất cả");
     const [selected1, setSelected1] = useState(null);
     const [selected2, setSelected2] = useState(null);
 
+    const [doctorsData, setDoctorsData] = useState([]);
+    const [hospitalsData, setHospitalsData] = useState([]);
+    const [clinicsData, setClinicsData] = useState([]);
+    const [specialties, setSpecialties] = useState([]);
+
     const [currentPage, setCurrentPage] = useState(0);
     const PerPage = 6; 
+
+    useEffect(() => {
+      const fetchDoctors = async () => {
+        const data = await DoctorService.getAllDoctorsList();
+        setDoctorsData(data);
+      };
+      const fetchHospitals = async () => {
+        const data = await HospitalService.getAllHospitalsList();
+        setHospitalsData(data);
+      };
+      const fetchClinics = async () => {
+        const data = await clinicService.getAllClinicsList();
+        setClinicsData(data);
+      };
+      const fetchSpecialties = async () => {
+        const data = await SpecialtyService.getAllSpecialtiesList();
+        setSpecialties(data);
+      };
+      fetchDoctors();
+      fetchHospitals();
+      fetchClinics();
+      fetchSpecialties();
+    }, []);
 
     const filteredDoctors = doctorsData.filter((doctor) =>
         doctor.name.toLowerCase().includes(search.toLowerCase()) 
@@ -91,7 +110,6 @@ const BookingSearch = () => {
 
     const options = ["Tất cả", "Bác sĩ", "Bệnh viện", "Phòng khám"];
 
-    const options2= ["Dị ứng - Miễn dịch", "Y học cổ truyền", "Lao - Bênh phổi", "Y học thể thao"];
 
     const filtered = specialties.filter((s) =>
       s.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -252,7 +270,7 @@ const BookingSearch = () => {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  {options2.map((opt) => (
+                  {specialties.map((opt) => (
                     <button
                       key={opt}
                       onClick={() => {
@@ -265,7 +283,7 @@ const BookingSearch = () => {
                           : "hover:bg-gray-100"
                       }`}
                     >
-                      {opt}
+                      {opt.name}
                     </button>
                   ))}
                 </div>

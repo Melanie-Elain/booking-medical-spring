@@ -1,10 +1,7 @@
-import React, { useState } from "react";
-import Header from "../../components/Home/Header";
-import DownloadApp from "../../components/Home/DownloadApp";
-import HomeFooter from "../../components/Home/HomeFooter";
+import React, { useState , useEffect} from "react";
 import ReactPaginate from "react-paginate";
 import { useNavigate, useParams } from "react-router-dom";
-import clinicsData from "../../data/clinicsData";
+import {clinicService} from "../../api/clinicService";
 
 
 
@@ -15,7 +12,26 @@ const BookingClinic = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const clinicPerPage = 6; 
 
-    const clinics = clinicsData;
+    const [clinicsData, setClinicsData] = useState([]);
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState(null);
+    useEffect(() => {
+        const fetchClinics = async () => {
+          try {
+            const response = await clinicService.getAllClinicsList();
+            console.log("Fetched Clinics:", response);
+            setClinicsData(response);
+          } catch (err) {
+            setError(err.message || "Something went wrong");
+          } finally {
+            setLoading(false);
+          }
+        }
+        fetchClinics();
+      }, []);
+      const clinics = clinicsData || [];
+
+
 
     const startIndex = currentPage * clinicPerPage;
 

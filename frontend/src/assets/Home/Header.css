@@ -4,8 +4,9 @@
   background: #fff;
   position: sticky;
   top: 0;
-  z-index: 1200;
+  z-index: 1200 !important;
   box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  
 }
 .header-container {
   max-width: 1280px;
