@@ -5,12 +5,64 @@ import {
 } from '../../api/adminService'; 
 
 // (Component PaginationControls giữ nguyên)
+// const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
+//   if (totalPages <= 1) return null;
+//   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+//   return (
+//     <div className="mt-6 flex justify-center items-center gap-2">
+//       {/* ... (Code các nút bấm) ... */}
+//     </div>
+//   );
+// };
 const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
+  // Nếu chỉ có 1 trang thì không cần hiển thị
   if (totalPages <= 1) return null;
+
+  // Tạo một mảng các số trang, ví dụ: [0, 1, 2] nếu totalPages = 3
   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+
+  // Định nghĩa style CSS (Tailwind) cho các nút
+  const baseStyle = "px-3 py-1 rounded-md text-sm font-medium transition-colors duration-150";
+  const activeStyle = "bg-blue-600 text-white";
+  const inactiveStyle = "bg-gray-200 text-gray-700 hover:bg-gray-300";
+  const disabledStyle = "bg-gray-100 text-gray-400 cursor-not-allowed";
+
   return (
     <div className="mt-6 flex justify-center items-center gap-2">
-      {/* ... (Code các nút bấm) ... */}
+      {/* === NÚT TRƯỚC === */}
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage === 0} // Vô hiệu hóa khi ở trang đầu (trang 0)
+        className={`${baseStyle} ${
+          currentPage === 0 ? disabledStyle : inactiveStyle
+        }`}
+      >
+        Trước
+      </button>
+
+      {/* === CÁC NÚT SỐ TRANG === */}
+      {pageNumbers.map((pageIndex) => (
+        <button
+          key={pageIndex}
+          onClick={() => onPageChange(pageIndex)}
+          className={`${baseStyle} ${
+            currentPage === pageIndex ? activeStyle : inactiveStyle
+          }`}
+        >
+          {pageIndex + 1} {/* Hiển thị 1, 2, 3... thay vì 0, 1, 2... */}
+        </button>
+      ))}
+
+      {/* === NÚT SAU === */}
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage === totalPages - 1} // Vô hiệu hóa khi ở trang cuối
+        className={`${baseStyle} ${
+          currentPage === totalPages - 1 ? disabledStyle : inactiveStyle
+        }`}
+      >
+        Sau
+      </button>
     </div>
   );
 };

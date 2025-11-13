@@ -240,4 +240,17 @@
     .header-container {
         padding: 12px 0px;
     }
+
+    .doctor-workspace-page .nav {
+        display: flex;
+    }
+    .doctor-workspace-page .header-right {
+        display: flex;
+        gap: 8px;
+    }
+    /* Các thành phần khác như menu-toggle, mobile-menu cũng cần được thêm .doctor-workspace-page */
+    .doctor-workspace-page .menu-toggle,
+    .doctor-workspace-page .mobile-menu {
+        display: none;
+    }
 }
