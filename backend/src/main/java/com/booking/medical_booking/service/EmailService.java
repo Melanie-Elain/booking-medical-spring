@@ -1,0 +1,94 @@
+package com.booking.medical_booking.service; // Gói service của bạn
+
+// Import các model CÓ SẴN từ package của bạn
+import com.booking.medical_booking.model.Appointment; 
+import com.booking.medical_booking.model.User;
+import com.booking.medical_booking.model.LichGio;
+import com.booking.medical_booking.model.LichTong; // <-- Import LichTong
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
+// import java.time.LocalTime; // <-- KHÔNG CẦN NỮA
+
+@Service
+public class EmailService {
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Value("${spring.mail.from}")
+    private String mailFrom;
+
+    // Chữ ký phương thức giữ nguyên (nhận providerName từ AppointmentService)
+    @Async
+    public void sendAppointmentConfirmationEmail(Appointment appointment, String providerName) {
+        try {
+            // === LOGIC ĐÃ SỬA LỖI ===
+
+            // 1. Lấy Bệnh nhân (User) từ Appointment
+            User patient = appointment.getUser();
+            
+            // 2. Lấy Khung giờ (LichGio) từ Appointment
+            LichGio lichGio = appointment.getLichGio();
+            
+            // 3. Lấy thông tin từ Patient và Appointment
+            String patientName = patient.getFullName(); 
+            String patientEmail = patient.getEmail();
+            String note = appointment.getGhiChu() != null ? appointment.getGhiChu() : "";
+
+            // 4. Lấy thông tin Ngày, Giờ
+            LichTong lichTong = lichGio.getLichTong();
+            LocalDate appointmentDate = lichTong.getNgay();
+
+            // --- ĐÂY LÀ PHẦN SỬA LỖI ---
+            // Tệp LichGio.java của bạn có trường "khungGio" kiểu String
+            String appointmentTime = lichGio.getKhungGio(); 
+            // --- KẾT THÚC SỬA LỖI ---
+
+
+            // Định dạng ngày
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            // Không cần timeFormatter nữa
+
+            // Tạo nội dung email
+            String subject = "Xác nhận lịch hẹn - YouMed";
+            String emailBody = String.format(
+                "Xin chào %s,\n\n" +
+                "Lịch hẹn của bạn với [ %s ]\n" +
+                // --- SỬA LỖI FORMAT ---
+                // Sử dụng trực tiếp chuỗi "khungGio"
+                "Thời gian: %s, Ngày %s\n" + 
+                "ĐÃ ĐƯỢC XÁC NHẬN.\n\n" +
+                "Ghi chú của bạn: %s\n" +
+                "Cảm ơn bạn đã sử dụng dịch vụ YouMed.",
+                patientName,
+                providerName,
+                appointmentTime, // <-- SỬA LỖI
+                appointmentDate.format(dateFormatter),
+                note
+            );
+
+            // Gửi email
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(mailFrom);
+            message.setTo(patientEmail);
+            message.setSubject(subject);
+            message.setText(emailBody);
+            
+            mailSender.send(message);
+
+            System.out.println("Email xác nhận đã được GỬI (async) tới: " + patientEmail);
+
+        } catch (Exception e) {
+            System.err.println("Lỗi khi gửi email (async): " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}

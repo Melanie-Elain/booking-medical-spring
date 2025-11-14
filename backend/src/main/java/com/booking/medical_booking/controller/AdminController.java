@@ -21,6 +21,7 @@ import com.booking.medical_booking.dto.AppointmentResponseDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
@@ -234,13 +235,23 @@ public class AdminController {
         return ResponseEntity.ok(appointmentPage);
     } 
 
+    // @PutMapping("/appointments/{id}/status")
+    // @PreAuthorize("hasRole('ADMIN')")
+    // public ResponseEntity<Appointment> updateAppointmentStatus(@PathVariable Integer id, @RequestBody Map<String, String> request) {
+    //     try {
+    //         Appointment updatedAppointment = appointmentService.updateAppointmentStatus(id, request);
+    //         return ResponseEntity.ok(updatedAppointment);
+    //     } catch (RuntimeException e) {
+    //         return ResponseEntity.badRequest().body(null); 
+    //     }
+    // }
+
     @PutMapping("/appointments/{id}/status")
-    public ResponseEntity<Appointment> updateAppointmentStatus(@PathVariable Integer id, @RequestBody Map<String, String> request) {
-        try {
-            Appointment updatedAppointment = appointmentService.updateAppointmentStatus(id, request);
-            return ResponseEntity.ok(updatedAppointment);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null); 
-        }
-    }
+@PreAuthorize("hasRole('ADMIN')")
+// Sửa kiểu trả về trong ResponseEntity
+public ResponseEntity<AppointmentResponseDTO> updateAppointmentStatus(@PathVariable Integer id, @RequestBody Map<String, String> request) {
+    // Không cần try-catch
+    AppointmentResponseDTO updatedAppointmentDTO = appointmentService.updateAppointmentStatus(id, request);
+    return ResponseEntity.ok(updatedAppointmentDTO);
+}
 }
