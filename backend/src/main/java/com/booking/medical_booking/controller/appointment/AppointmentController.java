@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.booking.medical_booking.dto.AppointmentDTO;
 import com.booking.medical_booking.model.Appointment;
-import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.service.appointment.AppointmentService;
 import com.booking.medical_booking.service.auth.UserService;
 

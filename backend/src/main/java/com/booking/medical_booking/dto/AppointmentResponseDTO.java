@@ -3,7 +3,6 @@ package com.booking.medical_booking.dto;
 import com.booking.medical_booking.model.Appointment;
 import lombok.Data;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Data
 public class AppointmentResponseDTO {

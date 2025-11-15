@@ -37,18 +37,19 @@ public class User {
     private String referralCode;
     private String occupation;
 
-    
+    @Column(name = "avatar_url")
+    private String avatarUrl;
 
     public enum UserRole {
         BENHNHAN,
         BACSI,
         ADMIN,
-        BENHVIEN,   
+        BENHVIEN,
         PHONGKHAM
     }
 
-    @Enumerated(EnumType.STRING) 
-    @Column(name = "role", nullable = false) 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
     private UserRole role;
 
     

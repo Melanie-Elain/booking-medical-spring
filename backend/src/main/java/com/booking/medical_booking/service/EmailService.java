@@ -58,7 +58,7 @@ public class EmailService {
             // Không cần timeFormatter nữa
 
             // Tạo nội dung email
-            String subject = "Xác nhận lịch hẹn - YouMed";
+            String subject = "[YouMed] Lịch hẹn của bạn đã được xác nhận!";
             String emailBody = String.format(
                 "Xin chào %s,\n\n" +
                 "Lịch hẹn của bạn với [ %s ]\n" +
@@ -70,7 +70,7 @@ public class EmailService {
                 "Cảm ơn bạn đã sử dụng dịch vụ YouMed.",
                 patientName,
                 providerName,
-                appointmentTime, // <-- SỬA LỖI
+                appointmentTime, 
                 appointmentDate.format(dateFormatter),
                 note
             );

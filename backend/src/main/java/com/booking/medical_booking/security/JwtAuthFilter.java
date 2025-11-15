@@ -1,4 +1,4 @@
-package com.booking.medical_booking.security; // (Sửa package cho đúng)
+package com.booking.medical_booking.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,63 +21,67 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private UserDetailsService userDetailsService; // Sẽ tự động tiêm UserDetailsServiceImpl
+    private UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         
-        final String requestPath = request.getRequestURI();
-        if (requestPath.startsWith("/api/doctors") || 
-            requestPath.startsWith("/api/hospitals") || 
-            requestPath.startsWith("/api/clinics") ||
-            requestPath.startsWith("/api/specialties") || 
-            requestPath.startsWith("/api/auth")) {
-            // Đồng thời bỏ qua cả CORS pre-flight requests (OPTIONS)
-            if ("OPTIONS".equals(request.getMethod())) {
-                response.setStatus(HttpServletResponse.SC_OK);
-                return;
-            }
-            filterChain.doFilter(request, response);
-            return; // Rất quan trọng: Thoát khỏi filter này
-       }
-
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String phoneNumber;
-
-        
-
-        // 1. Kiểm tra xem có Header và có 'Bearer ' không
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return; // Bỏ qua, để cho Spring Security (ở Config) xử lý
-        }
-
-        // 2. Lấy token (bỏ "Bearer ")
-        jwt = authHeader.substring(7);
-        phoneNumber = jwtService.getUsernameFromToken(jwt); 
-
-        // 3. Nếu có SĐT VÀ user chưa được xác thực trong Context
-        if (phoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        // BỌC TRONG TRY-CATCH ĐỂ TÌM LỖI THẬT
+        try {
+            final String requestPath = request.getRequestURI();
             
-            // 4. Lấy UserDetails từ Database
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(phoneNumber);
-
-            // 5. Xác thực token
-            if (jwtService.validateToken(jwt, userDetails)) { // (Bạn cần viết hàm này)
-                // Tạo 1 token xác thực
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            // Bỏ qua các đường dẫn public
+            if (requestPath.startsWith("/api/doctors") || 
+                requestPath.startsWith("/api/hospitals") || 
+                requestPath.startsWith("/api/clinics") ||
+                requestPath.startsWith("/api/specialties") || 
+                requestPath.startsWith("/api/auth")) {
                 
-                // 6. Lưu vào SecurityContext
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                if ("OPTIONS".equals(request.getMethod())) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    return;
+                }
+                filterChain.doFilter(request, response);
+                return; 
             }
+
+            final String authHeader = request.getHeader("Authorization");
+            final String jwt;
+            final String phoneNumber; // Đổi 'username' thành 'phoneNumber' cho nhất quán
+
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                filterChain.doFilter(request, response);
+                return; 
+            }
+
+            jwt = authHeader.substring(7);
+            phoneNumber = jwtService.getUsernameFromToken(jwt); // Dùng hàm của bạn
+
+            if (phoneNumber != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(phoneNumber);
+
+                if (jwtService.validateToken(jwt, userDetails)) { 
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+            filterChain.doFilter(request, response);
+            
+        } catch (Exception e) {
+            // ĐÂY LÀ PHẦN BẪY LỖI
+            // Nó sẽ in ra lỗi thật (Token hết hạn, User không tìm thấy, BEAN KHÔNG TÌM THẤY)
+            System.err.println("!!! LỖI NGHIÊM TRỌNG TRONG JWT FILTER: " + e.getMessage());
+            e.printStackTrace(); // In ra chi tiết lỗi
+            
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // Trả về 403
+            response.getWriter().write("Loi xac thuc: " + e.getMessage());
         }
-        filterChain.doFilter(request, response);
     }
 }
