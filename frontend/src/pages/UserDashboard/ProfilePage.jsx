@@ -5,10 +5,11 @@ import axiosInstance from '../../api/axiosConfig';
 const InfoRow = ({ label, value }) => (
   <div className="flex">
     <span className="w-1/3 text-gray-500">{label}</span>
-    <span className="w-2/3 font-medium text-gray-800">{value}</span>
+    <span className="w-2/3 font-medium text-gray-800">{value || 'Chưa cập nhật'}</span>
   </div>
 );
 
+// Component con để sửa 1 hàng thông tin
 const EditRow = ({ label, name, value, onChange, type = "text" }) => (
   <div className="flex items-center py-1">
     <label htmlFor={name} className="w-1/3 text-gray-500">{label}</label>
@@ -23,23 +24,25 @@ const EditRow = ({ label, name, value, onChange, type = "text" }) => (
   </div>
 );
 
-const ProfilePage = () => {
-  // 2. State để chuyển đổi
-  const [isEditing, setIsEditing] = useState(false);
 
-  // 3. State để lưu data thật từ API
+const ProfilePage = () => {
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // 4. State để lưu data gốc (khi nhấn "Hủy")
   const [originalData, setOriginalData] = useState(null);
 
-  // 5. Hàm gọi API
+  // === THÊM MỚI: State cho upload avatar ===
+  const [isUploading, setIsUploading] = useState(false);
+  // ==========================================
+
+  // Hàm gọi API
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axiosInstance.get('/user/me');
+        // === SỬA ĐỔI: Đổi tên API cho đúng với backend (nếu cần) ===
+        // Giả sử API lấy thông tin user là /api/users/me
+        const response = await axiosInstance.get('/user/me'); 
         setFormData(response.data);
         setOriginalData(response.data); // Lưu data gốc
       } catch (err) {
@@ -51,7 +54,7 @@ const ProfilePage = () => {
     fetchProfile();
   }, []); // [] = chạy 1 lần khi tải trang
 
-  // 6. Hàm cập nhật state khi gõ
+  // Hàm cập nhật state khi gõ (cho các trường text)
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -60,17 +63,66 @@ const ProfilePage = () => {
     }));
   };
 
-  // 7. Hàm nhấn "Hủy"
+  // === THÊM MỚI: Hàm xử lý upload ảnh đại diện ===
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const formDataCloud = new FormData();
+    formDataCloud.append('file', file);
+    
+    // !!! THAY THẾ BẰNG UPLOAD PRESET CỦA BẠN !!!
+    formDataCloud.append('upload_preset', 'medical-booking'); 
+
+    try {
+      // 1. Tải ảnh lên Cloudinary
+      // !!! THAY THẾ BẰNG CLOUD NAME CỦA BẠN !!!
+      const cloudResponse = await fetch(
+        'https://api.cloudinary.com/v1_1/dlqpohz0j/image/upload',
+        {
+          method: 'POST',
+          body: formDataCloud,
+        }
+      );
+      
+      const cloudData = await cloudResponse.json();
+      const imageUrl = cloudData.secure_url;
+
+      if (!imageUrl) {
+        throw new Error('Upload lên Cloudinary thất bại');
+      }
+
+      // 2. Gọi API backend để lưu URL mới
+      await axiosInstance.put('/user/update-avatar', { avatarUrl: imageUrl });
+
+      // 3. Cập nhật state để hiển thị ảnh mới
+      setFormData(prev => ({ ...prev, avatarUrl: imageUrl }));
+      setOriginalData(prev => ({ ...prev, avatarUrl: imageUrl })); // Cập nhật cả data gốc
+
+      alert('Cập nhật ảnh đại diện thành công!');
+
+    } catch (err) {
+      console.error(err);
+      alert('Tải ảnh lên thất bại. Vui lòng thử lại.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  // ==============================================
+
+  // Hàm nhấn "Hủy" (chỉ hủy các trường text)
   const handleCancel = () => {
     setFormData(originalData); // Quay về data gốc
     setIsEditing(false);
   };
 
-  // 8. Hàm nhấn "Lưu"
+  // Hàm nhấn "Lưu" (chỉ lưu các trường text)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Gọi API PUT (chỉ gửi các trường cần thiết, không gửi password/phone)
+      // === SỬA ĐỔI: Đổi tên API cho đúng với backend ===
+      // API này map với hàm updateProfile trong UserService
       const updateRequest = {
         fullName: formData.fullName,
         dob: formData.dob,
@@ -88,8 +140,9 @@ const ProfilePage = () => {
 
       const response = await axiosInstance.put('/user/profile', updateRequest);
       
-      setFormData(response.data); // Cập nhật state với data mới
-      setOriginalData(response.data); // Cập nhật data gốc
+      // response.data trả về là User đã cập nhật (từ hàm updateProfile)
+      setFormData(response.data); 
+      setOriginalData(response.data); 
       setIsEditing(false); // Quay về chế độ xem
       alert('Cập nhật hồ sơ thành công!');
 
@@ -107,12 +160,12 @@ const ProfilePage = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-      <form onSubmit={handleSubmit}> {/* Bọc mọi thứ trong <form> */}
+      <form onSubmit={handleSubmit}>
         <div className="p-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-6">Hồ sơ</h2>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Cột 1: Danh sách hồ sơ (giữ nguyên, vì ta đang sửa chính user) */}
+            {/* Cột 1: Danh sách hồ sơ */}
             <div className="lg:col-span-1 border-r border-gray-200 pr-4">
               <input 
                 type="text" 
@@ -121,12 +174,49 @@ const ProfilePage = () => {
               />
               <div className="space-y-3">
                 <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer">
-                  <span className="flex-shrink-0 w-10 h-10 bg-blue-500 text-white font-bold rounded-full flex items-center justify-center text-lg">
-                    {avatarText}
-                  </span>
+                  
+                  {/* === SỬA ĐỔI: HIỂN THỊ AVATAR THẬT === */}
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-lg relative">
+                    {formData.avatarUrl ? (
+                      <img 
+                        src={formData.avatarUrl || null}
+                        alt="Avatar" 
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="w-full h-full bg-blue-500 text-white font-bold rounded-full flex items-center justify-center">
+                        {avatarText}
+                      </span>
+                    )}
+
+                    {/* === THÊM MỚI: NÚT UPLOAD ẢNH === */}
+                    {isEditing && (
+                      <label 
+                        htmlFor="avatarUpload" 
+                        className="absolute -bottom-2 -right-2 w-6 h-6 bg-gray-700 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-900 border-2 border-white"
+                        title="Đổi ảnh đại diện"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z" />
+                        </svg>
+                        <input 
+                          type="file" 
+                          id="avatarUpload"
+                          accept="image/png, image/jpeg"
+                          className="hidden"
+                          onChange={handleFileChange}
+                          disabled={isUploading} // Vô hiệu hóa khi đang upload
+                        />
+                      </label>
+                    )}
+                  </div>
+                  {/* =================================== */}
+
                   <div>
                     <div className="font-semibold text-blue-700">{formData.fullName}</div>
                     <div className="text-sm text-gray-600">{formData.dob}</div>
+                    {/* THÊM MỚI: Hiển thị trạng thái Upload */}
+                    {isUploading && <div className="text-sm text-blue-500 font-medium">Đang tải ảnh lên...</div>}
                   </div>
                 </div>
                 {/* Nút này tạm thời chưa cần logic */}
@@ -140,7 +230,7 @@ const ProfilePage = () => {
             <div className="lg:col-span-2">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-gray-700">Xem hồ sơ</h3>
-                <span className="text-sm text-gray-500">Mã BN: (Tạm ẩn)</span>
+                <span className="text-sm text-gray-500">Mã BN: {formData.id}</span>
               </div>
               <div className="bg-orange-50 border border-orange-200 text-orange-700 text-sm p-3 rounded-lg mb-6">
                 Hoàn thiện thông tin để đặt khám và quản lý hồ sơ y tế được tốt hơn.
@@ -152,7 +242,8 @@ const ProfilePage = () => {
                 {isEditing ? (
                   <>
                     <EditRow label="Họ và tên" name="fullName" value={formData.fullName} onChange={handleChange} />
-                    <EditRow label="Điện thoại" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} />
+                    {/* SĐT không cho sửa */}
+                    <InfoRow label="Điện thoại" value={formData.phoneNumber} /> 
                     <EditRow label="Ngày sinh" name="dob" value={formData.dob} onChange={handleChange} type="date" />
                     {/* (Bạn có thể dùng <select> cho Giới tính) */}
                     <EditRow label="Giới tính" name="gender" value={formData.gender} onChange={handleChange} />
@@ -200,12 +291,14 @@ const ProfilePage = () => {
                       type="button" 
                       onClick={handleCancel}
                       className="px-6 py-2 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition"
+                      disabled={isUploading} // Vô hiệu hóa khi đang upload
                     >
                       Hủy
                     </button>
                     <button 
                       type="submit"
                       className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+                      disabled={isUploading} // Vô hiệu hóa khi đang upload
                     >
                       Lưu thay đổi
                     </button>

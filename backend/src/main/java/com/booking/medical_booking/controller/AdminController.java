@@ -15,7 +15,6 @@ import com.booking.medical_booking.service.hospital.HospitalService;
 import com.booking.medical_booking.model.Clinic;
 import com.booking.medical_booking.dto.ClinicRequestDTO;
 import com.booking.medical_booking.service.clinic.ClinicService;
-import com.booking.medical_booking.model.Appointment;
 import com.booking.medical_booking.service.appointment.AppointmentService;
 import com.booking.medical_booking.dto.AppointmentResponseDTO;
 

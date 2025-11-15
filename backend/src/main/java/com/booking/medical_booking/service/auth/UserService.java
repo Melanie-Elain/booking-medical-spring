@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.Map;
 
 @Service
@@ -51,7 +50,7 @@ public class UserService {
 
     public Map<String, String> login(String username, String password) {
         User user = userRepository.findByPhoneNumberOrEmail(username, username)
-            .orElseThrow(() -> new UsernameNotFoundException("Sai tên đăng nhập hoặc mật khẩu"));
+                .orElseThrow(() -> new UsernameNotFoundException("Sai tên đăng nhập hoặc mật khẩu"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Sai tên đăng nhập hoặc mật khẩu");
@@ -66,8 +65,8 @@ public class UserService {
 
     public User getCurrentUser() {
         String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByPhoneNumberOrEmail(phoneNumber, phoneNumber) 
-            .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user với SĐT: " + phoneNumber));
+        return userRepository.findByPhoneNumberOrEmail(phoneNumber, phoneNumber)
+                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user với SĐT: " + phoneNumber));
     }
 
     // === ĐỔI MẬT KHẨU ===
@@ -81,6 +80,7 @@ public class UserService {
     }
     
     // === CẬP NHẬT HỒ SƠ ===
+    @Transactional // Thêm @Transactional ở đây cũng tốt
     public User updateProfile(UpdateProfileRequest request) {
         User currentUser = getCurrentUser();
         currentUser.setFullName(request.getFullName());
@@ -95,7 +95,15 @@ public class UserService {
         currentUser.setWard(request.getWard());
         currentUser.setAddress(request.getAddress());
         currentUser.setOccupation(request.getOccupation());
-        return userRepository.save(currentUser);
+        return userRepository.save(currentUser); // save() vẫn cần thiết để trả về User đã cập nhật
+    }
+
+    // === CẬP NHẬT ẢNH ĐẠI DIỆN (AVATAR) ===
+    @Transactional
+    public void updateAvatar(String avatarUrl) {
+        User currentUser = getCurrentUser();
+        currentUser.setAvatarUrl(avatarUrl);
+        userRepository.save(currentUser); // Cứ để .save() cho chắc chắn
     }
 
     // === ADMIN TẠO USER ===
@@ -130,7 +138,7 @@ public class UserService {
     @Transactional
     public User adminUpdateUser(Long userId, UserRequestDTO request) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy User ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy User ID: " + userId));
 
         if (!user.getPhoneNumber().equals(request.getPhoneNumber())) {
             if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
@@ -159,7 +167,7 @@ public class UserService {
     // === ADMIN XÓA USER ===
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy User ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy User ID: " + userId));
         
         userRepository.delete(user);
     }
@@ -169,3 +177,6 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 }
+
+
+
