@@ -1,3 +1,143 @@
+/* --- Intro Page --- */
+/* ======== HEADER WRAPPER ======== */
+.doctor-workspace-page .header-WS { 
+    width: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(6px);
+    position: static;
+    z-index: 50;
+}
+
+.doctor-workspace-page .header-container-WS {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0px;
+    gap: 8px;
+}
+
+/* ======== LEFT ======== */
+.doctor-workspace-page .header-left {
+    display: flex;
+    align-items: center;
+    margin-left: 50px;
+    gap: 12px;
+}
+
+.doctor-workspace-page .logo-boxWS {
+    background: #f5f5f5;
+    border-radius: 999px;
+    width: 120px;
+    padding: 4px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0;
+}
+
+.doctor-workspace-page .logo-WS {
+    height: 40px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+}
+
+/* ======== NAV ======== */
+.doctor-workspace-page .nav {
+    display: none;
+    background: #f0f0f0;
+    border-radius: 999px;
+    padding: 6px;
+    gap: 4px;
+}
+
+.doctor-workspace-page .nav a {
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.doctor-workspace-page .nav a:hover {
+    background: white;
+    color: #000;
+}
+
+.doctor-workspace-page .nav a.active {
+    background: white;
+    color: #000;
+    font-weight: 500;
+}
+
+/* ======== RIGHT BUTTON ======== */
+.doctor-workspace-page .header-right {
+    display: none;
+}
+
+.doctor-workspace-page .btn-primary {
+    background: #007bff;
+    color: white;
+    padding: 10px 20px;
+    margin-right: 50px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.doctor-workspace-page .btn-primary:hover {
+    background: #0062d6;
+}
+
+/* Thêm sau phần .btn-primary */
+.doctor-workspace-page .btn-secondary {
+    background: white;
+    color: #007bff;
+    border: 1px solid #007bff;
+    padding: 10px 20px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.doctor-workspace-page .btn-secondary:hover {
+    background: #007bff;
+    color: white;
+}
+
+
+/* Hiển thị desktop */
+@media (min-width: 1024px) {
+    .header-right {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+/* ======== RESPONSIVE ======== */
+@media (min-width: 1024px) {
+
+    .nav {
+        display: flex;
+    }
+
+    .header-container-WS {
+        padding: 12px 0px;
+    }
+
+    .doctor-workspace-page .nav {
+        display: flex;
+    }
+    .doctor-workspace-page .header-right {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+/* --- Trang chính của bác sĩ --- */
 /* --- CSS MỚI CHO DASHBOARD --- */
 @tailwind base;
 @tailwind components;
