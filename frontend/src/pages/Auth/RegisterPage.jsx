@@ -65,51 +65,79 @@ const setupRecaptcha = () => {
   //     setLoading(false);
   //   }
   // };
-   const handlePhoneBlur = async () => {
-  if (!phoneNumber) return;
+const handlePhoneBlur = async () => {
+    if (!phoneNumber) return;
 
-  try {
-    const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
-    const data = await res.json();
+    try {
+        const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
+        
+        // Luôn parse JSON để lấy nội dung, kể cả khi lỗi
+        const data = await res.json(); 
 
-    if (data.phoneExists) {
-      setErrors(prev => ({ ...prev, phoneNumber: "Số điện thoại đã tồn tại" }));
-    } else {
-      setErrors(prev => ({ ...prev, phoneNumber: "" }));
+        if (res.ok) { 
+            // res.ok = true (status 200-299)
+            // Backend trả về {"message": "OK"} -> SĐT hợp lệ
+            setErrors(prev => ({ ...prev, phoneNumber: "" }));
+        } else {
+            // res.ok = false (ví dụ: status 400)
+            // Backend trả về {"error": "Số điện thoại đã tồn tại"}
+            setErrors(prev => ({ ...prev, phoneNumber: data.error || "Lỗi không xác định" }));
+        }
+
+    } catch (err) {
+        // Lỗi này là lỗi mạng (ví dụ: server backend bị tắt)
+        console.error("Lỗi mạng khi check phone:", err);
+        setErrors(prev => ({ ...prev, phoneNumber: "Không thể kết nối đến máy chủ" }));
     }
-
-  } catch (err) {
-    console.log("Lỗi check phone:", err);
-  }
 };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  setErrors({ fullName: "", phoneNumber: "", general: "" });
-  if (!phoneNumber) return alert("Vui lòng nhập số điện thoại");
-
-  // Nếu phone đang có lỗi → không cho submit
-  if (errors.phoneNumber) {
-    return;
-  }
-
-  try {
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({ fullName: "", phoneNumber: "", general: "" }); // Xóa lỗi cũ
     setLoading(true);
-    const formattedPhone = "+84" + phoneNumber.slice(1);
-    setupRecaptcha();
-    const appVerifier = window.recaptchaVerifier;
-    const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-    window.confirmationResult = confirmationResult;
 
-    alert("Đã gửi mã OTP đến số " + phoneNumber);
-    setStep(2);
+    if (!phoneNumber) {
+        setErrors(prev => ({ ...prev, phoneNumber: "Vui lòng nhập số điện thoại" }));
+        setLoading(false);
+        return;
+    }
 
-  } catch (err) {
-    console.log(err);
-    setErrors(prev => ({ ...prev, general: "Có lỗi xảy ra, vui lòng thử lại" }));
-  } finally {
-    setLoading(false);
-  }
+    // --- BƯỚC 1: KIỂM TRA SĐT TỒN TẠI (LÀM LẠI TRƯỚC KHI SUBMIT) ---
+    try {
+        const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
+        const data = await res.json();
+
+        if (!res.ok) { // Nếu res.ok = false (lỗi 400)
+            setErrors(prev => ({ ...prev, phoneNumber: data.error || "SĐT đã tồn tại" }));
+            setLoading(false);
+            return; // Dừng lại, không gửi OTP
+        }
+        // Nếu SĐT hợp lệ (200 OK), tiếp tục...
+
+    } catch (err) {
+        console.error("Lỗi mạng khi check phone:", err);
+        setErrors(prev => ({ ...prev, general: "Không thể kết nối máy chủ. Vui lòng thử lại." }));
+        setLoading(false);
+        return; // Dừng lại
+    }
+
+    // --- BƯỚC 2: GỬI OTP (NẾU BƯỚC 1 THÀNH CÔNG) ---
+    try {
+        const formattedPhone = "+84" + phoneNumber.slice(1);
+        setupRecaptcha();
+        const appVerifier = window.recaptchaVerifier;
+        const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+        
+        window.confirmationResult = confirmationResult;
+        alert("Đã gửi mã OTP đến số " + phoneNumber);
+        setStep(2);
+
+    } catch (err) {
+        console.log("Lỗi gửi OTP:", err);
+        setErrors(prev => ({ ...prev, general: "Gửi OTP thất bại. Vui lòng kiểm tra lại SĐT hoặc thử lại sau." }));
+    } finally {
+        setLoading(false);
+    }
 };
 
 

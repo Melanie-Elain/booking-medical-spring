@@ -48,12 +48,14 @@ public class AuthController {
         return ResponseEntity.ok(responseMap);
     }
 
-    @PostMapping("/check-exist")
-    public ResponseEntity<Map<String, String>> checkExist(@RequestBody Map<String, String> payload) {
+    @GetMapping("/check-exist")
+    public ResponseEntity<Map<String, String>> checkExist(
+            @RequestParam(name = "phoneNumber", required = false) String phoneNumber,
+            @RequestParam(name = "email", required = false) String email) {
+        
         Map<String, String> response = new HashMap<>();
-        String phoneNumber = payload.get("phoneNumber");
-        String email = payload.get("email");
 
+        // Logic của bạn giữ nguyên
         if (phoneNumber != null && userService.isPhoneNumberExists(phoneNumber)) {
             response.put("error", "Số điện thoại đã tồn tại");
             return ResponseEntity.badRequest().body(response);

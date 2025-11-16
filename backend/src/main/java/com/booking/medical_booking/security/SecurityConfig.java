@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/hospitals/**").permitAll()
                 .requestMatchers("/api/clinics/**").permitAll()
                 .requestMatchers("/api/specialties/**").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**","/error").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 
                 // 2. Chỉ ADMIN mới được vào /api/admin/
