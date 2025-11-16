@@ -10,7 +10,6 @@
     margin: 0 auto; 
 }
 
-/* --- Phần Header và Nút Xem thêm --- */
 .clinic-header {
     display: flex;
     justify-content: space-between;

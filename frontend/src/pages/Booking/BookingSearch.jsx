@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Search, MapPin, Stethoscope, LocateFixed , ChevronDown, X } from "lucide-react";
 import Header from "../../components/Home/Header";
 import DownloadApp from "../../components/Home/DownloadApp";
@@ -9,8 +9,9 @@ import { DoctorService } from "../../api/DoctorService";
 import { HospitalService } from "../../api/hospitalService";
 import { clinicService } from "../../api/clinicService";
 import {SpecialtyService, specialtyService} from "../../api/specialtyService";
+import { SearchService } from "../../api/SearchService";
     
-
+const PerPage = 6;
 
 const BookingSearch = () => {
     const [search, setSearch] = useState("");
@@ -24,97 +25,84 @@ const BookingSearch = () => {
     const [selected1, setSelected1] = useState(null);
     const [selected2, setSelected2] = useState(null);
 
-    const [doctorsData, setDoctorsData] = useState([]);
-    const [hospitalsData, setHospitalsData] = useState([]);
-    const [clinicsData, setClinicsData] = useState([]);
-    const [specialties, setSpecialties] = useState([]);
+    const [searchResults, setSearchResults] = useState([]);
+  const [specialties, setSpecialties] = useState([]);
+  const [totalElements, setTotalElements] = useState(0);
 
-    const [currentPage, setCurrentPage] = useState(0);
-    const PerPage = 6; 
+  const [currentPage, setCurrentPage] = useState(0);
 
-    useEffect(() => {
-      const fetchDoctors = async () => {
-        const data = await DoctorService.getAllDoctorsList();
-        setDoctorsData(data);
-      };
-      const fetchHospitals = async () => {
-        const data = await HospitalService.getAllHospitalsList();
-        setHospitalsData(data);
-      };
-      const fetchClinics = async () => {
-        const data = await clinicService.getAllClinicsList();
-        setClinicsData(data);
-      };
-      const fetchSpecialties = async () => {
+  useEffect(() => {
+    const fetchSpecialties = async () => {
+      try {
         const data = await SpecialtyService.getAllSpecialtiesList();
         setSpecialties(data);
-      };
-      fetchDoctors();
-      fetchHospitals();
-      fetchClinics();
-      fetchSpecialties();
-    }, []);
-    
-
-    const filteredDoctors = doctorsData.filter((doctor) =>
-        doctor.name.toLowerCase().includes(search.toLowerCase()) 
-    );
-
-    const filteredHospital = hospitalsData.filter((hospital) =>
-        hospital.name.toLowerCase().includes(search.toLowerCase())
-    );
-
-    const filteredClinic = clinicsData.filter((clinic) =>
-        clinic.name.toLowerCase().includes(search.toLowerCase())
-    );
-
-    useEffect(() => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, []);
-
-    
-    const totalData = (() => {
-      switch (selected) {
-        case "Bác sĩ":
-          return filteredDoctors;
-        case "Bệnh viện":
-          return filteredHospital;
-        case "Phòng khám":
-          return filteredClinic;
-        default:
-          return [
-            ...filteredDoctors,
-            ...filteredHospital,
-            ...filteredClinic,
-          ];
+      } catch (error) {
+        console.error("Error fetching specialties:", error);
       }
-    })();
+    };
+    fetchSpecialties();
+  }, []);
     
-    const pageCount = Math.ceil(totalData.length / PerPage);
 
-    const startIndex = currentPage * PerPage;
-    const selectedData = totalData.slice(startIndex, startIndex + PerPage);
+  const fetchSearchResults = useCallback(async () => {
+    let entityType = "Tất cả";
+    if (selected === "Bác sĩ") entityType = "Bác sĩ";
+    else if (selected === "Bệnh viện") entityType = "Bệnh viện";
+    else if (selected === "Phòng khám") entityType = "Phòng khám";
+
+    const params = {
+      query: search || null, 
+      type: entityType, 
+      specialty: selected1, 
+      location: selected2, 
+      page: currentPage, 
+      size: PerPage, // Giới hạn số lượng mục trên mỗi trang
+    };
+    try {
+
+      console.log("params: ", params);
+      const response = await SearchService.searchAllEntities(params);
+      // Giả định API trả về một object có cấu trúc: { data: [...], total: N }
+      setSearchResults(response.data.content || []);
+      console.log("searchResults", response);
+      setTotalElements(response.data.totalElements || 0);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      setSearchResults([]);
+      setTotalElements(0);
+    }
+  }, [search, selected, selected1, selected2, currentPage]);
+
+  useEffect(() => {
+    fetchSearchResults();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [fetchSearchResults]); 
+
+  useEffect(() => {
+    setCurrentPage(0);
+}, [search, selected, selected1, selected2]);
+
+    
+const selectedData = searchResults;
+
+const pageCount = Math.ceil(totalElements / PerPage); 
+
 
     const handlePageClick = ({ selected }) => {
       setCurrentPage(selected);
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    useEffect(() => {
-      setCurrentPage(0);
-    }, [selected]);
-
-    useEffect(() => {
-      setCurrentPage(0);
-    }, [search]);
-
-
     const options = ["Tất cả", "Bác sĩ", "Bệnh viện", "Phòng khám"];
+    
+
+    const filteredSpecialties = specialties.filter((s) =>
+    s.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
 
-    const filtered = specialties.filter((s) =>
-      s.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+
+    
 
     return (
         <>
@@ -215,7 +203,7 @@ const BookingSearch = () => {
 
                 {/* Danh sách chuyên khoa */}
                 <div className="flex flex-col gap-2 max-h-64 overflow-y-auto">
-                  {filtered.map((opt) => (
+                  {filteredSpecialties.map((opt) => (
                     <button
                       key={opt.id}
                       onClick={() => setSelected1(opt.name)}

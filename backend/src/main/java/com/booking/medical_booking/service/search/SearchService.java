@@ -31,7 +31,6 @@ public class SearchService {
     @Autowired private HospitalRepository hospitalRepository;
     @Autowired private ClinicRepository clinicRepository;
     
-    // Giả định HospitalService và ClinicService có hàm getSpecification() tương tự DoctorService
 
     public Page<?> searchAllEntities(SearchRequestDTO request, Pageable pageable) {
         
@@ -40,44 +39,42 @@ public class SearchService {
         String type = request.getType();
         String specialty = request.getSpecialty();
         String query = request.getQuery();
+
+        System.out.println("query: "+ query);
         
-        // --- 1. Tìm kiếm Bác sĩ (Bảng bacsi) ---
+        boolean hasFilter = (specialty != null && !specialty.isEmpty()) || (query != null && !query.isEmpty());
+        
         if (type == null || type.equalsIgnoreCase("Bác sĩ") || type.equalsIgnoreCase("Tất cả")) {
-            if (query != null && !query.isEmpty()) {
-                // Tìm kiếm chung (tên, chuyên khoa, nơi làm việc)
-                combinedResults.addAll(doctorRepository.findByGeneralSearch(query));
-            } else if (specialty != null && !specialty.isEmpty()) {
-                // ✅ SỬA LỖI: Gọi đúng hàm findBySpecialty(String)
+            if (specialty != null && !specialty.isEmpty()) {
                 combinedResults.addAll(doctorRepository.findBySpecialty(specialty)); 
+            } else if (query != null && !query.isEmpty()) {
+                combinedResults.addAll(doctorRepository.findByGeneralSearch(query));
+            } else if (!hasFilter) { 
+             
+                combinedResults.addAll(doctorRepository.findAll()); 
             }
         }
 
-        // --- 2. Tìm kiếm Bệnh viện (Bảng benhvien) ---
         if (type == null || type.equalsIgnoreCase("Bệnh viện") || type.equalsIgnoreCase("Tất cả")) {
-            if (query != null && !query.isEmpty()) {
-                // Tìm theo tên
-                combinedResults.addAll(hospitalRepository.findByNameContainingIgnoreCase(query));
-            } else if (specialty != null && !specialty.isEmpty()) {
-                // Lọc theo chuyên khoa (dùng JPQL JOIN)
+            if (specialty != null && !specialty.isEmpty()) {
                 combinedResults.addAll(hospitalRepository.findBySpecialtyName(specialty));
+            } else if (query != null && !query.isEmpty()) {
+                combinedResults.addAll(hospitalRepository.findByNameContainingIgnoreCase(query));
+            } else if (!hasFilter) {
+                combinedResults.addAll(hospitalRepository.findAll()); 
             }
         }
 
-        // --- 3. Tìm kiếm Phòng khám (Bảng phongkham) ---
         if (type == null || type.equalsIgnoreCase("Phòng khám") || type.equalsIgnoreCase("Tất cả")) {
-            if (query != null && !query.isEmpty()) {
-                // Tìm theo tên
-                combinedResults.addAll(clinicRepository.findByNameContainingIgnoreCase(query));
-            } else if (specialty != null && !specialty.isEmpty()) {
-                // Lọc theo chuyên khoa (dùng JPQL JOIN)
+            if (specialty != null && !specialty.isEmpty()) {
                 combinedResults.addAll(clinicRepository.findBySpecialtyName(specialty));
+            } else if (query != null && !query.isEmpty()) {
+                combinedResults.addAll(clinicRepository.findByNameContainingIgnoreCase(query));
+            } else if (!hasFilter) {
+                combinedResults.addAll(clinicRepository.findAll()); 
             }
         }
         
-        // --- 4. Xử lý Phân trang (Thủ công) ---
-        
-        // Sắp xếp (Nếu cần)
-        // combinedResults.sort(Comparator.comparing(item -> ...)); 
         
         int totalSize = combinedResults.size();
         int start = (int) pageable.getOffset();
@@ -88,7 +85,6 @@ public class SearchService {
              pagedResults = combinedResults.subList(start, end);
         }
 
-        // Trả về PageImpl để Frontend nhận được cấu trúc phân trang chuẩn
         return new PageImpl<>(pagedResults, pageable, totalSize);
     }
 }

@@ -14,10 +14,10 @@ public interface ClinicRepository extends JpaRepository<Clinic, Integer> {
     List<Clinic> findByNameContainingIgnoreCase(String name);
 
     // 2. Lọc theo Chuyên khoa (Dùng JPQL JOIN với bảng liên kết phongkham_chuyenkhoa)
-    @Query(value = "SELECT pk.* FROM phongkham pk " +
-                   "JOIN phongkham_chuyenkhoa pck ON pk.id = pck.MaPK " +
-                   "JOIN chuyenkhoa ck ON pck.MaCK = ck.MaCK " +
-                   "WHERE ck.TenCK = :specialtyName",
-           nativeQuery = true)
+    @Query(value = "SELECT * FROM phongkham pk " +
+    "JOIN phongkham_chuyenkhoa pck ON pk.id = pck.MaPK " +
+    "JOIN chuyenkhoa ck ON pck.MaCK = ck.MaCK " +
+    "WHERE ck.TenCK = :specialtyName",
+    nativeQuery = true)
     List<Clinic> findBySpecialtyName(@Param("specialtyName") String specialtyName);
 }

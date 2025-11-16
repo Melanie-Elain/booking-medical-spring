@@ -12,12 +12,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
-    @Query(value = "SELECT d FROM Doctor d WHERE " +
-           "LOWER(d.name) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-           "LOWER(d.specialty) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
-           "LOWER(d.workplace) LIKE LOWER(CONCAT('%', :query, '%'))",
-           nativeQuery = true)
-    List<Doctor> findByGeneralSearch(@Param("query") String query);
+    @Query(value = "SELECT bs.* FROM bacsi bs " +
+    "JOIN bacsi_chuyenkhoa bsck ON bs.id = bsck.MaBS " +
+    "JOIN chuyenkhoa ck ON bsck.MaCK = ck.MaCK " +
+    "WHERE ck.TenCK = :specialtyName", 
+    nativeQuery = true)
+List<Doctor> findByGeneralSearch(@Param("query") String query);
+
 
     List<Doctor> findBySpecialty(String specialty);
 }
