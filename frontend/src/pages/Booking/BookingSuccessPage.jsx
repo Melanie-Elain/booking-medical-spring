@@ -2,14 +2,12 @@ import React from 'react';
 import Header from '../../components/Home/Header';
 import HomeFooter from '../../components/Home/HomeFooter';
 import { CheckCircle } from 'lucide-react';
-import { useLocation } from 'react-router-dom'; // Import useLocation
+import { useLocation } from 'react-router-dom'; 
 
 const BookingSuccessPage = () => {
-    // 1. Dùng useLocation để nhận state
     const location = useLocation();
     const successDetails = location.state;
 
-    // Dữ liệu giả định nếu không có state (fallback)
     const fallbackData = {
         doctorName: "Lỗi dữ liệu",
         doctorAddress: "Vui lòng tải lại trang",

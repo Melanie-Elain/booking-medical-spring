@@ -20,6 +20,10 @@ import BookingSuccessPage from "../pages/Booking/BookingSuccessPage";
 import CompleteBookingClinic from "../pages/Booking/CompleteBookingClinic";
 import CompleteBookingHospital from "../pages/Booking/CompleteBookingHospital";
 
+import MockPaymentPage from "../pages/Payment/MockPaymentPage";
+import PaymentMethodSelectionPage from "../pages/Payment/PaymentMethodSelectionPage";
+import PaymentStatus from "../pages/Payment/PaymentStatus";
+
 // === IMPORT CÁC TRANG DASHBOARD  ===
 import UserDashboardLayout from "../pages/UserDashboard/UserDashboardLayout";
 import AppointmentsPage from "../pages/UserDashboard/AppointmentsPage";
@@ -84,6 +88,10 @@ const AppRoutes = () => {
         }
       />
       <Route path="/dat-kham/benh-vien/:id" element={<HospitalProfile />} />
+      <Route path="/payment/select-method" element={<PaymentMethodSelectionPage/>} />
+      <Route path="/payment/mock-checkout" element={<MockPaymentPage/>} />
+      <Route path="/payment-status" element={<PaymentStatus />} />
+      
       <Route path="/dat-kham/benh-vien/:id/hoan-tat-dat-kham" element={<CompleteBookingHospital />} />
       <Route
         path="/dat-kham/phong-kham"

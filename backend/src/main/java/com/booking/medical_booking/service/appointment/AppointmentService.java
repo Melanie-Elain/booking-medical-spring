@@ -23,6 +23,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.Map; 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,21 +49,21 @@ public class AppointmentService {
 
     
 
-    private final String TRANG_THAI_KHA_DUNG = "Available";
-    private final String TRANG_THAI_DA_DAT = "Booked";
+    private final String STATUS_AVAILABLE = "Available";
+    private final String STATUS_BOOKED = "Booked";
     private final String TRANG_THAI_CHO = "Đang chờ";
+    private final String TRANG_THAI_CHO_THANH_TOAN = "Đang chờ thanh toán";
+    private final String TRANG_THAI_THANH_CONG = "Đã thanh toán";
+    private final String TRANG_THAI_THAT_BAI = "Thất bại";
 
    
     public Page<AppointmentResponseDTO> getAllAppointments(Pageable pageable) {
         
-        // 1. Lấy trang (Page) Appointment gốc từ DB
         Page<Appointment> appointmentPage = appointmentRepository.findAllByOrderByMaLichHenDesc(pageable);
 
-        // 2. Chuyển đổi (map) Page<Appointment> sang Page<AppointmentResponseDTO>
         return appointmentPage.map(this::convertToDTO);
     }
     
-    // HÀM HELPER: Chuyển đổi 1 Appointment -> 1 DTO
     private AppointmentResponseDTO convertToDTO(Appointment app) {
         String providerName = "(Không rõ)";
         
@@ -69,7 +71,6 @@ public class AppointmentService {
             User.UserRole type = app.getLichGio().getLichTong().getLoaiDoiTuong();
             Long id = app.getLichGio().getLichTong().getMaDoiTuong();
 
-            // 3. Tra cứu tên dựa trên Role
             if (type == User.UserRole.BACSI) {
                 providerName = doctorRepository.findById(id).map(d -> d.getName()).orElse("(Bác sĩ không tồn tại)");
             } else if (type == User.UserRole.BENHVIEN) {
@@ -81,11 +82,9 @@ public class AppointmentService {
             
         }
         
-        // 4. Tạo DTO mới với tên đã tra cứu
         return new AppointmentResponseDTO(app, providerName);
     }
 
-    // (Hàm updateStatus giữ nguyên logic, chỉ sửa tên trường)
     public Appointment updateAppointmentStatus(Integer id, Map<String, String> request) {
         String status = request.get("status");
         if (status == null || status.isEmpty()) {
@@ -100,108 +99,97 @@ public class AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
+    
     @Transactional 
-    public Appointment createDoctorAppointment(AppointmentDTO appointmentDTO) {
+    public Appointment createAppointment(AppointmentDTO appointmentDTO) {
         
         LichGio lichGio = lichGioRepository.findByMaGio(appointmentDTO.getMaGio())
             .orElseThrow(() -> new RuntimeException("Khung giờ không hợp lệ."));
             
-        if (!TRANG_THAI_KHA_DUNG.equalsIgnoreCase(lichGio.getStatus())) {
+        if (!STATUS_AVAILABLE.equalsIgnoreCase(lichGio.getStatus())) {
             throw new RuntimeException("Khung giờ đã được đặt.");
         }
 
-        
         User patient = userRepository.findById(appointmentDTO.getUserId())
             .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại."));
 
-        lichGio.setStatus(TRANG_THAI_DA_DAT);
+        String finalStatus;
+
+        boolean isPaymentRequired = "thuong".equalsIgnoreCase(appointmentDTO.getExamType()) && 
+                                    "BENHVIEN".equalsIgnoreCase(appointmentDTO.getEntityType());
+
+        if (isPaymentRequired) {
+            finalStatus = TRANG_THAI_CHO_THANH_TOAN;
+        } else {
+            finalStatus = TRANG_THAI_CHO;
+        }
+
+        lichGio.setStatus(STATUS_BOOKED);
         lichGioRepository.save(lichGio); 
 
         Appointment newAppointment = new Appointment();
         newAppointment.setUser(patient);
         newAppointment.setLichGio(lichGio); 
-        newAppointment.setTrangThai(TRANG_THAI_CHO);
+        newAppointment.setTrangThai(finalStatus); 
         newAppointment.setGhiChu(appointmentDTO.getGhiChu());
-
-        return appointmentRepository.save(newAppointment);
-    }
-
-    @Transactional 
-    public Appointment createHospitalAppointment(AppointmentDTO appointmentDTO) {
         
-        LichGio lichGio = lichGioRepository.findByMaGio(appointmentDTO.getMaGio())
-            .orElseThrow(() -> new RuntimeException("Khung giờ không hợp lệ."));
-            
-        if (!TRANG_THAI_KHA_DUNG.equalsIgnoreCase(lichGio.getStatus())) {
-            throw new RuntimeException("Khung giờ đã được đặt.");
-        }
+        newAppointment.setExamType(appointmentDTO.getExamType());
 
+        BigDecimal price = (appointmentDTO.getFinalPrice() != null && !appointmentDTO.getFinalPrice().isEmpty()) 
+        ? new BigDecimal(appointmentDTO.getFinalPrice()) 
+        : BigDecimal.ZERO;
+        newAppointment.setFinalPrice(price);
         
-        User patient = userRepository.findById(appointmentDTO.getUserId())
-            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại."));
-
-        lichGio.setStatus(TRANG_THAI_DA_DAT);
-        lichGioRepository.save(lichGio); 
-
-        Appointment newAppointment = new Appointment();
-        newAppointment.setUser(patient);
-        newAppointment.setLichGio(lichGio); 
-        newAppointment.setTrangThai(TRANG_THAI_CHO);
-        newAppointment.setGhiChu(appointmentDTO.getGhiChu());
-
-        return appointmentRepository.save(newAppointment);
-    }
-
-    @Transactional 
-    public Appointment createClinicAppointment(AppointmentDTO appointmentDTO) {
-        
-        LichGio lichGio = lichGioRepository.findByMaGio(appointmentDTO.getMaGio())
-            .orElseThrow(() -> new RuntimeException("Khung giờ không hợp lệ."));
-            
-        if (!TRANG_THAI_KHA_DUNG.equalsIgnoreCase(lichGio.getStatus())) {
-            throw new RuntimeException("Khung giờ đã được đặt.");
-        }
-
-        
-        User patient = userRepository.findById(appointmentDTO.getUserId())
-            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại."));
-
-        lichGio.setStatus(TRANG_THAI_DA_DAT);
-        lichGioRepository.save(lichGio); 
-
-        Appointment newAppointment = new Appointment();
-        newAppointment.setUser(patient);
-        newAppointment.setLichGio(lichGio); 
-        newAppointment.setTrangThai(TRANG_THAI_CHO);
-        newAppointment.setGhiChu(appointmentDTO.getGhiChu());
-
         return appointmentRepository.save(newAppointment);
     }
 
 
-    // ===  LẤY LỊCH HẸN CỦA TÔI (CHO BỆNH NHÂN) ===
-    @Transactional(readOnly = true) // readOnly=true để tối ưu tốc độ đọc
+    @Transactional(readOnly = true) 
     public Page<AppointmentResponseDTO> getMyAppointments(Pageable pageable, String keyword) {
         User currentUser = getCurrentUser();
         Page<Appointment> appointmentPage;
 
         if (keyword != null && !keyword.isEmpty()) {
-            // Hàm này (không có @EntityGraph) CẦN @Transactional
             appointmentPage = appointmentRepository.searchMyAppointments(currentUser.getId(), keyword, pageable);
         } else {
-            // Hàm này (có @EntityGraph) không thực sự cần, nhưng để @Transactional
             appointmentPage = appointmentRepository.findByUserIdOrderByMaLichHenDesc(currentUser.getId(), pageable);
         }
         
-        // Nhờ @Transactional, hàm convertToDTO sẽ truy cập được các trường LAZY
         return appointmentPage.map(this::convertToDTO);
     }
 
-    // === HÀM TIỆN ÍCH ===
     private User getCurrentUser() {
         String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByPhoneNumberOrEmail(phoneNumber, phoneNumber) 
             .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user: " + phoneNumber));
+    }
+
+    @Transactional
+    public Appointment confirmPaymentStatus(Integer maLichHen, String successCode, String paymentMethod) {
+    
+        Appointment appointment = appointmentRepository.findById(maLichHen)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy Lịch hẹn để cập nhật ID: " + maLichHen));
+    
+        System.out.println("mã successCode:"+ successCode);
+        if ("0".equals(successCode)) {
+            appointment.setTrangThai(TRANG_THAI_THANH_CONG);
+            System.out.println("Giao dịch thành công. Cập nhật trạng thái lịch hẹn.");
+            
+        } else {
+            appointment.setTrangThai(TRANG_THAI_THAT_BAI);
+            System.out.println("Giao dịch thất bại. Mã lỗi: " + successCode);
+        }
+        
+        return appointmentRepository.save(appointment);
+    }
+
+    public Appointment findById(Integer id) {
+        return appointmentRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn với id: " + id));
+    }
+
+    public Appointment save(Appointment appointment) {
+        return appointmentRepository.save(appointment);
     }
 
 }

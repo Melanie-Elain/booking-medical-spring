@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,9 +32,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (requestPath.startsWith("/api/doctors") || 
             requestPath.startsWith("/api/hospitals") || 
             requestPath.startsWith("/api/clinics") ||
-            requestPath.startsWith("/api/specialties") || 
+            requestPath.startsWith("/api/specialties") ||
             requestPath.startsWith("/api/auth")) {
-            // Đồng thời bỏ qua cả CORS pre-flight requests (OPTIONS)
             if ("OPTIONS".equals(request.getMethod())) {
                 response.setStatus(HttpServletResponse.SC_OK);
                 return;
