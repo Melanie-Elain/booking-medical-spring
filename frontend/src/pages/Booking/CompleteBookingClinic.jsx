@@ -6,6 +6,7 @@ import HomeFooter from "../../components/Home/HomeFooter";
 import BookingDownloadApp from "../../components/Booking/BookingDownloadApp";
 import { clinicService } from "../../api/clinicService";
 import { UserService } from "../../api/userService";
+import { appointmentService } from "../../api/appointmentService";
 
 const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
     
@@ -320,7 +321,7 @@ const CompleteBookingClinic = () => {
         };
 
         try{
-            const response =await clinicService.bookAppointment(bookingData);
+            const response =await appointmentService.bookClinicAppointment(bookingData);
 
             const successData = {
             
