@@ -1,17 +1,35 @@
-import React, { useState } from "react";
-import Features from "./SectionFeatures.jsx";
+import React, { useEffect } from "react";
+import DwSecurity from "./SectionDW-Security.jsx";
+import DwFeatures from "./SectionDW-Features.jsx";
+import DwFAQ from "./SectionDW-FAQ.jsx";
+import HomeFooter from "../../components/Home/HomeFooter.jsx";
 import "../../assets/Home/DocterWorkspace.css";
 
-const DoctorWorkspacePage = () => {
+const DoctorWorkspaceIntro = () => {
+    useEffect(() => {
+        const header = document.querySelector(".sticky-header");
+
+        const handleScroll = () => {
+            if (window.scrollY > 10) {
+                header?.classList.add("scrolled");
+            } else {
+                header?.classList.remove("scrolled");
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     return (
         <div className="doctor-workspace-page">
             {/* HEADER */}
-            <header className="header-IntroWS">
+            <header className="header-IntroWS sticky-header">
                 <div className="header-container-IntroWS">
                     {/* Left side */}
                     <div className="header-left">
                         <div className="logo-boxIntroWS">
-                            <a href="/doctor-workspace" aria-label="Home Page">
+                            <a href="/" aria-label="Home Page">
                                 <img src="/images/logo-doctorworkspace.png" alt="logo" className="logo-IntroWS" />
                             </a>
                         </div>
@@ -22,8 +40,8 @@ const DoctorWorkspacePage = () => {
                         <a href="/#" className="active">
                             Trang chủ
                         </a>
-                        <a href="/#features">Tính năng</a>
-                        <a href="/#security">Bảo mật</a>
+                        <a href="/doctor-workspace-intro/#features">Tính năng</a>
+                        <a href="/doctor-workspace-intro/#security">Bảo mật</a>
                     </nav>
 
                     {/* Right buttons */}
@@ -46,10 +64,18 @@ const DoctorWorkspacePage = () => {
 
             {/* Nội dung trang chính (ví dụ placeholder) */}
             <main className="main-content-IntroWS">
+                <div id="features">
+                    < DwFeatures />
+                </div>
 
+                <div id="security">
+                    <DwSecurity />
+                </div>
+                < DwFAQ />
+                < HomeFooter />
             </main>
         </div>
     );
 };
 
-export default DoctorWorkspacePage;
+export default DoctorWorkspaceIntro;
