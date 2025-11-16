@@ -54,7 +54,6 @@ const BookingSearch = () => {
       fetchClinics();
       fetchSpecialties();
     }, []);
-
     
 
     const filteredDoctors = doctorsData.filter((doctor) =>

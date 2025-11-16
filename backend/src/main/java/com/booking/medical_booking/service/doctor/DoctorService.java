@@ -114,7 +114,9 @@ package com.booking.medical_booking.service.doctor;
 
 import com.booking.medical_booking.dto.DoctorRequestDTO;
 import com.booking.medical_booking.dto.ScheduleTimeDTO;
+import com.booking.medical_booking.dto.SearchRequestDTO;
 import com.booking.medical_booking.model.Doctor;
+import com.booking.medical_booking.model.Hospital;
 import com.booking.medical_booking.model.LichGio;
 import com.booking.medical_booking.model.LichTong;
 import com.booking.medical_booking.model.Specialty;
@@ -123,10 +125,17 @@ import com.booking.medical_booking.repository.DoctorRepository;
 import com.booking.medical_booking.repository.LichTongRepository;
 import com.booking.medical_booking.repository.SpecialtyRepository;
 import com.booking.medical_booking.repository.UserRepository;
+
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+
+import org.antlr.v4.runtime.atn.SemanticContext.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -136,6 +145,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 public class DoctorService {
@@ -277,6 +287,10 @@ public class DoctorService {
 
         return formattedSchedules;
     }
+
+
+    
+
     // @Transactional
     // public List<Doctor> getDoctorsBySpecialtyId(Long specialtyId) {
     //     Specialty specialty = specialtyRepository.(specialtyId)
