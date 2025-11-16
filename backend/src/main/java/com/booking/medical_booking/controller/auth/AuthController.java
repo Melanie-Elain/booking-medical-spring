@@ -6,6 +6,8 @@ import com.booking.medical_booking.service.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.Map; 
 
 
@@ -44,5 +46,27 @@ public class AuthController {
         );
 
         return ResponseEntity.ok(responseMap);
+    }
+
+    @GetMapping("/check-exist")
+    public ResponseEntity<Map<String, String>> checkExist(
+            @RequestParam(name = "phoneNumber", required = false) String phoneNumber,
+            @RequestParam(name = "email", required = false) String email) {
+        
+        Map<String, String> response = new HashMap<>();
+
+        // Logic của bạn giữ nguyên
+        if (phoneNumber != null && userService.isPhoneNumberExists(phoneNumber)) {
+            response.put("error", "Số điện thoại đã tồn tại");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        if (email != null && userService.isEmailExists(email)) {
+            response.put("error", "Email đã tồn tại");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        response.put("message", "OK");
+        return ResponseEntity.ok(response);
     }
 }

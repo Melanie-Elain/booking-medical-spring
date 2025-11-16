@@ -137,7 +137,7 @@ const Header = () => {
           <a href="" className="nav-item"
             onClick={(e) => {
               e.preventDefault();
-              navigate("/doctor-workspace");
+              navigate("/doctor-workspace-intro");
             }}>Dành cho Bác sĩ</a>
 
           {/* 2. THÊM LINK ADMIN (NẾU LÀ ADMIN) */}
@@ -157,7 +157,6 @@ const Header = () => {
                 <span className="caret">▾</span>
               </button>
 
-              
               {/* Menu dropdown  */}
               <div className="dropdown-panel user-dropdown-menu">
                 <div className="dropdown-inner">

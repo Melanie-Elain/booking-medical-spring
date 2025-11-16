@@ -21,22 +21,12 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const [errors, setErrors] = useState({
+    fullName: "",
+    phoneNumber: "",
+    general: "",
+  });
   
-//   const setupRecaptcha = () => {
-//   const currentAuth = auth || getAuth(); // ✅ đảm bảo luôn có auth
-//   if (!window.recaptchaVerifier) {
-//     window.recaptchaVerifier = new RecaptchaVerifier(
-//       currentAuth,
-//       "recaptcha-container",
-//       {
-//         size: "invisible",
-//         callback: (response) => {
-//           console.log("reCAPTCHA resolved");
-//         },
-//       }
-//     );
-//   }
-// };
 const setupRecaptcha = () => {
   if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new RecaptchaVerifier(
@@ -55,26 +45,101 @@ const setupRecaptcha = () => {
 
 
   // Xử lý gửi OTP và sang Step1
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!phoneNumber) return alert("Vui lòng nhập số điện thoại");
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!phoneNumber) return alert("Vui lòng nhập số điện thoại");
 
-    const formattedPhone = "+84" + phoneNumber.slice(1);
-    setLoading(true);
-    setupRecaptcha();
-    const appVerifier = window.recaptchaVerifier;
+  //   const formattedPhone = "+84" + phoneNumber.slice(1);
+  //   setLoading(true);
+  //   setupRecaptcha();
+  //   const appVerifier = window.recaptchaVerifier;
+
+  //   try {
+  //     const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+  //     window.confirmationResult = confirmationResult;
+  //     alert("Đã gửi mã OTP đến số " + phoneNumber);
+  //     setStep(2);
+  //   } catch (err) {
+  //     alert("Gửi OTP thất bại: " + err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+const handlePhoneBlur = async () => {
+    if (!phoneNumber) return;
 
     try {
-      const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-      window.confirmationResult = confirmationResult;
-      alert("Đã gửi mã OTP đến số " + phoneNumber);
-      setStep(2);
+        const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
+        
+        // Luôn parse JSON để lấy nội dung, kể cả khi lỗi
+        const data = await res.json(); 
+
+        if (res.ok) { 
+            // res.ok = true (status 200-299)
+            // Backend trả về {"message": "OK"} -> SĐT hợp lệ
+            setErrors(prev => ({ ...prev, phoneNumber: "" }));
+        } else {
+            // res.ok = false (ví dụ: status 400)
+            // Backend trả về {"error": "Số điện thoại đã tồn tại"}
+            setErrors(prev => ({ ...prev, phoneNumber: data.error || "Lỗi không xác định" }));
+        }
+
     } catch (err) {
-      alert("Gửi OTP thất bại: " + err.message);
-    } finally {
-      setLoading(false);
+        // Lỗi này là lỗi mạng (ví dụ: server backend bị tắt)
+        console.error("Lỗi mạng khi check phone:", err);
+        setErrors(prev => ({ ...prev, phoneNumber: "Không thể kết nối đến máy chủ" }));
     }
-  };
+};
+
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({ fullName: "", phoneNumber: "", general: "" }); // Xóa lỗi cũ
+    setLoading(true);
+
+    if (!phoneNumber) {
+        setErrors(prev => ({ ...prev, phoneNumber: "Vui lòng nhập số điện thoại" }));
+        setLoading(false);
+        return;
+    }
+
+    // --- BƯỚC 1: KIỂM TRA SĐT TỒN TẠI (LÀM LẠI TRƯỚC KHI SUBMIT) ---
+    try {
+        const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
+        const data = await res.json();
+
+        if (!res.ok) { // Nếu res.ok = false (lỗi 400)
+            setErrors(prev => ({ ...prev, phoneNumber: data.error || "SĐT đã tồn tại" }));
+            setLoading(false);
+            return; // Dừng lại, không gửi OTP
+        }
+        // Nếu SĐT hợp lệ (200 OK), tiếp tục...
+
+    } catch (err) {
+        console.error("Lỗi mạng khi check phone:", err);
+        setErrors(prev => ({ ...prev, general: "Không thể kết nối máy chủ. Vui lòng thử lại." }));
+        setLoading(false);
+        return; // Dừng lại
+    }
+
+    // --- BƯỚC 2: GỬI OTP (NẾU BƯỚC 1 THÀNH CÔNG) ---
+    try {
+        const formattedPhone = "+84" + phoneNumber.slice(1);
+        setupRecaptcha();
+        const appVerifier = window.recaptchaVerifier;
+        const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+        
+        window.confirmationResult = confirmationResult;
+        alert("Đã gửi mã OTP đến số " + phoneNumber);
+        setStep(2);
+
+    } catch (err) {
+        console.log("Lỗi gửi OTP:", err);
+        setErrors(prev => ({ ...prev, general: "Gửi OTP thất bại. Vui lòng kiểm tra lại SĐT hoặc thử lại sau." }));
+    } finally {
+        setLoading(false);
+    }
+};
+
 
 
   return (
@@ -132,16 +197,18 @@ const setupRecaptcha = () => {
                         placeholder="Nhập số điện thoại của bạn"
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
+                        onBlur={handlePhoneBlur}
                         required
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     </div>
+                    {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
                   </div>
 
                   {/* Nút đăng ký */}
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || !!errors.phoneNumber }
                     className="w-full py-3 px-4 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 font-semibold"
                   >
                     {loading ? "Đang gửi mã..." : "Đăng ký"}

@@ -7,6 +7,7 @@ import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.repository.AppointmentRepository;
 import com.booking.medical_booking.repository.LichGioRepository;
 import com.booking.medical_booking.repository.UserRepository;
+import com.booking.medical_booking.service.EmailService;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,8 @@ public class AppointmentService {
 
     @Autowired
     private LichGioRepository   lichGioRepository;
+    @Autowired
+    private EmailService emailService;
 
     
 
@@ -56,6 +59,7 @@ public class AppointmentService {
     private final String TRANG_THAI_THANH_CONG = "Đã thanh toán";
     private final String TRANG_THAI_THAT_BAI = "Thất bại";
 
+    private final String TRANG_THAI_XAC_NHAN = "Đã xác nhận";
    
     public Page<AppointmentResponseDTO> getAllAppointments(Pageable pageable) {
         
@@ -85,21 +89,52 @@ public class AppointmentService {
         return new AppointmentResponseDTO(app, providerName);
     }
 
-    public Appointment updateAppointmentStatus(Integer id, Map<String, String> request) {
-        String status = request.get("status");
-        if (status == null || status.isEmpty()) {
-            throw new RuntimeException("Trạng thái (status) là bắt buộc");
-        }
+@Transactional
+public AppointmentResponseDTO updateAppointmentStatus(Integer id, Map<String, String> request) {
 
-        Appointment appointment = appointmentRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy Lịch hẹn ID: " + id));
-        
-        appointment.setTrangThai(status); 
-        
-        return appointmentRepository.save(appointment);
+    // Lấy status từ request
+    String newStatus = request.get("status");
+    if (newStatus == null || newStatus.isEmpty()) {
+        throw new RuntimeException("Trạng thái (status) là bắt buộc");
     }
 
-    
+    // Lấy lịch hẹn
+    Appointment appointment = appointmentRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy Lịch hẹn ID: " + id));
+
+    // Lưu trạng thái cũ để so sánh
+    String oldStatus = appointment.getTrangThai();
+
+    // Cập nhật trạng thái mới
+    appointment.setTrangThai(newStatus);
+
+    // Lưu DB
+    Appointment savedAppointment = appointmentRepository.save(appointment);
+
+    // Tạo DTO
+    AppointmentResponseDTO responseDTO = convertToDTO(savedAppointment);
+
+    // Lấy providerName từ DTO
+    String providerName = responseDTO.getProviderName();
+
+    // Gửi email nếu trạng thái mới là "Đã xác nhận" và khác trạng thái cũ
+    if (TRANG_THAI_XAC_NHAN.equalsIgnoreCase(newStatus)
+            && !TRANG_THAI_XAC_NHAN.equalsIgnoreCase(oldStatus)) {
+
+        try {
+            emailService.sendAppointmentConfirmationEmail(savedAppointment, providerName);
+            System.out.println("Đã gửi email xác nhận cho lịch hẹn ID: " + id);
+
+        } catch (Exception e) {
+            System.err.println("Lỗi gửi mail xác nhận: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    return responseDTO;
+}
+
+
     @Transactional 
     public Appointment createAppointment(AppointmentDTO appointmentDTO) {
         

@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/specialties/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/payment/confirm-status").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 
                 // 2. Chỉ ADMIN mới được vào /api/admin/
