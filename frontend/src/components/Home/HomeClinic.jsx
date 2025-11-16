@@ -72,7 +72,7 @@ const HomeClinic = () => {
 
     return (
         <section className="home-clinic">
-            <div className="container">
+            <div className="container-clinic">
                 <div className="clinic-header">
                     <div className="clinic-text">
                         <h2 className="title">Đặt khám phòng khám</h2>

@@ -3,6 +3,7 @@ package com.booking.medical_booking.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -49,7 +50,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/hospitals/**").permitAll()
                 .requestMatchers("/api/clinics/**").permitAll()
                 .requestMatchers("/api/specialties/**").permitAll()
-                .requestMatchers("/api/auth/**","/error").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/payment/confirm-status").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 
                 // 2. Chỉ ADMIN mới được vào /api/admin/

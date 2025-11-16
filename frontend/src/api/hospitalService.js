@@ -18,9 +18,6 @@ export const HospitalService = {
         return response.data;
     },
 
-    bookAppointment: async (appointmentData) => {
-        const response = await axiosInstance.post(`/booking/hospital`, appointmentData);
-        return response.data;
-    }
+    
 
 };

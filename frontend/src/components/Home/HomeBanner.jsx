@@ -3,8 +3,10 @@ import React from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { useLocation } from "react-router-dom";
 import "../../assets/Home/HomeBanner.css";
+import { useNavigate } from "react-router-dom";
 
 const HomeBanner = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const isConsultationPage = location.pathname.includes("/tu-van-truc-tuyen");
   const isMedicalNewsPage = location.pathname.includes("/tin-y-te");
@@ -71,6 +73,7 @@ const HomeBanner = () => {
           </p>
           <div className="search-box">
             <input
+              onClick={() => navigate("/dat-kham/bac-si/search")}
               type="text"
               placeholder="Triệu chứng, bác sĩ, bệnh viện..."
             />

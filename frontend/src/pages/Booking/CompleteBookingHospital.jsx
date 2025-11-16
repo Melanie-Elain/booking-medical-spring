@@ -6,6 +6,7 @@ import HomeFooter from "../../components/Home/HomeFooter";
 import BookingDownloadApp from "../../components/Booking/BookingDownloadApp";
 import { HospitalService } from "../../api/hospitalService";
 import { UserService } from "../../api/userService";
+import { appointmentService } from "../../api/appointmentService";
 
 const OptionBox = ({ id, label, price, description, isChecked, onChange }) => {
     const formatPrice = (p) => {
@@ -320,6 +321,7 @@ const CompleteBookingHospital = () => {
     const [selectedOption, setSelectedOption] = useState(null); 
     const [selectedSpecialty, setSelectedSpecialty] = useState(null); 
 
+
     const [hospital, setHospital] = useState(null);
     const [patient, setPatient] = useState(null);
     const [schedules,setSchedules]= useState(null);
@@ -374,6 +376,7 @@ const CompleteBookingHospital = () => {
         dob: patient.dob,
         gender: patient.gender,
         address: patient.address,
+        note: noteContent,
     } : null;
 
 
@@ -409,40 +412,59 @@ const CompleteBookingHospital = () => {
     };
     
     const handleBooking = async () => {
-        if (!isReadyToBook || !patientDetails) return;
-        const patientDetailsWithNote = { ...patientDetails, note: noteContent };
-
-        const bookingData = {
+    
+        if (!isReadyToBook || !patient) return; 
+    
+        const selectedOptionData = examOptions.find(o => o.id === selectedOption);
+        const isKhamThuong = selectedOptionData && selectedOptionData.id === 'thuong';
+        
+        const bookingPayload = { 
             maGio: selectedMaGio, 
             userId: patient.id, 
             ghiChu: noteContent,
+            
+            examType: selectedOption, 
+            finalPrice: selectedOptionData?.price || 0,
+            entityType: 'BENHVIEN', 
         };
-
-        try{
-            const response =await HospitalService.bookAppointment(bookingData);
-            const successData = {
+        if (isKhamThuong) {
             
-                mainName: hospital.name,    
-                mainAddress: hospital.address, 
-                mainImage: hospital.image,  
+            navigate(`/payment/select-method`, { 
+                state: { 
+                    bookingPayload, 
+                    redirectPath: '/dat-kham/phieu-kham',
+                    hospital: hospital 
+                } 
+            });
+    
+        } else {
             
-                code: `YMA${Math.floor(Math.random() * 1000000)}`, 
-                date: selectedDate, 
-                time: selectedTime, 
-                patient: patientDetailsWithNote
-            };
-            
-            navigate(`/dat-kham/phieu-kham`, { state: successData });
-        }catch(error){
-            console.error("Lỗi đặt khám:", error);
-            alert("Đặt khám thất bại. Vui lòng thử lại sau.");
+            try {
+                const response = await appointmentService.bookHospitalAppointment(bookingPayload); 
+                const bookedAppointment = response;
+                
+                const successData = {
+                    mainName: hospital.name, 
+                    mainAddress: hospital.address, 
+                    mainImage: hospital.image, 
+                    stt: bookedAppointment.trangThai || 'Đang chờ', 
+                    code: bookedAppointment.maLichHen, 
+                    date: selectedDate, 
+                    time: selectedTime, 
+                    patient: patientDetails
+                };
+                
+                navigate(`/dat-kham/phieu-kham`, { state: successData });
+                
+            } catch (err) {
+                console.error("Lỗi đặt lịch:", err);
+                alert("Đặt khám thất bại: Khung giờ đã đầy hoặc lỗi hệ thống.");
+            }
         }
-        
     };
 
     const isReadyToBook = selectedDate && selectedTime && currentStep === 5; 
 
-    // Dữ liệu giả định cho Bước 1 và Bước 2
     const examOptions = [
         { id: 'thuong', label: 'Khám Thường', price: 50600, description: null },
         { id: 'bhyt', label: 'Khám BHYT', price: 0, description: 'Bệnh nhân đủ điều kiện hướng BHYT phải: – Có giấy chuyển tuyến hoặc phiếu hẹn tái khám hợp lệ – Bản chính CMND/CCCD, bằng lái xe,...' },
@@ -451,7 +473,7 @@ const CompleteBookingHospital = () => {
     const specialties = hospital.specialties 
         ? hospital.specialties.map(specObject => ({
             id: (specObject.name || '').toLowerCase().replace(/\s/g, '_'),
-            label: specObject.name // Tên hiển thị là tên gốc
+            label: specObject.name 
         })) 
         : [];
 

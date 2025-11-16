@@ -5,6 +5,7 @@ import Header from "../../components/Home/Header";
 import HomeFooter from "../../components/Home/HomeFooter";
 import "../../assets/Booking/DoctorProfile.css";
 import { DoctorService } from "../../api/DoctorService";
+import {UserService} from "../../api/userService";
 
 
 const DoctorProfile = () => {
@@ -86,6 +87,22 @@ const DoctorProfile = () => {
     if (!doctor) {
         return <div className="p-6 text-center text-gray-500">Không tìm thấy bác sĩ.</div>;
     }
+
+    const handleBookNow = async () => {
+        try {
+            const user = await UserService.getUserCurrent(); 
+            
+            if (user && user.id) {
+                navigate(`/dat-kham/bac-si/${doctor.id}/hoan-tat-dat-kham`);
+            } else {
+                alert("Vui lòng đăng nhập để đặt lịch.");
+                navigate('/login', { state: { from: `/dat-kham/bac-si/${doctor.id}` } });
+            }
+        } catch (error) {
+            alert("Vui lòng đăng nhập để đặt lịch.");
+            navigate('/login', { state: { from: `/dat-kham/bac-si/${doctor.id}` } });
+        }
+    };
 
    
     const schedules = Object.keys(schedulesData); 
@@ -271,7 +288,7 @@ const DoctorProfile = () => {
 
                     </div>
                     <button className="w-4/5 bg-blue-600 rounded-lg text-white text-lg"
-                        onClick={() => navigate(`/dat-kham/bac-si/${doctor.id}/hoan-tat-dat-kham`)}
+                        onClick={handleBookNow}
                     >
                         ĐẶT KHÁM NGAY
                     </button>

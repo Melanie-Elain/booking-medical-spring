@@ -19,10 +19,7 @@ export const clinicService = {
         return response.data;
     },
 
-    bookAppointment: async (appointmentData) => {
-        const response = await axiosInstance.post(`/booking/clinic`, appointmentData);
-        return response.data;
-    }
+    
 
 
 };

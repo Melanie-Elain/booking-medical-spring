@@ -29,12 +29,5 @@ export const DoctorService = {
 
    
   
-    bookAppointment: async (appointmentData) => { 
-       
-        const response = await axiosInstance.post(`/appointments/book/doctor`, appointmentData);
-        
-       
-        
-        return response.data; 
-    }
+    
 };

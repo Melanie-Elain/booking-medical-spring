@@ -13,12 +13,17 @@ import HospitalProfile from "../pages/Booking/HospitalProfile";
 import ClinicProfile from "../pages/Booking/ClinicProfile";
 import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
 import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
-import DoctorWorkspace from "../pages/DoctorWorkspace/DocterWorkspaceIntro";
+// import DoctorWorkspace from "../pages/DoctorWorkspace/DocterWorkspaceIntro";
+import DoctorWorkspace from "../pages/DoctorWorkspace/DocterWorkspacePage";
 
 import CompleteBookingDoctor from "../pages/Booking/CompleteBookingDoctor";
 import BookingSuccessPage from "../pages/Booking/BookingSuccessPage";
 import CompleteBookingClinic from "../pages/Booking/CompleteBookingClinic";
 import CompleteBookingHospital from "../pages/Booking/CompleteBookingHospital";
+
+import MockPaymentPage from "../pages/Payment/MockPaymentPage";
+import PaymentMethodSelectionPage from "../pages/Payment/PaymentMethodSelectionPage";
+import PaymentStatus from "../pages/Payment/PaymentStatus";
 
 // === IMPORT CÁC TRANG DASHBOARD  ===
 import UserDashboardLayout from "../pages/UserDashboard/UserDashboardLayout";
@@ -84,6 +89,10 @@ const AppRoutes = () => {
         }
       />
       <Route path="/dat-kham/benh-vien/:id" element={<HospitalProfile />} />
+      <Route path="/payment/select-method" element={<PaymentMethodSelectionPage/>} />
+      <Route path="/payment/mock-checkout" element={<MockPaymentPage/>} />
+      <Route path="/payment-status" element={<PaymentStatus />} />
+      
       <Route path="/dat-kham/benh-vien/:id/hoan-tat-dat-kham" element={<CompleteBookingHospital />} />
       <Route
         path="/dat-kham/phong-kham"

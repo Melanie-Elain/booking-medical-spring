@@ -54,6 +54,7 @@ const BookingSearch = () => {
       fetchClinics();
       fetchSpecialties();
     }, []);
+    
 
     const filteredDoctors = doctorsData.filter((doctor) =>
         doctor.name.toLowerCase().includes(search.toLowerCase()) 
@@ -118,8 +119,7 @@ const BookingSearch = () => {
     return (
         <>
         <Header/>
-        <main className="w-full mx-auto py-10">
-      {/* Thanh tìm kiếm */}
+        <main className="w-full mx-auto py-10 top-0">
       <div className=" border flex flex-col items-center w-full fixed top-[60px] left-0  mb-8 bg-white py-5 z-[1000]">
         <div className="relative w-full max-w-3xl">
           <input
