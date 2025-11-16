@@ -19,7 +19,7 @@ const MedicalNewsPage = () => {
     return (
         <section className="medical-news-container">
             <div className="medical-news-header">
-                <div className="header-container">
+                <div className="header-container-medicalNews">
                     <h1 className="header-title">Thông tin y tế</h1>
                     {/* Search */}
                     <div className="header-search">

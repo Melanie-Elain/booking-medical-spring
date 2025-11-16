@@ -13,6 +13,7 @@ import HospitalProfile from "../pages/Booking/HospitalProfile";
 import ClinicProfile from "../pages/Booking/ClinicProfile";
 import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
 import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
+// import DoctorWorkspace from "../pages/DoctorWorkspace/DocterWorkspaceIntro";
 import DoctorWorkspace from "../pages/DoctorWorkspace/DocterWorkspacePage";
 
 import CompleteBookingDoctor from "../pages/Booking/CompleteBookingDoctor";
@@ -142,7 +143,7 @@ const AppRoutes = () => {
       />
 
       {/* DocterWorkspace */}
-      <Route path="/doctor-workspace" element={<DoctorWorkspace />} />
+      <Route path="/doctor-workspace-intro" element={<DoctorWorkspace />} />
 
       {/* Auth  */}
       <Route path="/login" element={<LoginPage />} />

@@ -83,8 +83,8 @@ const HomeClinic = () => {
                     <button className="view-all-btn"
                     onClick={() => navigate("/dat-kham/phong-kham")}>
                         Xem thêm <span className="arrow-icon">
-                            <div className="icon-default"><i class="fa-solid fa-chevron-right"></i></div>
-                            <div className="icon-hover"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div className="icon-default"><i className="fa-solid fa-chevron-right"></i></div>
+                            <div className="icon-hover"><i className="fa-solid fa-arrow-right"></i></div>
                             </span>
                     </button>
                 </div>

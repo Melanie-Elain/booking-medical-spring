@@ -1,4 +1,4 @@
-package com.booking.medical_booking.service.auth; // (Sửa package cho đúng)
+package com.booking.medical_booking.service.auth;
 
 import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.repository.UserRepository;
@@ -19,16 +19,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
-        // === SỬA LỖI Ở ĐÂY ===
-        // "username" có thể là SĐT hoặc Email,
-        // nên chúng ta dùng hàm findByPhoneNumberOrEmail
+        // "username" co the la SDT hoac Email
         User user = userRepository.findByPhoneNumberOrEmail(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy User: " + username));
 
+        // Tu dong them tien to "ROLE_"
         String roleName = "ROLE_" + user.getRole().name();
         
         return new org.springframework.security.core.userdetails.User(
-            user.getPhoneNumber(), // Luôn dùng SĐT làm "chủ thể" (principal)
+            user.getPhoneNumber(), // Luon dung SDT lam "chu the" (principal)
             user.getPassword(),
             Collections.singletonList(new SimpleGrantedAuthority(roleName))
         );

@@ -1,3 +1,4 @@
+
 package com.booking.medical_booking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
