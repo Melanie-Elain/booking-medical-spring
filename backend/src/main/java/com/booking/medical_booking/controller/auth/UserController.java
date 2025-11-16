@@ -9,10 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.booking.medical_booking.dto.AppointmentResponseDTO; 
+import com.booking.medical_booking.dto.AvatarUpdateDto;
 import com.booking.medical_booking.service.appointment.AppointmentService; 
 import org.springframework.data.domain.Page; 
 import org.springframework.data.domain.PageRequest; 
 import org.springframework.data.domain.Pageable; 
+
+import java.util.Map;
 
 
 @RestController
@@ -55,10 +58,11 @@ public class UserController {
      * Frontend sẽ gọi: PUT /api/user/profile
      */
     @PutMapping("/profile")
-    public ResponseEntity<User> updateMyProfile(@RequestBody UpdateProfileRequest request) {
-        User updatedUser = userService.updateProfile(request);
-        return ResponseEntity.ok(updatedUser);
-    }
+    public ResponseEntity<Map<String, Object>> updateMyProfile(@RequestBody UpdateProfileRequest request) {
+        Map<String, Object> response = userService.updateProfile(request);
+
+    return ResponseEntity.ok(response);
+}
     
     // === 2. API  CHO LỊCH KHÁM CÁ NHÂN ===
     @GetMapping("/appointments")
@@ -72,5 +76,13 @@ public class UserController {
         // 2. Truyền keyword vào service
         Page<AppointmentResponseDTO> appointmentPage = appointmentService.getMyAppointments(pageable, keyword);
         return ResponseEntity.ok(appointmentPage);
+    }
+
+    @PutMapping("/update-avatar")
+    public ResponseEntity<?> updateAvatar(@RequestBody AvatarUpdateDto dto) {
+        // Gọi service để tìm user đang đăng nhập
+        // và set avatarUrl mới cho user đó
+        userService.updateAvatar(dto.getAvatarUrl());
+        return ResponseEntity.ok("Cập nhật ảnh đại diện thành công!");
     }
 }

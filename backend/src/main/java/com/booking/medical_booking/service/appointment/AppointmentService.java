@@ -7,6 +7,7 @@ import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.repository.AppointmentRepository;
 import com.booking.medical_booking.repository.LichGioRepository;
 import com.booking.medical_booking.repository.UserRepository;
+import com.booking.medical_booking.service.EmailService;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,8 @@ public class AppointmentService {
 
     @Autowired
     private LichGioRepository   lichGioRepository;
+    @Autowired
+    private EmailService emailService;
 
     
 
@@ -51,6 +54,7 @@ public class AppointmentService {
     private final String TRANG_THAI_DA_DAT = "Booked";
     private final String TRANG_THAI_CHO = "Đang chờ";
 
+    private final String TRANG_THAI_XAC_NHAN = "Đã xác nhận";
    
     public Page<AppointmentResponseDTO> getAllAppointments(Pageable pageable) {
         
@@ -86,19 +90,71 @@ public class AppointmentService {
     }
 
     // (Hàm updateStatus giữ nguyên logic, chỉ sửa tên trường)
-    public Appointment updateAppointmentStatus(Integer id, Map<String, String> request) {
-        String status = request.get("status");
-        if (status == null || status.isEmpty()) {
+//     public AppointmentResponseDTO updateAppointmentStatus(Integer id, Map<String, String> request) {
+//     String status = request.get("status");
+//     if (status == null || status.isEmpty()) {
+//         throw new RuntimeException("Trạng thái (status) là bắt buộc");
+//     }
+
+//     Appointment appointment = appointmentRepository.findById(id)
+//             .orElseThrow(() -> new RuntimeException("Không tìm thấy Lịch hẹn ID: " + id));
+    
+//     appointment.setTrangThai(status); 
+    
+//     Appointment savedAppointment = appointmentRepository.save(appointment);
+    
+//     // Chuyển đổi sang DTO trước khi trả về
+//     return convertToDTO(savedAppointment); 
+// }
+    @Transactional
+    public AppointmentResponseDTO updateAppointmentStatus(Integer id, Map<String, String> request) {
+        String newStatus = request.get("status");
+        if (newStatus == null || newStatus.isEmpty()) {
             throw new RuntimeException("Trạng thái (status) là bắt buộc");
         }
 
         Appointment appointment = appointmentRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy Lịch hẹn ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy Lịch hẹn ID: " + id));
         
-        appointment.setTrangThai(status); 
+        // Lấy trạng thái cũ để so sánh
+        String oldStatus = appointment.getTrangThai();
+
+        // Cập nhật trạng thái mới
+        appointment.setTrangThai(newStatus); 
         
-        return appointmentRepository.save(appointment);
+        // Lưu vào DB
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        
+        // --- ĐÂY LÀ PHẦN SỬA LỖI ---
+
+        // 1. Chuyển đổi sang DTO NGAY LẬP TỨC
+        //    Hàm này sẽ chạy logic (dùng 3 repository) để lấy tên provider
+        AppointmentResponseDTO responseDTO = convertToDTO(savedAppointment);
+
+        // 2. Lấy tên nhà cung cấp TỪ DTO
+        //    (Giả định DTO của bạn có hàm getProviderName() để lấy tên)
+        String providerName = responseDTO.getProviderName(); 
+
+        // 3. Logic gửi mail
+        // Chỉ gửi mail nếu trạng thái mới là "Đã xác nhận" VÀ nó khác với trạng thái cũ
+        if (TRANG_THAI_XAC_NHAN.equalsIgnoreCase(newStatus) && !TRANG_THAI_XAC_NHAN.equalsIgnoreCase(oldStatus)) {
+            try {
+                // SỬA LỖI: Truyền 2 tham số như yêu cầu của EmailService
+                emailService.sendAppointmentConfirmationEmail(savedAppointment, providerName);
+                
+                System.out.println("Đã yêu cầu gửi email xác nhận cho lịch hẹn ID: " + id);
+
+            } catch (Exception e) {
+                // Ghi log lỗi, nhưng KHÔNG throw
+                System.err.println("Lỗi khi gửi email xác nhận (update status) cho lịch hẹn ID " + id + ": " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        
+        // 4. Trả về DTO đã được tạo
+        return responseDTO; 
     }
+
 
     @Transactional 
     public Appointment createDoctorAppointment(AppointmentDTO appointmentDTO) {

@@ -5,7 +5,8 @@ import java.time.LocalDate;
 
 @Data
 public class UpdateProfileRequest {
-    // Lấy từ User entity, bỏ đi password, phoneNumber
+    // Lấy từ User entity, bỏ đi password
+    private String phoneNumber; 
     private String fullName;
     private LocalDate dob;
     private String idCard;

@@ -2,7 +2,11 @@ package com.booking.medical_booking.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 import java.util.Set;
+
+import com.booking.medical_booking.config.StringListConverter;
 
 @Entity
 @Data
@@ -42,6 +46,11 @@ public class Hospital {
         joinColumns = @JoinColumn(name = "MaBV"), 
         inverseJoinColumns = @JoinColumn(name = "MaCK") 
     )
+
+    // @Convert(converter = StringListConverter.class)
+    // @Column(name = "imageIntro", columnDefinition = "TEXT")
+    // private List<String> imageIntro;
+    
     private Set<Specialty> specialties;
 
     

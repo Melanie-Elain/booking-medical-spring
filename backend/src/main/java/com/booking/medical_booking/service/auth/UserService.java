@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -33,6 +33,19 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
+
+    // Kiểm tra số điện thoại đã tồn tại hay chưa
+    public boolean isPhoneNumberExists(String phoneNumber) {
+        return userRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    // Kiểm tra email đã tồn tại hay chưa
+    public boolean isEmailExists(String email) {
+        if (email == null || email.isEmpty()) return false;
+        return userRepository.existsByEmail(email);
+    }
+
+    // === ĐĂNG KÝ USER MỚI ===
     public User registerUser(User user) {
         if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
             throw new RuntimeException("Số điện thoại đã tồn tại");
@@ -51,7 +64,7 @@ public class UserService {
 
     public Map<String, String> login(String username, String password) {
         User user = userRepository.findByPhoneNumberOrEmail(username, username)
-            .orElseThrow(() -> new UsernameNotFoundException("Sai tên đăng nhập hoặc mật khẩu"));
+                .orElseThrow(() -> new UsernameNotFoundException("Sai tên đăng nhập hoặc mật khẩu"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Sai tên đăng nhập hoặc mật khẩu");
@@ -66,8 +79,8 @@ public class UserService {
 
     public User getCurrentUser() {
         String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByPhoneNumberOrEmail(phoneNumber, phoneNumber) 
-            .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user với SĐT: " + phoneNumber));
+        return userRepository.findByPhoneNumberOrEmail(phoneNumber, phoneNumber)
+                .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy user với SĐT: " + phoneNumber));
     }
 
     // === ĐỔI MẬT KHẨU ===
@@ -81,21 +94,71 @@ public class UserService {
     }
     
     // === CẬP NHẬT HỒ SƠ ===
-    public User updateProfile(UpdateProfileRequest request) {
+    @Transactional
+    public Map<String, Object> updateProfile(UpdateProfileRequest request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            User currentUser = getCurrentUser();
+            String newToken = null;
+
+            // ==== Kiểm tra SĐT ====
+            if (request.getPhoneNumber() != null && !request.getPhoneNumber().isEmpty()
+                    && !currentUser.getPhoneNumber().equals(request.getPhoneNumber())) {
+                if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+                    response.put("error", "Số điện thoại này đã được sử dụng");
+                    return response;
+                }
+                currentUser.setPhoneNumber(request.getPhoneNumber());
+                newToken = jwtService.generateToken(currentUser.getPhoneNumber());
+            }
+
+            // ==== Kiểm tra email ====
+            if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+                if (currentUser.getEmail() == null || !currentUser.getEmail().equals(request.getEmail())) {
+                    if (userRepository.existsByEmail(request.getEmail())) {
+                        response.put("error", "Email này đã được sử dụng");
+                        return response;
+                    }
+                    currentUser.setEmail(request.getEmail());
+                }
+            } else {
+                currentUser.setEmail(null);
+            }
+
+            // ==== Cập nhật các field khác ====
+            currentUser.setFullName(request.getFullName());
+            currentUser.setDob(request.getDob());
+            currentUser.setIdCard(request.getIdCard());
+            currentUser.setGender(request.getGender());
+            currentUser.setEthnicity(request.getEthnicity());
+            currentUser.setHealthInsurance(request.getHealthInsurance());
+            currentUser.setProvince(request.getProvince());
+            currentUser.setDistrict(request.getDistrict());
+            currentUser.setWard(request.getWard());
+            currentUser.setAddress(request.getAddress());
+            currentUser.setOccupation(request.getOccupation());
+
+            User updatedUser = userRepository.save(currentUser);
+
+            response.put("user", updatedUser);
+            if (newToken != null) {
+                response.put("token", newToken);
+            }
+
+        } catch (Exception ex) {
+            response.put("error", ex.getMessage() != null ? ex.getMessage() : "Cập nhật thất bại");
+        }
+
+        return response;
+    }
+
+
+    // === CẬP NHẬT ẢNH ĐẠI DIỆN (AVATAR) ===
+    @Transactional
+    public void updateAvatar(String avatarUrl) {
         User currentUser = getCurrentUser();
-        currentUser.setFullName(request.getFullName());
-        currentUser.setDob(request.getDob());
-        currentUser.setIdCard(request.getIdCard());
-        currentUser.setGender(request.getGender());
-        currentUser.setEmail(request.getEmail());
-        currentUser.setEthnicity(request.getEthnicity());
-        currentUser.setHealthInsurance(request.getHealthInsurance());
-        currentUser.setProvince(request.getProvince());
-        currentUser.setDistrict(request.getDistrict());
-        currentUser.setWard(request.getWard());
-        currentUser.setAddress(request.getAddress());
-        currentUser.setOccupation(request.getOccupation());
-        return userRepository.save(currentUser);
+        currentUser.setAvatarUrl(avatarUrl);
+        userRepository.save(currentUser); // Cứ để .save() cho chắc chắn
     }
 
     // === ADMIN TẠO USER ===
@@ -130,7 +193,7 @@ public class UserService {
     @Transactional
     public User adminUpdateUser(Long userId, UserRequestDTO request) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy User ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy User ID: " + userId));
 
         if (!user.getPhoneNumber().equals(request.getPhoneNumber())) {
             if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
@@ -159,7 +222,7 @@ public class UserService {
     // === ADMIN XÓA USER ===
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy User ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy User ID: " + userId));
         
         userRepository.delete(user);
     }
@@ -169,3 +232,6 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 }
+
+
+
