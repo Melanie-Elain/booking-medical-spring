@@ -163,7 +163,7 @@ const DoctorWorkspacePage = () => {
         <nav className="sidebar-nav">
           <a
             href="#"
-            className={`nav-item ${activeView === "tongquan" ? "active" : ""}`}
+            className={`nav-item-DW ${activeView === "tongquan" ? "active" : ""}`}
             onClick={() => setActiveView("tongquan")}
           >
             <LayoutDashboard size={20} />
@@ -173,7 +173,7 @@ const DoctorWorkspacePage = () => {
           <p className="nav-group-title">PHÒNG KHÁM</p>
           <a
             href="#"
-            className={`nav-item ${activeView === "lichkham" ? "active" : ""}`}
+            className={`nav-item-DW ${activeView === "lichkham" ? "active" : ""}`}
             onClick={() => setActiveView("lichkham")}
           >
             <CalendarCheck size={20} />
@@ -181,7 +181,7 @@ const DoctorWorkspacePage = () => {
           </a>
           <a
             href="#"
-            className={`nav-item ${activeView === "hosobenhnhan" ? "active" : ""}`}
+            className={`nav-item-DW ${activeView === "hosobenhnhan" ? "active" : ""}`}
             onClick={() => setActiveView("hosobenhnhan")}
           >
             <Users size={20} />
@@ -191,7 +191,7 @@ const DoctorWorkspacePage = () => {
           <p className="nav-group-title">ĐẶT KHÁM THÔNG MINH</p>
            <a
             href="#"
-            className={`nav-item ${activeView === "lichlamviec" ? "active" : ""}`}
+            className={`nav-item-DW ${activeView === "lichlamviec" ? "active" : ""}`}
             onClick={() => setActiveView("lichlamviec")}
           >
             <CalendarClock size={20} />
@@ -200,7 +200,7 @@ const DoctorWorkspacePage = () => {
           
           <a
             href="#"
-            className={`nav-item ${activeView === "hosobacsi" ? "active" : ""}`}
+            className={`nav-item-DW ${activeView === "hosobacsi" ? "active" : ""}`}
             onClick={() => setActiveView("hosobacsi")}
           >
             <User size={20} />
@@ -208,7 +208,7 @@ const DoctorWorkspacePage = () => {
           </a>
           <a
             href="#"
-            className={`nav-item ${activeView === "thongke" ? "active" : ""}`}
+            className={`nav-item-DW ${activeView === "thongke" ? "active" : ""}`}
             onClick={() => setActiveView("thongke")}
           >
             <BarChart3 size={20} />
@@ -218,7 +218,7 @@ const DoctorWorkspacePage = () => {
 
         {/* Footer Sidebar */}
         <div className="sidebar-footer">
-          <a href="/logout" className="nav-item logout-btn">
+          <a href="/logout" className="nav-item-DW logout-btn">
             <LogOut size={20} />
             <span>Đăng xuất</span>
           </a>
@@ -228,7 +228,7 @@ const DoctorWorkspacePage = () => {
       {/* --- NỘI DUNG CHÍNH BÊN PHẢI --- */}
       <div className="dashboard-main">
         {/* Header của nội dung chính */}
-        <header className="main-header">
+        <header className="main-header-DW">
           <h1 className="text-xl font-semibold">
             Chào mừng, Bác sĩ Ngô Trường Hiếu!
           </h1>
@@ -244,7 +244,7 @@ const DoctorWorkspacePage = () => {
         </header>
 
         {/* Vùng nội dung được render động */}
-        <main className="main-content">{renderMainContent()}</main>
+        <main className="main-content-DW">{renderMainContent()}</main>
       </div>
     </div>
   );
