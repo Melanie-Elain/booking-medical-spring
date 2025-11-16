@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"; 
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from '../../api/auth';
+import axios from 'axios';
 
 // === PHẦN DÀNH CHO CÁC COMPONENT CON (để code chính gọn gàng) ===
 
@@ -52,6 +53,15 @@ const Step3Info = ({ fullName, phone, password }) => {
   // Nhận props từ RegisterPage (như đã setup ở bước trước)
 
   const navigate = useNavigate();
+  const API_BASE_URL = "https://provinces.open-api.vn/api";
+  
+  // State và API cho Tỉnh/Huyện/Xã
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
+    // State cho Dân tộc
+    const [ethnicities, setEthnicities] = useState([]);
   
   const [formData, setFormData] = useState({
     // Cột 1
@@ -73,13 +83,88 @@ const Step3Info = ({ fullName, phone, password }) => {
     occupation: "", // Nghề nghiệp
   });
 
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/p/`);
+        setProvinces(response.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchProvinces();
+  }, []);
+
+  useEffect(() => {
+    if (!formData.province) {
+      setDistricts([]);
+      setWards([]);
+      return;
+    }
+    const selectedProvince = provinces.find(p => p.name === formData.province);
+    if (selectedProvince) {
+      axios.get(`${API_BASE_URL}/p/${selectedProvince.code}?depth=2`)
+        .then(res => setDistricts(res.data.districts))
+        .catch(err => console.error(err));
+    }
+  }, [formData.province, provinces]);
+
+  useEffect(() => {
+    if (!formData.district) {
+      setWards([]);
+      return;
+    }
+    const selectedDistrict = districts.find(d => d.name === formData.district);
+    if (selectedDistrict) {
+      axios.get(`${API_BASE_URL}/d/${selectedDistrict.code}?depth=2`)
+        .then(res => setWards(res.data.wards))
+        .catch(err => console.error(err));
+    }
+  }, [formData.district, districts]);
+
+  // Tải danh sách Dân tộc
+    useEffect(() => {
+    setEthnicities([
+      "Kinh",
+      "Tày",
+      "Thái",
+      "Hoa",
+      "Khmer",
+      "Mường",
+      "Nùng",
+      "H'Mông",
+      "Dao",
+      "Gia Rai",
+      "Ngái",
+      "Ê Đê",
+      "Ba Na",
+      "Sán Dìu",
+      "Chăm",
+      "Sán Chay",
+      "Cơ Ho",
+      "Xơ Đăng",
+      "Bru-Vân Kiều",
+      "Thổ",
+      "Giáy",
+      "Tà Ôi",
+      "Mạ",
+      "Khác"
+    ]);
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => {
+      const newState = { ...prev, [name]: value };
+      if (name === "province") {
+        newState.district = "";
+        newState.ward = "";
+      }
+      if (name === "district") newState.ward = "";
+      return newState;
+    });
   };
+
 
   const handleRadioChange = (e) => {
     setFormData((prev) => ({
@@ -183,13 +268,16 @@ const Step3Info = ({ fullName, phone, password }) => {
 
             <InputField label="Địa chỉ email của bạn" name="email" type="email" value={formData.email} onChange={handleChange} />
             
-            <SelectField label="Dân tộc" name="ethnicity" value={formData.ethnicity} onChange={handleChange}>
-              <option value="Kinh">Kinh</option>
-              <option value="Tày">Tày</option>
-              <option value="Thái">Thái</option>
-              <option value="Mường">Mường</option>
-              <option value="Khác">Khác</option>
-              {/* Thêm các dân tộc khác vào đây */}
+            <SelectField 
+              label="Dân tộc"
+              name="ethnicity"
+              value={formData.ethnicity}
+              onChange={handleChange}
+            >
+              <option value="">Chọn dân tộc</option>
+              {ethnicities.map((e) => (
+                <option key={e} value={e}>{e}</option>
+              ))}
             </SelectField>
           </div>
 
@@ -199,22 +287,17 @@ const Step3Info = ({ fullName, phone, password }) => {
 
             <InputField label="Mã thẻ Bảo hiểm y tế" name="healthInsurance" value={formData.healthInsurance} onChange={handleChange} />
             
-            <SelectField label="Tỉnh/Thành phố" name="province" value={formData.province} onChange={handleChange}>
+            <SelectField label="Tỉnh/Thành phố" name="province" value={formData.province} onChange={handleChange} required>
               <option value="">Chọn tỉnh/thành phố</option>
-              <option value="TP. HCM">TP. Hồ Chí Minh</option>
-              <option value="Hà Nội">Hà Nội</option>
-              <option value="Đà Nẵng">Đà Nẵng</option>
-              {/* Thêm API hoặc data tỉnh thành vào đây */}
+              {provinces.map(p => <option key={p.code} value={p.name}>{p.name}</option>)}
             </SelectField>
-
-            <SelectField label="Quận/Huyện" name="district" value={formData.district} onChange={handleChange}>
+            <SelectField label="Quận/Huyện" name="district" value={formData.district} onChange={handleChange} required disabled={!formData.province}>
               <option value="">Chọn quận/huyện</option>
-              {/* Cần load data dựa trên tỉnh/thành phố */}
+              {districts.map(d => <option key={d.code} value={d.name}>{d.name}</option>)}
             </SelectField>
-
-            <SelectField label="Phường/Xã" name="ward" value={formData.ward} onChange={handleChange}>
+            <SelectField label="Phường/Xã" name="ward" value={formData.ward} onChange={handleChange} required disabled={!formData.district}>
               <option value="">Chọn phường/xã</option>
-              {/* Cần load data dựa trên quận/huyện */}
+              {wards.map(w => <option key={w.code} value={w.name}>{w.name}</option>)}
             </SelectField>
 
             <InputField label="Địa chỉ cụ thể" name="address" value={formData.address} onChange={handleChange} placeholder="Số nhà, tên đường"/>
@@ -246,3 +329,4 @@ const Step3Info = ({ fullName, phone, password }) => {
 };
 
 export default Step3Info;
+

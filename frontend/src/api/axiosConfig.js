@@ -4,6 +4,7 @@ import axios from 'axios';
 const axiosInstance = axios.create({
   // URL gốc của tất cả API (trừ /register và /login)
   baseURL: 'http://localhost:8080/api', 
+  timeout: 10000,
 });
 
 // 2. Đây là "Interceptor" (Bộ lọc Request)

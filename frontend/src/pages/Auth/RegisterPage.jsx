@@ -21,22 +21,12 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const [errors, setErrors] = useState({
+    fullName: "",
+    phoneNumber: "",
+    general: "",
+  });
   
-//   const setupRecaptcha = () => {
-//   const currentAuth = auth || getAuth(); // ✅ đảm bảo luôn có auth
-//   if (!window.recaptchaVerifier) {
-//     window.recaptchaVerifier = new RecaptchaVerifier(
-//       currentAuth,
-//       "recaptcha-container",
-//       {
-//         size: "invisible",
-//         callback: (response) => {
-//           console.log("reCAPTCHA resolved");
-//         },
-//       }
-//     );
-//   }
-// };
 const setupRecaptcha = () => {
   if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new RecaptchaVerifier(
@@ -55,26 +45,73 @@ const setupRecaptcha = () => {
 
 
   // Xử lý gửi OTP và sang Step1
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!phoneNumber) return alert("Vui lòng nhập số điện thoại");
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!phoneNumber) return alert("Vui lòng nhập số điện thoại");
 
-    const formattedPhone = "+84" + phoneNumber.slice(1);
+  //   const formattedPhone = "+84" + phoneNumber.slice(1);
+  //   setLoading(true);
+  //   setupRecaptcha();
+  //   const appVerifier = window.recaptchaVerifier;
+
+  //   try {
+  //     const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+  //     window.confirmationResult = confirmationResult;
+  //     alert("Đã gửi mã OTP đến số " + phoneNumber);
+  //     setStep(2);
+  //   } catch (err) {
+  //     alert("Gửi OTP thất bại: " + err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+   const handlePhoneBlur = async () => {
+  if (!phoneNumber) return;
+
+  try {
+    const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
+    const data = await res.json();
+
+    if (data.phoneExists) {
+      setErrors(prev => ({ ...prev, phoneNumber: "Số điện thoại đã tồn tại" }));
+    } else {
+      setErrors(prev => ({ ...prev, phoneNumber: "" }));
+    }
+
+  } catch (err) {
+    console.log("Lỗi check phone:", err);
+  }
+};
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrors({ fullName: "", phoneNumber: "", general: "" });
+  if (!phoneNumber) return alert("Vui lòng nhập số điện thoại");
+
+  // Nếu phone đang có lỗi → không cho submit
+  if (errors.phoneNumber) {
+    return;
+  }
+
+  try {
     setLoading(true);
+    const formattedPhone = "+84" + phoneNumber.slice(1);
     setupRecaptcha();
     const appVerifier = window.recaptchaVerifier;
+    const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+    window.confirmationResult = confirmationResult;
 
-    try {
-      const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-      window.confirmationResult = confirmationResult;
-      alert("Đã gửi mã OTP đến số " + phoneNumber);
-      setStep(2);
-    } catch (err) {
-      alert("Gửi OTP thất bại: " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    alert("Đã gửi mã OTP đến số " + phoneNumber);
+    setStep(2);
+
+  } catch (err) {
+    console.log(err);
+    setErrors(prev => ({ ...prev, general: "Có lỗi xảy ra, vui lòng thử lại" }));
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 
   return (
@@ -132,16 +169,18 @@ const setupRecaptcha = () => {
                         placeholder="Nhập số điện thoại của bạn"
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
+                        onBlur={handlePhoneBlur}
                         required
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500"
                       />
                     </div>
+                    {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
                   </div>
 
                   {/* Nút đăng ký */}
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || !!errors.phoneNumber }
                     className="w-full py-3 px-4 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 font-semibold"
                   >
                     {loading ? "Đang gửi mã..." : "Đăng ký"}

@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest; 
 import org.springframework.data.domain.Pageable; 
 
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/user") // API gốc cho user
@@ -56,10 +58,11 @@ public class UserController {
      * Frontend sẽ gọi: PUT /api/user/profile
      */
     @PutMapping("/profile")
-    public ResponseEntity<User> updateMyProfile(@RequestBody UpdateProfileRequest request) {
-        User updatedUser = userService.updateProfile(request);
-        return ResponseEntity.ok(updatedUser);
-    }
+    public ResponseEntity<Map<String, Object>> updateMyProfile(@RequestBody UpdateProfileRequest request) {
+        Map<String, Object> response = userService.updateProfile(request);
+
+    return ResponseEntity.ok(response);
+}
     
     // === 2. API  CHO LỊCH KHÁM CÁ NHÂN ===
     @GetMapping("/appointments")

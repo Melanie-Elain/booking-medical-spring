@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -32,6 +33,19 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
+
+    // Kiểm tra số điện thoại đã tồn tại hay chưa
+    public boolean isPhoneNumberExists(String phoneNumber) {
+        return userRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    // Kiểm tra email đã tồn tại hay chưa
+    public boolean isEmailExists(String email) {
+        if (email == null || email.isEmpty()) return false;
+        return userRepository.existsByEmail(email);
+    }
+
+    // === ĐĂNG KÝ USER MỚI ===
     public User registerUser(User user) {
         if (userRepository.existsByPhoneNumber(user.getPhoneNumber())) {
             throw new RuntimeException("Số điện thoại đã tồn tại");
@@ -80,23 +94,64 @@ public class UserService {
     }
     
     // === CẬP NHẬT HỒ SƠ ===
-    @Transactional // Thêm @Transactional ở đây cũng tốt
-    public User updateProfile(UpdateProfileRequest request) {
-        User currentUser = getCurrentUser();
-        currentUser.setFullName(request.getFullName());
-        currentUser.setDob(request.getDob());
-        currentUser.setIdCard(request.getIdCard());
-        currentUser.setGender(request.getGender());
-        currentUser.setEmail(request.getEmail());
-        currentUser.setEthnicity(request.getEthnicity());
-        currentUser.setHealthInsurance(request.getHealthInsurance());
-        currentUser.setProvince(request.getProvince());
-        currentUser.setDistrict(request.getDistrict());
-        currentUser.setWard(request.getWard());
-        currentUser.setAddress(request.getAddress());
-        currentUser.setOccupation(request.getOccupation());
-        return userRepository.save(currentUser); // save() vẫn cần thiết để trả về User đã cập nhật
+    @Transactional
+    public Map<String, Object> updateProfile(UpdateProfileRequest request) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            User currentUser = getCurrentUser();
+            String newToken = null;
+
+            // ==== Kiểm tra SĐT ====
+            if (request.getPhoneNumber() != null && !request.getPhoneNumber().isEmpty()
+                    && !currentUser.getPhoneNumber().equals(request.getPhoneNumber())) {
+                if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+                    response.put("error", "Số điện thoại này đã được sử dụng");
+                    return response;
+                }
+                currentUser.setPhoneNumber(request.getPhoneNumber());
+                newToken = jwtService.generateToken(currentUser.getPhoneNumber());
+            }
+
+            // ==== Kiểm tra email ====
+            if (request.getEmail() != null && !request.getEmail().isEmpty()) {
+                if (currentUser.getEmail() == null || !currentUser.getEmail().equals(request.getEmail())) {
+                    if (userRepository.existsByEmail(request.getEmail())) {
+                        response.put("error", "Email này đã được sử dụng");
+                        return response;
+                    }
+                    currentUser.setEmail(request.getEmail());
+                }
+            } else {
+                currentUser.setEmail(null);
+            }
+
+            // ==== Cập nhật các field khác ====
+            currentUser.setFullName(request.getFullName());
+            currentUser.setDob(request.getDob());
+            currentUser.setIdCard(request.getIdCard());
+            currentUser.setGender(request.getGender());
+            currentUser.setEthnicity(request.getEthnicity());
+            currentUser.setHealthInsurance(request.getHealthInsurance());
+            currentUser.setProvince(request.getProvince());
+            currentUser.setDistrict(request.getDistrict());
+            currentUser.setWard(request.getWard());
+            currentUser.setAddress(request.getAddress());
+            currentUser.setOccupation(request.getOccupation());
+
+            User updatedUser = userRepository.save(currentUser);
+
+            response.put("user", updatedUser);
+            if (newToken != null) {
+                response.put("token", newToken);
+            }
+
+        } catch (Exception ex) {
+            response.put("error", ex.getMessage() != null ? ex.getMessage() : "Cập nhật thất bại");
+        }
+
+        return response;
     }
+
 
     // === CẬP NHẬT ẢNH ĐẠI DIỆN (AVATAR) ===
     @Transactional
