@@ -160,6 +160,128 @@ html {
 
 
 
+/* --- HomeIntro Section --- */
+.home-intro-section-dw {
+    padding: 80px 20px 0;
+    /* Không có padding dưới để ảnh tràn ra */
+    text-align: center;
+    /* Tạo dải màu nền mờ giống trong ảnh */
+    background: linear-gradient(180deg, #f0f5ff 0%, #ffffff 100%);
+    overflow: hidden;
+}
+
+.home-intro-content-dw h1 {
+    font-size: 2.8rem;
+    /* Cỡ chữ lớn */
+    font-weight: 700;
+    color: #111827;
+    /* Màu đen (gần như) */
+    line-height: 1.3;
+    margin-bottom: 16px;
+}
+
+/* Vùng chứa cho text thay đổi (để tránh giật layout) */
+.typing-wrapper-dw {
+    height: 30px;
+    /* Đặt chiều cao cố định */
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.typing-text-dw {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #6b7280;
+    /* Màu xám mờ */
+    opacity: 0;
+    /* Mặc định ẩn */
+}
+
+/* Class điều khiển animation */
+.typing-text-dw.fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.typing-text-dw.fadeOut {
+    animation: fadeOut 0.5s ease-in forwards;
+}
+
+/* Keyframes cho hiệu ứng mờ/hiện */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.free-tier-dw {
+    font-size: 1.5rem;
+    color: #333333c9;
+    margin-bottom: 24px;
+    font-weight: 700;
+}
+
+/* Nút Đăng ký (style riêng cho section này) */
+.btn-primary-intro-dw {
+    background: #2f54eb;
+    /* Màu xanh dương như trong ảnh */
+    color: white;
+    padding: 12px 28px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary-intro-dw:hover {
+    background: #1c3dcc;
+    /* Màu xanh đậm hơn khi hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(47, 84, 235, 0.3);
+}
+
+/* Vùng chứa ảnh */
+.intro-image-container-dw {
+    margin-top: 40px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.intro-image-container-dw img {
+    width: 100%;
+    max-width: 900px;
+    /* Giới hạn độ rộng của ảnh */
+    height: auto;
+    /* Bo góc trên của ảnh và tạo hiệu ứng bóng đổ */
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.08);
+}
+
+
+
 /* --- Security Section --- */
 .security-section {
     padding: 60px 20px;

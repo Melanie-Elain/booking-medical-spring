@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import DwHomeIntro from "./SectionDW-HomeIntro.jsx"
 import DwSecurity from "./SectionDW-Security.jsx";
 import DwFeatures from "./SectionDW-Features.jsx";
 import DwFAQ from "./SectionDW-FAQ.jsx";
@@ -37,7 +38,7 @@ const DoctorWorkspaceIntro = () => {
 
                     {/* Center Nav */}
                     <nav className="nav">
-                        <a href="/#" className="active">
+                        <a href="/doctor-workspace-intro/#homeIntro" className="active">
                             Trang chủ
                         </a>
                         <a href="/doctor-workspace-intro/#features">Tính năng</a>
@@ -64,6 +65,10 @@ const DoctorWorkspaceIntro = () => {
 
             {/* Nội dung trang chính (ví dụ placeholder) */}
             <main className="main-content-IntroWS">
+                <div id="homeIntro">
+                    < DwHomeIntro />
+                </div>
+
                 <div id="features">
                     < DwFeatures />
                 </div>
