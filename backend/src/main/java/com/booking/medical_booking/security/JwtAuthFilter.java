@@ -142,7 +142,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // ---------------------------------------------
         // ⚠️ LOGIC MỚI: Tách các đường dẫn public ra khỏi try...catch
         // ---------------------------------------------
-        System.out.println("---!!! TÔI ĐANG CHẠY JWT FILTER BẢN MỚI NHẤT (ĐÃ SỬA LỖI 403) !!!---");
         final String requestPath = request.getRequestURI();
 
         // 1. Cho phép request OPTIONS đi qua (tránh lỗi CORS)
@@ -159,8 +158,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             requestPath.startsWith("/api/hospitals") ||
             requestPath.startsWith("/api/clinics") ||
             requestPath.startsWith("/api/specialties") ||
-            requestPath.startsWith("/api/auth")) { // <--- /api/auth/login nằm ở đây
-
+                requestPath.equals("/api/auth/login") ||
+                requestPath.equals("/api/auth/register") ||
+                requestPath.equals("/api/auth/check-exist")) { // <--- /api/auth/login nằm ở đây
             filterChain.doFilter(request, response);
             return;
         }

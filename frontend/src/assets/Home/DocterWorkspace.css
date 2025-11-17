@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 /* --- Intro Page (IntroWS) --- */
 /* ======== HEADER WRAPPER ======== */
 .doctor-workspace-page .header-IntroWS {
@@ -156,6 +160,128 @@
 
 
 
+/* --- HomeIntro Section --- */
+.home-intro-section-dw {
+    padding: 80px 20px 0;
+    /* Không có padding dưới để ảnh tràn ra */
+    text-align: center;
+    /* Tạo dải màu nền mờ giống trong ảnh */
+    background: linear-gradient(180deg, #f0f5ff 0%, #ffffff 100%);
+    overflow: hidden;
+}
+
+.home-intro-content-dw h1 {
+    font-size: 2.8rem;
+    /* Cỡ chữ lớn */
+    font-weight: 700;
+    color: #111827;
+    /* Màu đen (gần như) */
+    line-height: 1.3;
+    margin-bottom: 16px;
+}
+
+/* Vùng chứa cho text thay đổi (để tránh giật layout) */
+.typing-wrapper-dw {
+    height: 30px;
+    /* Đặt chiều cao cố định */
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.typing-text-dw {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #6b7280;
+    /* Màu xám mờ */
+    opacity: 0;
+    /* Mặc định ẩn */
+}
+
+/* Class điều khiển animation */
+.typing-text-dw.fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.typing-text-dw.fadeOut {
+    animation: fadeOut 0.5s ease-in forwards;
+}
+
+/* Keyframes cho hiệu ứng mờ/hiện */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.free-tier-dw {
+    font-size: 1.5rem;
+    color: #333333c9;
+    margin-bottom: 24px;
+    font-weight: 700;
+}
+
+/* Nút Đăng ký (style riêng cho section này) */
+.btn-primary-intro-dw {
+    background: #2f54eb;
+    /* Màu xanh dương như trong ảnh */
+    color: white;
+    padding: 12px 28px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary-intro-dw:hover {
+    background: #1c3dcc;
+    /* Màu xanh đậm hơn khi hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(47, 84, 235, 0.3);
+}
+
+/* Vùng chứa ảnh */
+.intro-image-container-dw {
+    margin-top: 40px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.intro-image-container-dw img {
+    width: 100%;
+    max-width: 900px;
+    /* Giới hạn độ rộng của ảnh */
+    height: auto;
+    /* Bo góc trên của ảnh và tạo hiệu ứng bóng đổ */
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.08);
+}
+
+
+
 /* --- Security Section --- */
 .security-section {
     padding: 60px 20px;
@@ -236,141 +362,167 @@
 
 
 /* --- Features Section --- */
-/* ===== GRID LAYOUT ===== */
-.sf-container {
+.features-section-dw {
+    padding: 60px 20px;
+    background-color: #f9fafb;
+    text-align: center;
+    font-family: "Inter", sans-serif;
+}
+
+.features-header-dw h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #000;
+}
+
+.features-header-dw h2 .highlight-number-dw {
+    color: #2e54eb;
+}
+
+.features-header-dw p {
+    color: #555;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    font-size: 1.1rem;
+}
+
+.features-grid-dw {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(250px, auto);
+    gap: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 16px;
 }
 
-.sf-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-}
-
-@media (min-width: 768px) {
-    .sf-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-/* ===== COMMON ELEMENTS ===== */
-.sf-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 24px;
-    border: 2px solid #d1d5db;
-    display: block;
-    transition: transform 0.3s ease, opacity 0.5s ease;
-}
-
-.sf-img:hover {
-    transform: scale(1.05);
-}
-
-/* Overlay mờ */
-.sf-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 24px;
-}
-
-/* Text trong banner */
-.sf-banner-text {
-    position: absolute;
-    top: 50%;
-    left: 50px;
-    transform: translateY(-50%);
-    color: white;
-    max-width: 260px;
-}
-
-.sf-banner-text h3 {
-    font-size: 36px;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-
-.sf-banner-text p {
-    font-weight: 700;
-    font-size: 16px;
-}
-
-.sf-link {
-    margin-top: 16px;
-    display: inline-block;
-    font-weight: 600;
-    font-size: 18px;
-    color: #FFD54F;
-}
-
-/* Small text */
-.sf-banner-text.small h3 {
-    font-size: 24px;
-}
-
-.sf-banner-text.small p {
-    font-size: 14px;
-}
-
-/* Tall banner text */
-.sf-banner-text.tall {
-    top: 70%;
-    max-width: 300px;
-}
-
-.sf-banner-text.tall h3 {
-    font-size: 40px;
-}
-
-/* ===== LEFT SIDE ===== */
-.sf-left {
+/* --- Card tính năng --- */
+.feature-card-dw {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 100%;
 }
 
-.sf-banner-large,
-.sf-banner-main,
-.sf-small-box,
-.sf-banner-tall {
+.feature-card-dw:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon-wrapper-dw {
+    width: 150px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    /* background-color: #e6ebff;
+    border-radius: 50%; */
+    flex-shrink: 0;
+}
+
+.feature-icon-wrapper-dw img {
+    max-width: 150%;
+    max-height: 150%;
+    object-fit: contain;
+}
+
+.feature-card-dw h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+}
+
+.feature-card-dw p {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* --- Banner (Miễn phí sử dụng) --- */
+.feature-banner-dw {
     position: relative;
-    cursor: pointer;
-}
-
-/* Grid 2 ảnh nhỏ */
-.sf-small-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.sf-small-text {
-    position: absolute;
-    top: 80%;
-    left: 10%;
-    font-size: 14px;
-    font-weight: bold;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #42a5f5, #2196f3);
     color: white;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    grid-column: 2 / span 2;
+    grid-row: 2;
 }
 
-/* ===== RIGHT SIDE ===== */
-.sf-right {
-    display: none;
+.feature-banner-dw .banner-image-dw {
+    position: absolute;
+    right: -10px;
+    bottom: -10px;
+    height: 100%;
+    object-fit: cover;
+    width: auto;
+    max-width: 60%;
+    pointer-events: none;
 }
 
-@media (min-width: 768px) {
-    .sf-right {
-        display: block;
-    }
+.feature-banner-dw .banner-content-dw {
+    position: relative;
+    z-index: 1;
+    padding: 20px 30px;
+    text-align: left;
+    max-width: 60%;
 }
 
-.sf-banner-tall img {
-    width: 100%;
-    max-width: 700px;
+.banner-subtitle-dw {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 5px;
+    opacity: 0.8;
+}
+
+.banner-title-dw {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    line-height: 1.2;
+}
+
+.banner-button-dw {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: white;
+    color: #2e54eb;
+    padding: 12px 25px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.banner-button-dw:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+.banner-button-dw .button-icon-dw {
+    width: 20px;
+    height: 20px;
+}
+
+.features-grid-dw>div:nth-child(1) {
+    grid-row: 1 / span 2;
+    justify-content: center;
 }
 
 
@@ -467,189 +619,4 @@
     color: #444;
     font-size: 0.95rem;
     line-height: 1.5;
-}
-
-
-
-/* --- Trang chính của bác sĩ (-DW) --- */
-/* --- CSS MỚI CHO DASHBOARD --- */
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
-.doctor-dashboard {
-    display: flex;
-    min-height: 100vh;
-    background-color: #f3f4f6;
-    /* bg-gray-100 */
-}
-
-/* --- Sidebar --- */
-.dashboard-sidebar {
-    width: 260px;
-    background-color: #111827;
-    /* bg-gray-900 */
-    color: #d1d5db;
-    /* text-gray-400 */
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-}
-
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    padding: 1.5rem 1rem;
-    border-bottom: 1px solid #374151;
-    /* border-gray-700 */
-    cursor: pointer;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 9999px;
-    background-color: #4f46e5;
-    /* bg-indigo-600 */
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    margin-right: 0.75rem;
-}
-
-.sidebar-header div:not(.user-avatar) {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    overflow: hidden;
-}
-
-.user-name {
-    color: white;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.user-phone {
-    font-size: 0.875rem;
-    color: #9ca3af;
-    /* text-gray-400 */
-}
-
-.sidebar-nav {
-    flex-grow: 1;
-    padding: 1rem 0;
-    overflow-y: auto;
-}
-
-.nav-group-title {
-    padding: 0.5rem 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #6b7280;
-    /* text-gray-500 */
-    text-transform: uppercase;
-    margin-top: 1rem;
-}
-
-.nav-item-DW {
-    display: flex;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    margin: 0.25rem 0.5rem;
-    border-radius: 0.375rem;
-    /* rounded-md */
-    color: #d1d5db;
-    /* text-gray-300 */
-    text-decoration: none;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.nav-item-DW svg {
-    margin-right: 0.75rem;
-    flex-shrink: 0;
-}
-
-.nav-item-DW:hover {
-    background-color: #374151;
-    /* bg-gray-700 */
-    color: white;
-}
-
-.nav-item-DW.active {
-    background-color: #4f46e5;
-    /* bg-indigo-600 */
-    color: white;
-    font-weight: 600;
-}
-
-.sidebar-footer {
-    padding: 1rem;
-    border-top: 1px solid #374151;
-    /* border-gray-700 */
-}
-
-.logout-btn:hover {
-    background-color: #b91c1c;
-    /* bg-red-700 */
-    color: white;
-}
-
-/* --- Main Content Area --- */
-.dashboard-main {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-}
-
-.main-header-DW {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background-color: white;
-    border-bottom: 1px solid #e5e7eb;
-    /* border-gray-200 */
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.action-btn {
-    padding: 0.5rem;
-    border-radius: 9999px;
-    background-color: transparent;
-    color: #4b5563;
-    /* text-gray-600 */
-    border: none;
-    cursor: pointer;
-}
-
-.action-btn:hover {
-    background-color: #f3f4f6;
-    /* bg-gray-100 */
-}
-
-.user-avatar-btn {
-    width: 36px;
-    height: 36px;
-    background-color: #4f46e5;
-    color: white;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.main-content-DW {
-    padding: 1.5rem;
 }
