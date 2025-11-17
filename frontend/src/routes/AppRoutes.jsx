@@ -19,6 +19,7 @@ import DoctorWorkspacePage from "../pages/DoctorWorkspace/DocterWorkspacePage";
 import DoctorWorkspaceIntro from "../pages/DoctorWorkspace/DocterWorkspaceIntro";
 import DoctorLoginPage from "../pages/Auth/DoctorLoginPage";
 
+
 import CompleteBookingDoctor from "../pages/Booking/CompleteBookingDoctor";
 import BookingSuccessPage from "../pages/Booking/BookingSuccessPage";
 import CompleteBookingClinic from "../pages/Booking/CompleteBookingClinic";
