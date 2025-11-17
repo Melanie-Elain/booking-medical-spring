@@ -32,11 +32,14 @@ public class UserController {
      * API Lấy thông tin user hiện tại (cho trang Hồ sơ và Tài khoản)
      * Frontend sẽ gọi: GET /api/user/me
      */
+
+     //đã di chuyển xuống AuthController
+    /* 
     @GetMapping("/me")
     public ResponseEntity<User> getMyProfile() {
         User user = userService.getCurrentUser();
         return ResponseEntity.ok(user);
-    }
+    } */
 
     /**
      * API Đổi mật khẩu (cho trang Tài khoản)

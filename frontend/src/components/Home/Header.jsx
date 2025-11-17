@@ -148,7 +148,7 @@ const Header = () => {
           )}
 
           {/* === LOGIC HIỂN THỊ ĐỘNG === */}
-          {isLoggedIn ? (
+          {isLoggedIn && userRole === 'BENHNHAN' || 'ADMIN'? (
             // ===== NẾU ĐÃ ĐĂNG NHẬP =====
             <div className="nav-item dropdown">
               <button className="dropdown-label user-dropdown-toggle">

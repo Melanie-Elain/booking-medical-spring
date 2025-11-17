@@ -5,13 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4c69e76c-97bb-42da-8b18-b3e47991562a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/booking/medical_booking/controller/auth/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/booking/medical_booking/controller/auth/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/booking/medical_booking/controller/auth/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/booking/medical_booking/controller/auth/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/booking/medical_booking/security/JwtAuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/booking/medical_booking/security/JwtAuthFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/booking/medical_booking/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/booking/medical_booking/security/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/auth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/api/axiosConfig.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/api/axiosConfig.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/assets/Home/DocterWorkspace.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/assets/Home/DocterWorkspace.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Home/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Home/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/DoctorWorkspace/DocterWorkspaceIntro.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/DoctorWorkspace/DocterWorkspaceIntro.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/DoctorWorkspace/DocterWorkspacePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/DoctorWorkspace/DocterWorkspacePage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/routes/AppRoutes.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/AppRoutes.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

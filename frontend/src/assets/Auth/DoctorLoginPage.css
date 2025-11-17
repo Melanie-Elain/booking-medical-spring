@@ -1,0 +1,64 @@
+/* --- CSS cho Trang Đăng nhập Bác sĩ --- */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.doctor-login-container {
+    @apply flex items-center justify-center min-h-screen bg-gray-100 p-4;
+}
+
+.doctor-login-box {
+    @apply w-full max-w-md bg-white rounded-2xl shadow-xl p-8;
+}
+
+.doctor-login-logo {
+    @apply w-48 h-auto mx-auto mb-4;
+}
+
+.doctor-login-title {
+    @apply text-2xl font-bold text-center text-gray-800 mb-1;
+}
+
+.doctor-login-subtitle {
+    @apply text-center text-sm text-gray-500 mb-6;
+}
+
+.doctor-login-form {
+    @apply space-y-5;
+}
+
+.doctor-login-error {
+    @apply text-center text-sm text-red-600 font-medium bg-red-50 p-3 rounded-lg;
+}
+
+.input-group {
+    @apply w-full;
+}
+
+.input-group label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.input-group input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150;
+}
+
+.login-options {
+    @apply flex justify-end text-sm;
+}
+
+.forgot-password {
+    @apply font-medium text-indigo-600 hover:text-indigo-500 transition duration-150;
+}
+
+.doctor-login-button {
+    @apply w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-md text-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200;
+}
+
+.register-link {
+    @apply mt-6 text-center text-sm text-gray-600;
+}
+
+.register-link a {
+    @apply font-bold text-indigo-600 hover:text-indigo-500 transition duration-150;
+}

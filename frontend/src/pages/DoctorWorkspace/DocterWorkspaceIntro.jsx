@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Features from "./SectionFeatures.jsx";
 import "../../assets/Home/DocterWorkspace.css";
+import { Link } from "react-router-dom";
 
-const DoctorWorkspacePage = () => {
+const DoctorWorkspaceIntro = () => {
     return (
         <div className="doctor-workspace-page">
             {/* HEADER */}
@@ -28,18 +29,18 @@ const DoctorWorkspacePage = () => {
 
                     {/* Right buttons */}
                     <div className="header-right">
-                        <a
-                            href="https://app.doctorworkspace.com/sign-in"
+                        <Link
+                            to="/doctor-login"
                             className="btn-secondary"
                         >
                             Đăng nhập
-                        </a>
-                        <a
-                            href="https://app.doctorworkspace.com/sign-up"
+                        </Link>
+                        <Link
+                            to="/register"
                             className="btn-primary"
                         >
                             Đăng ký ngay
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </header>
@@ -52,4 +53,4 @@ const DoctorWorkspacePage = () => {
     );
 };
 
-export default DoctorWorkspacePage;
+export default DoctorWorkspaceIntro;

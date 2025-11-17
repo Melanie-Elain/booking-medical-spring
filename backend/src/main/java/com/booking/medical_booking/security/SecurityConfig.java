@@ -51,7 +51,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/clinics/**").permitAll()
                 .requestMatchers("/api/specialties/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/payment/confirm-status").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
+                /*.requestMatchers("/api/auth/**").permitAll()*/
+                // Cho phép tất cả truy cập vào các API đăng ký, đăng nhập, kiểm tra tồn tại
+                .requestMatchers("/api/auth/register", "/api/auth/login", "/api/auth/check-exist").permitAll()
+                .requestMatchers("/api/auth/me").authenticated() 
 
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 
