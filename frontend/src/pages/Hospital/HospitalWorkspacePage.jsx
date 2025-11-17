@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-// Import CSS (ĐÃ SỬA LẠI ĐƯỜNG DẪN TƯƠNG ĐỐI)
-import "../../assets/Home/DocterWorkspace.css";
+// 1. Import CSS đã đổi tên
+import "../../assets/Home/HospitalWorkspace.css";
 import { useNavigate } from "react-router-dom";
-// Import icons
+
+// 2. Import icons (giữ nguyên)
 import {
   LayoutDashboard,
   CalendarCheck,
-  User,
   Settings,
   BarChart3,
   ChevronDown,
@@ -14,12 +14,13 @@ import {
   Mail,
   LogOut,
   CalendarClock,
-  Users,
+  Stethoscope,
+  Briefcase,
 } from "lucide-react";
 
-// --- COMPONENT CON CHO CÁC MỤC ---
-// 1. Component "Tổng quan" (Nội dung chính)
-const OverviewDashboard = () => {
+// --- COMPONENT CON (Giữ nguyên, chúng là component nội bộ) ---
+// TÌM COMPONENT NÀY VÀ THAY THẾ NÓ
+const HospitalOverview = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Báo cáo tổng quan</h2>
@@ -79,156 +80,156 @@ const OverviewDashboard = () => {
   );
 };
 
-// 2. Component "Quản lý Lịch khám" (Placeholder)
-const AppointmentManagement = () => {
+const HospitalAppointmentMgmt = () => {
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Quản lý Lịch khám</h2>
+      <h2 className="text-2xl font-bold mb-4">Quản lý Lịch khám Bệnh viện</h2>
       <div className="bg-white p-4 rounded-lg shadow">
-        <p>
-          Đây là nơi hiển thị danh sách lịch khám. Bác sĩ có thể xem, xác nhận,
-          hoặc hủy lịch hẹn...
-        </p>
+        <p>Danh sách lịch khám của toàn bộ bệnh viện...</p>
       </div>
     </div>
   );
 };
 
-// 3. Component "Hồ sơ Bác sĩ" (Placeholder)
-const DoctorProfileManagement = () => {
+const DoctorManagement = () => {
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Hồ sơ Bác sĩ</h2>
+      <h2 className="text-2xl font-bold mb-4">Quản lý Bác sĩ</h2>
       <div className="bg-white p-4 rounded-lg shadow">
-        <p>
-          Đây là nơi bác sĩ có thể xem và chỉnh sửa thông tin cá nhân, chuyên
-          khoa, kinh nghiệm...
-        </p>
+        <p>Danh sách bác sĩ, thêm/sửa/xóa thông tin bác sĩ...</p>
       </div>
     </div>
   );
 };
 
-// 4. Component "Quản lý Lịch làm việc" (Placeholder)
-const ScheduleManagement = () => {
-     return (
-       <div>
-         <h2 className="text-2xl font-bold mb-4">Quản lý Lịch làm việc</h2>
-         <div className="bg-white p-4 rounded-lg shadow">
-           <p>
-             Đây là nơi bác sĩ thêm/sửa/xóa các khung giờ làm việc
-             hàng tuần.
-           </p>
-         </div>
-       </div>
-     );
-   };
+const SpecialtyManagement = () => {
+  return (
+    <div>
+      <h2 className="text-2xl font-bold mb-4">Quản lý Chuyên khoa</h2>
+      <div className="bg-white p-4 rounded-lg shadow">
+        <p>Danh sách các chuyên khoa của bệnh viện...</p>
+      </div>
+    </div>
+  );
+};
 
-// --- COMPONENT CHÍNH (LAYOUT) ---
-const DoctorWorkspacePage = () => {
-  // 'activeView' sẽ quản lý nội dung nào đang được hiển thị
-  // 'tongquan' là giá trị mặc định khi tải trang
+const DoctorScheduleMgmt = () => {
+  return (
+    <div>
+      <h2 className="text-2xl font-bold mb-4">Quản lý Lịch làm việc</h2>
+      <div className="bg-white p-4 rounded-lg shadow">
+        <p>Sắp xếp lịch làm việc cho các bác sĩ/chuyên khoa...</p>
+      </div>
+    </div>
+  );
+};
+
+// --- COMPONENT CHÍNH (Đã đổi tên thành HospitalWorkspacePage) ---
+const HospitalWorkspacePage = () => {
   const [activeView, setActiveView] = useState("tongquan");
   const navigate = useNavigate();
-  
-    // 3. TẠO HÀM XỬ LÝ ĐĂNG XUẤT
-    const handleLogout = () => {
-      // Xóa tất cả thông tin đăng nhập
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('userName');
-      localStorage.removeItem('userRole');
-      
-      // (Nếu bạn có "rememberMe", cũng hãy xóa nó)
-      // localStorage.removeItem('rememberedUsername');
-  
-      // Bắn sự kiện "authChange" để Header tự động cập nhật
-      window.dispatchEvent(new Event('authChange'));
-  
-      // Chuyển hướng về trang chủ
-      navigate('/', { replace: true });
-    };
-  
 
-  // Hàm để render nội dung chính dựa trên 'activeView'
+  // 3. TẠO HÀM XỬ LÝ ĐĂNG XUẤT
+  const handleLogout = () => {
+    // Xóa tất cả thông tin đăng nhập
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole');
+    
+    // (Nếu bạn có "rememberMe", cũng hãy xóa nó)
+    // localStorage.removeItem('rememberedUsername');
+
+    // Bắn sự kiện "authChange" để Header tự động cập nhật
+    window.dispatchEvent(new Event('authChange'));
+
+    // Chuyển hướng về trang chủ
+    navigate('/', { replace: true });
+  };
+
+  
+  // Hàm render nội dung (giữ nguyên logic)
   const renderMainContent = () => {
     switch (activeView) {
       case "tongquan":
-        return <OverviewDashboard />;
+        return <HospitalOverview />;
       case "lichkham":
-        return <AppointmentManagement />;
+        return <HospitalAppointmentMgmt />;
+      case "quanlybacsi":
+        return <DoctorManagement />;
+      case "quanlykhoa":
+        return <SpecialtyManagement />;
       case "lichlamviec":
-        return <ScheduleManagement />;
-      case "hosobacsi":
-        return <DoctorProfileManagement />;
+        return <DoctorScheduleMgmt />;
       default:
-        return <OverviewDashboard />;
+        return <HospitalOverview />;
     }
   };
 
+  // 3. TẤT CẢ className ĐÃ ĐỔI TỪ "hm-" SANG "hwp-"
   return (
-    <div className="doctor-dashboard">
+    <div className="hwp-dashboard">
       {/* --- SIDEBAR BÊN TRÁI --- */}
-      <div className="dashboard-sidebar">
+      <div className="hwp-sidebar">
         {/* Logo/User Info */}
-        <div className="sidebar-header">
-          <div className="user-avatar">NH</div>
+        <div className="hwp-sidebar-header">
+          <div className="hwp-user-avatar">BV</div>
           <div>
-            <span className="user-name">Ngô Trường Hiếu</span>
-            <span className="user-phone">0911647047</span>
+            <span className="hwp-user-name">Bệnh viện XYZ</span>
+            <span className="hwp-user-phone">admin@hospital.com</span>
           </div>
           <ChevronDown size={18} />
         </div>
 
         {/* Menu chính */}
-        <nav className="sidebar-nav">
+        <nav className="hwp-sidebar-nav">
           <a
             href="#"
-            className={`nav-item-DW ${activeView === "tongquan" ? "active" : ""}`}
+            className={`hwp-nav-item ${activeView === "tongquan" ? "active" : ""}`}
             onClick={() => setActiveView("tongquan")}
           >
             <LayoutDashboard size={20} />
             <span>Tổng quan</span>
           </a>
 
-          <p className="nav-group-title">PHÒNG KHÁM</p>
+          <p className="hwp-nav-group-title">NGHIỆP VỤ</p>
           <a
             href="#"
-            className={`nav-item-DW ${activeView === "lichkham" ? "active" : ""}`}
+            className={`hwp-nav-item ${activeView === "lichkham" ? "active" : ""}`}
             onClick={() => setActiveView("lichkham")}
           >
             <CalendarCheck size={20} />
             <span>Quản lý Lịch khám</span>
           </a>
+
+          <p className="hwp-nav-group-title">QUẢN LÝ BỆNH VIỆN</p>
           <a
             href="#"
-            className={`nav-item-DW ${activeView === "hosobenhnhan" ? "active" : ""}`}
-            onClick={() => setActiveView("hosobenhnhan")}
+            className={`hwp-nav-item ${activeView === "quanlybacsi" ? "active" : ""}`}
+            onClick={() => setActiveView("quanlybacsi")}
           >
-            <Users size={20} />
-            <span>Hồ sơ Bệnh nhân</span>
+            <Stethoscope size={20} />
+            <span>Quản lý Bác sĩ</span>
           </a>
-
-          <p className="nav-group-title">ĐẶT KHÁM THÔNG MINH</p>
-           <a
+          <a
             href="#"
-            className={`nav-item-DW ${activeView === "lichlamviec" ? "active" : ""}`}
+            className={`hwp-nav-item ${activeView === "quanlykhoa" ? "active" : ""}`}
+            onClick={() => setActiveView("quanlykhoa")}
+          >
+            <Briefcase size={20} />
+            <span>Quản lý Chuyên khoa</span>
+          </a>
+          <a
+            href="#"
+            className={`hwp-nav-item ${activeView === "lichlamviec" ? "active" : ""}`}
             onClick={() => setActiveView("lichlamviec")}
           >
             <CalendarClock size={20} />
             <span>Lịch làm việc</span>
           </a>
-          
+
           <a
             href="#"
-            className={`nav-item-DW ${activeView === "hosobacsi" ? "active" : ""}`}
-            onClick={() => setActiveView("hosobacsi")}
-          >
-            <User size={20} />
-            <span>Hồ sơ Bác sĩ</span>
-          </a>
-          <a
-            href="#"
-            className={`nav-item-DW ${activeView === "thongke" ? "active" : ""}`}
+            className={`hwp-nav-item ${activeView === "thongke" ? "active" : ""}`}
             onClick={() => setActiveView("thongke")}
           >
             <BarChart3 size={20} />
@@ -237,10 +238,10 @@ const DoctorWorkspacePage = () => {
         </nav>
 
         {/* Footer Sidebar */}
-        <div className="sidebar-footer">
+        <div className="hwp-sidebar-footer">
           <a href="#" 
-           onClick={handleLogout}
-           className="nav-item-DW logout-btn">
+          onClick={handleLogout}
+          className="hwp-nav-item hwp-logout-btn">
             <LogOut size={20} />
             <span>Đăng xuất</span>
           </a>
@@ -248,28 +249,29 @@ const DoctorWorkspacePage = () => {
       </div>
 
       {/* --- NỘI DUNG CHÍNH BÊN PHẢI --- */}
-      <div className="dashboard-main">
+      <div className="hwp-main">
         {/* Header của nội dung chính */}
-        <header className="main-header-DW">
+        <header className="hwp-main-header">
           <h1 className="text-xl font-semibold">
-            Chào mừng, Bác sĩ Ngô Trường Hiếu!
+            Bảng điều khiển Bệnh viện XYZ
           </h1>
-          <div className="header-actions">
-            <button className="action-btn">
+          <div className="hwp-header-actions">
+            <button className="hwp-action-btn">
               <Mail size={20} />
             </button>
-            <button className="action-btn">
+            <button className="hwp-action-btn">
               <Bell size={20} />
             </button>
-            <div className="action-btn user-avatar-btn">NH</div>
+            <div className="hwp-action-btn hwp-user-avatar-btn">BV</div>
           </div>
         </header>
 
         {/* Vùng nội dung được render động */}
-        <main className="main-content-DW">{renderMainContent()}</main>
+        <main className="hwp-main-content">{renderMainContent()}</main>
       </div>
     </div>
   );
 };
 
-export default DoctorWorkspacePage;
+// 4. Export với tên component mới
+export default HospitalWorkspacePage;
