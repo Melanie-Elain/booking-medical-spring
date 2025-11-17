@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-// 1. Import CSS đã đổi tên
+import React, { useState, useEffect } from "react";
 import "../../assets/Home/ClinicWorkspace.css";
 import { useNavigate } from "react-router-dom";
+// import ClinicAppointmentManagement from "./ClinicAppointmentManagementPage";
 
 // 2. Import icons (giữ nguyên)
 import {
@@ -18,8 +18,7 @@ import {
     Briefcase,
 } from "lucide-react";
 
-// --- COMPONENT CON (Đã đổi tên cho phù hợp với Phòng khám) ---
-// TÌM COMPONENT NÀY VÀ THAY THẾ NÓ
+
 const ClinicOverview = () => {
     return (
         <div>
@@ -124,10 +123,48 @@ const DoctorScheduleMgmt = () => {
     );
 };
 
-// --- COMPONENT CHÍNH (Đã đổi tên thành ClinicWorkspacePage) ---
+// --- COMPONENT CHÍNH  ---
 const ClinicWorkspacePage = () => {
     const [activeView, setActiveView] = useState("tongquan");
     const navigate = useNavigate();
+
+    const [clinicName, setClinicName] = useState(
+         localStorage.getItem("userName") || "Bác sĩ"
+      );
+
+      // 2. Lắng nghe sự kiện 'authChange' (bạn đã tạo ở hàm logout)
+      //    để cập nhật tên ngay lập tức khi đăng nhập/đăng xuất
+      useEffect(() => {
+        const handleAuthChange = () => {
+          const newName = localStorage.getItem("userName") || "Bác sĩ";
+          setClinicName(newName);
+        };
+    
+        window.addEventListener("authChange", handleAuthChange);
+    
+        // Dọn dẹp listener
+        return () => {
+          window.removeEventListener("authChange", handleAuthChange);
+        };
+      }, []); // Mảng rỗng đảm bảo chỉ chạy 1 lần khi mount
+    
+      // 3. Hàm helper để lấy chữ cái viết tắt
+      const getInitials = (name) => {
+        if (!name) return "?";
+        const words = name.trim().split(' ');
+        if (words.length === 0 || words[0] === "") return "?";
+        if (words.length === 1) {
+          return words[0].charAt(0).toUpperCase();
+        }
+        // Lấy chữ cái đầu của từ đầu tiên và từ cuối cùng
+        const firstInitial = words[0].charAt(0).toUpperCase();
+        const lastInitial = words[words.length - 1].charAt(0).toUpperCase();
+        return `${firstInitial}${lastInitial}`;
+      };
+    
+      // 4. Tính toán chữ viết tắt từ state
+      const clinicInitials = getInitials(clinicName);
+    
   
     // 3. TẠO HÀM XỬ LÝ ĐĂNG XUẤT
     const handleLogout = () => {

@@ -73,68 +73,86 @@ const LoginPage = () => {
   // ... (các import và state của bạn giữ nguyên) ...
 
     const handleSubmit = async (e) => {
-      e.preventDefault();
-      setError('');
+  e.preventDefault();
+  setError('');
 
-      try {
-        const loginData = {
-          username: username,
-          password: password,
-        };
-
-        // response chứa { token, id, username, email, fullName, roles: [...] }
-        const response = await loginUser(loginData);
-
-        // Lấy role đầu tiên
-        const userRole = response.roles[0];
-
-        // Lưu thông tin vào localStorage
-        localStorage.setItem('jwtToken', response.token);
-        localStorage.setItem('userName', response.fullName);
-        localStorage.setItem('userRole', userRole);
-
-        window.dispatchEvent(new Event('authChange'));
-
-        if (rememberMe) {
-          localStorage.setItem('rememberedUsername', username);
-        } else {
-          localStorage.removeItem('rememberedUsername');
-        }
-
-        alert('Đăng nhập thành công!');
-
-        // Điều hướng theo role
-        if (userRole === 'ROLE_ADMIN') {
-          navigate('/admin', { replace: true });
-        } else if (userRole === 'ROLE_BACSI') {
-          navigate('/doctor-workspace-page', { replace: true });
-        } else if (userRole === 'ROLE_PHONGKHAM') {
-          navigate('/clinic-workspace-page', { replace: true });
-        } else if (userRole === 'ROLE_BENHVIEN') {
-          navigate('/hospital-workspace-page', { replace: true });
-        } else {
-          navigate('/', { replace: true }); // ROLE_BENHNHAN
-        }
-
-      } catch (err) {
-        console.error('Lỗi đăng nhập:', err);
-
-        if (
-          err.response &&
-          (err.response.status === 401 ||
-          err.response.status === 403 ||
-          err.response.status === 404)
-        ) {
-          setError('Sai tên đăng nhập hoặc mật khẩu.');
-        } else if (err.code === 'ERR_NETWORK') {
-          setError('Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại!');
-        } else {
-          setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
-        }
-      }
+  try {
+    const loginData = {
+      username: username,
+      password: password,
     };
 
+    // response chứa { token, id, username, email, fullName, roles: [...] }
+    const response = await loginUser(loginData);
 
+    // Lấy TOÀN BỘ danh sách vai trò (roles)
+    const roles = response.roles;
+
+    if (!roles || roles.length === 0) {
+      setError('Không thể xác định vai trò người dùng.');
+      return;
+    }
+
+    // --- LOGIC CŨ VẪN GIỮ ---
+    // Lưu thông tin vào localStorage
+    // Ghi chú: Lưu role đầu tiên hoặc role ưu tiên nhất vào localStorage
+    // Dưới đây là cách tìm role ưu tiên nhất để lưu, thay vì chỉ lưu roles[0]
+    let primaryRole = roles[0]; // Mặc định
+    if (roles.includes('ROLE_ADMIN')) primaryRole = 'ROLE_ADMIN';
+    else if (roles.includes('ROLE_BACSI')) primaryRole = 'ROLE_BACSI';
+    else if (roles.includes('ROLE_PHONGKHAM')) primaryRole = 'ROLE_PHONGKHAM';
+    else if (roles.includes('ROLE_BENHVIEN')) primaryRole = 'ROLE_BENHVIEN';
+
+    localStorage.setItem('jwtToken', response.token);
+    localStorage.setItem('userName', response.fullName);
+    localStorage.setItem('userRole', primaryRole); // Lưu role ưu tiên nhất
+    localStorage.setItem('userId', response.id);
+
+    window.dispatchEvent(new Event('authChange'));
+
+    if (rememberMe) {
+      localStorage.setItem('rememberedUsername', username);
+    } else {
+      localStorage.removeItem('rememberedUsername');
+    }
+
+    alert('Đăng nhập thành công!');
+
+    // --- SỬA LẠI HOÀN TOÀN LOGIC ĐIỀU HƯỚNG ---
+    // Luôn kiểm tra vai trò ưu tiên cao nhất (ADMIN) trước
+    // bằng cách dùng 'roles.includes()' thay vì 'userRole ==='
+
+    if (roles.includes('ROLE_ADMIN')) {
+      navigate('/admin', { replace: true });
+    } else if (roles.includes('ROLE_BACSI')) {
+      navigate('/doctor-workspace-page', { replace: true });
+    } else if (roles.includes('ROLE_PHONGKHAM')) {
+      navigate('/clinic-workspace-page', { replace: true });
+    } else if (roles.includes('ROLE_BENHVIEN')) {
+      navigate('/hospital-workspace-page', { replace: true });
+    } else if (roles.includes('ROLE_BENHNHAN')) {
+      navigate('/', { replace: true }); // Chuyển hướng rõ ràng cho bệnh nhân
+    } else {
+      navigate('/', { replace: true }); // Mặc định cho các trường hợp khác
+    }
+
+  } catch (err) {
+    console.error('Lỗi đăng nhập:', err);
+
+    if (
+      err.response &&
+      (err.response.status === 401 ||
+        err.response.status === 403 ||
+        err.response.status === 404)
+    ) {
+      setError('Sai tên đăng nhập hoặc mật khẩu.');
+    } else if (err.code === 'ERR_NETWORK') {
+      setError('Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại!');
+    } else {
+      setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
+    }
+  }
+};
 
 
   return (

@@ -2,6 +2,7 @@ package com.booking.medical_booking.service.appointment;
 
 import com.booking.medical_booking.dto.AppointmentDTO;
 import com.booking.medical_booking.model.Appointment;
+import com.booking.medical_booking.model.Doctor;
 import com.booking.medical_booking.model.LichGio;
 import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.repository.AppointmentRepository;
@@ -64,6 +65,38 @@ public class AppointmentService {
     public Page<AppointmentResponseDTO> getAllAppointments(Pageable pageable) {
         
         Page<Appointment> appointmentPage = appointmentRepository.findAllByOrderByMaLichHenDesc(pageable);
+
+        return appointmentPage.map(this::convertToDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AppointmentResponseDTO> getAllAppointmentsByDoctor(Long userId, Pageable pageable) {
+
+        Doctor doctor = doctorRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy thông tin bác sĩ với userId: " + userId));
+
+        Long realDoctorId = doctor.getId();
+
+        Page<Appointment> appointmentPage = appointmentRepository.findByLichGio_LichTong_MaDoiTuongAndLichGio_LichTong_LoaiDoiTuongOrderByMaLichHenDesc(
+                realDoctorId, User.UserRole.BACSI, pageable); 
+
+        return appointmentPage.map(this::convertToDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AppointmentResponseDTO> getAllAppointmentsByClinic(Long clinicId, Pageable pageable) {
+        // Sử dụng method query mới sẽ được thêm vào Repository
+        Page<Appointment> appointmentPage = appointmentRepository.findByLichGio_LichTong_MaDoiTuongAndLichGio_LichTong_LoaiDoiTuongOrderByMaLichHenDesc(
+                clinicId, User.UserRole.PHONGKHAM, pageable);
+
+        return appointmentPage.map(this::convertToDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AppointmentResponseDTO> getAllAppointmentsByHospital(Long hospitalId, Pageable pageable) {
+        // Sử dụng method query mới sẽ được thêm vào Repository
+        Page<Appointment> appointmentPage = appointmentRepository.findByLichGio_LichTong_MaDoiTuongAndLichGio_LichTong_LoaiDoiTuongOrderByMaLichHenDesc(
+                hospitalId, User.UserRole.BENHVIEN, pageable);
 
         return appointmentPage.map(this::convertToDTO);
     }
@@ -227,4 +260,5 @@ public AppointmentResponseDTO updateAppointmentStatus(Integer id, Map<String, St
         return appointmentRepository.save(appointment);
     }
 
+    
 }

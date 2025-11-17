@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SpecialtyService {
@@ -17,6 +18,8 @@ public class SpecialtyService {
     public Page<Specialty> getAllSpecialties(Pageable pageable) {
         return specialtyRepository.findAll(pageable);
     }
+
+    @Transactional(readOnly = true)
     public List<Specialty> getAllSpecialtiesList() {
         return specialtyRepository.findAll();
     }

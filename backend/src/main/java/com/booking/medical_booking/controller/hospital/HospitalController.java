@@ -8,6 +8,15 @@ import com.booking.medical_booking.model.Hospital;
 import com.booking.medical_booking.model.Specialty;
 import com.booking.medical_booking.service.hospital.HospitalService;
 
+import com.booking.medical_booking.dto.AppointmentResponseDTO;
+import com.booking.medical_booking.service.appointment.AppointmentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +33,8 @@ public class HospitalController {
 
     @Autowired
     private HospitalService hospitalService;
+    @Autowired
+    private AppointmentService appointmentService;
     
     @GetMapping
     public ResponseEntity<List<Hospital>>  getAllHospitalsList() {
@@ -57,7 +68,24 @@ public class HospitalController {
         return ResponseEntity.ok(schedules);
     }
 
-    
+        // --- QUẢN LÝ LỊCH HẸN (CHO BỆNH VIỆN) ---
+         @GetMapping("/{id}/appointments")
+    public ResponseEntity<Page<AppointmentResponseDTO>> getAllAppointmentsByHospital(
+            @PathVariable Integer id, // ID của bệnh viện
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<AppointmentResponseDTO> appointmentPage = appointmentService.getAllAppointmentsByHospital(id.longValue(), pageable); // Chuyển đổi sang Long nếu cần
+        return ResponseEntity.ok(appointmentPage);
+    }
+
+    @PutMapping("/appointments/{appointmentId}/status")
+    public ResponseEntity<AppointmentResponseDTO> updateAppointmentStatus(
+            @PathVariable Integer appointmentId, // ID của lịch hẹn
+            @RequestBody Map<String, String> request) {
+        AppointmentResponseDTO updatedAppointmentDTO = appointmentService.updateAppointmentStatus(appointmentId, request);
+        return ResponseEntity.ok(updatedAppointmentDTO);
+    }
     
     
 }

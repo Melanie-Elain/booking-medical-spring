@@ -95,7 +95,12 @@ public class UserService {
                                 .collect(Collectors.toList());
 
         // 5. Tạo token
+        // String token = jwtService.generateToken(
+        //     user.getPhoneNumber(),
+        //     roles  // gửi role vào token
+        // );
         String token = jwtService.generateToken(user.getPhoneNumber());
+
 
         // 6. Trả về LoginResponse đầy đủ
         return new LoginResponse(
@@ -107,6 +112,7 @@ public class UserService {
             roles
         );
     }
+    
 
     public User getCurrentUser() {
         String phoneNumber = SecurityContextHolder.getContext().getAuthentication().getName();
