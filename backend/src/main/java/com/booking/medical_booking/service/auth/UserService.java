@@ -1,5 +1,6 @@
 package com.booking.medical_booking.service.auth;
 
+import com.booking.medical_booking.dto.LoginResponse;
 import com.booking.medical_booking.dto.ChangePasswordRequest;
 import com.booking.medical_booking.dto.UpdateProfileRequest;
 import com.booking.medical_booking.dto.UserRequestDTO;
@@ -15,9 +16,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.authentication.AuthenticationManager; 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken; 
+import org.springframework.security.core.Authentication;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -25,12 +31,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserService(UserRepository userRepository, 
+                       PasswordEncoder passwordEncoder, 
+                       JwtService jwtService,
+                       AuthenticationManager authenticationManager) { // << THÊM VÀO
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager; // << THÊM VÀO
     }
 
 
@@ -62,18 +73,38 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Map<String, String> login(String username, String password) {
-        User user = userRepository.findByPhoneNumberOrEmail(username, username)
-                .orElseThrow(() -> new UsernameNotFoundException("Sai tên đăng nhập hoặc mật khẩu"));
+    // === ĐĂNG NHẬP VÀ TRẢ VỀ TOKEN + THÔNG TIN USER ===
+    public LoginResponse login(String username, String password) {
+        
+        // 1. Dùng AuthenticationManager để xác thực.
+        // Nó sẽ TỰ ĐỘNG gọi UserDetailsServiceImpl của bạn
+        Authentication authentication = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(username, password)
+        );
 
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Sai tên đăng nhập hoặc mật khẩu");
-        }
+        // 2. Nếu không có lỗi, tức là đăng nhập thành công.
+        // Lấy đối tượng UserDetailsImpl (đã tạo ở Bước 1)
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        // 3. Lấy ra User đầy đủ từ UserDetailsImpl
+        User user = userDetails.getUser();
+
+        // 4. Lấy danh sách Role (dạng "ROLE_BENHNHAN")
+        List<String> roles = userDetails.getAuthorities().stream()
+                                .map(item -> item.getAuthority())
+                                .collect(Collectors.toList());
+
+        // 5. Tạo token
         String token = jwtService.generateToken(user.getPhoneNumber());
-        return Map.of(
-            "token", token,
-            "fullName", user.getFullName(),
-            "role", user.getRole().name()
+
+        // 6. Trả về LoginResponse đầy đủ
+        return new LoginResponse(
+            token,
+            user.getId(),
+            user.getPhoneNumber(), // Hoặc user.getFullName() tùy bạn
+            user.getEmail(),
+            user.getFullName(),
+            roles
         );
     }
 
