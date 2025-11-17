@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // Import CSS (ĐÃ SỬA LẠI ĐƯỜNG DẪN TƯƠNG ĐỐI)
 import "../../assets/Home/DocterWorkspace.css";
+import { useNavigate } from "react-router-dom";
 // Import icons
 import {
   LayoutDashboard,
@@ -128,6 +129,25 @@ const DoctorWorkspacePage = () => {
   // 'activeView' sẽ quản lý nội dung nào đang được hiển thị
   // 'tongquan' là giá trị mặc định khi tải trang
   const [activeView, setActiveView] = useState("tongquan");
+  const navigate = useNavigate();
+  
+    // 3. TẠO HÀM XỬ LÝ ĐĂNG XUẤT
+    const handleLogout = () => {
+      // Xóa tất cả thông tin đăng nhập
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userRole');
+      
+      // (Nếu bạn có "rememberMe", cũng hãy xóa nó)
+      // localStorage.removeItem('rememberedUsername');
+  
+      // Bắn sự kiện "authChange" để Header tự động cập nhật
+      window.dispatchEvent(new Event('authChange'));
+  
+      // Chuyển hướng về trang chủ
+      navigate('/', { replace: true });
+    };
+  
 
   // Hàm để render nội dung chính dựa trên 'activeView'
   const renderMainContent = () => {
@@ -218,7 +238,9 @@ const DoctorWorkspacePage = () => {
 
         {/* Footer Sidebar */}
         <div className="sidebar-footer">
-          <a href="/logout" className="nav-item-DW logout-btn">
+          <a href="#" 
+           onClick={handleLogout}
+           className="nav-item-DW logout-btn">
             <LogOut size={20} />
             <span>Đăng xuất</span>
           </a>

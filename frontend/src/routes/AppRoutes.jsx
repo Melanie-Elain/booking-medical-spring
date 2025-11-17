@@ -13,15 +13,12 @@ import HospitalProfile from "../pages/Booking/HospitalProfile";
 import ClinicProfile from "../pages/Booking/ClinicProfile";
 import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
 import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
-<<<<<<< HEAD
+
 import DoctorWorkspaceIntro from "../pages/DoctorWorkspace/DocterWorkspaceIntro";
 import DoctorWorkspacePage from "../pages/DoctorWorkspace/DocterWorkspacePage";
-=======
-// import DoctorWorkspace from "../pages/DoctorWorkspace/DocterWorkspaceIntro";
-import DoctorWorkspace from "../pages/DoctorWorkspace/DocterWorkspacePage";
 import HospitalWorkspacePage from "../pages/Hospital/HospitalWorkspacePage";
 import ClinicWorkspacePage from "../pages/Clinic/ClinicWorkspacePage";
->>>>>>> HieuNgo
+
 
 import CompleteBookingDoctor from "../pages/Booking/CompleteBookingDoctor";
 import BookingSuccessPage from "../pages/Booking/BookingSuccessPage";

@@ -109,9 +109,9 @@ const LoginPage = () => {
         } else if (userRole === 'ROLE_BACSI') {
           navigate('/doctor-workspace-page', { replace: true });
         } else if (userRole === 'ROLE_PHONGKHAM') {
-          navigate('/clinic/manage', { replace: true });
+          navigate('/clinic-workspace-page', { replace: true });
         } else if (userRole === 'ROLE_BENHVIEN') {
-          navigate('/hospital/manage', { replace: true });
+          navigate('/hospital-workspace-page', { replace: true });
         } else {
           navigate('/', { replace: true }); // ROLE_BENHNHAN
         }
