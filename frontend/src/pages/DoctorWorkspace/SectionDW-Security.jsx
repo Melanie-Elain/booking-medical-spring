@@ -24,7 +24,7 @@ const SecuritySection = () => {
   ];
 
   return (
-    <section className="security-section">
+    <section id="security" className="security-section">
       <div className="security-header">
         <h2>An toàn và Bảo mật</h2>
         <p>

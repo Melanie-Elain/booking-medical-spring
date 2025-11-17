@@ -36,7 +36,7 @@ const HomeIntroSection = () => {
 
 
     return (
-        <section className="home-intro-section-dw">
+        <section id="homeIntro" className="home-intro-section-dw">
             <div className="home-intro-content-dw">
                 <h1>
                     Nền tảng tích hợp bộ công cụ làm việc

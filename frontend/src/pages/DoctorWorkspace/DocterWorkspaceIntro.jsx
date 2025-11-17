@@ -1,12 +1,17 @@
 import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
 import DwHomeIntro from "./SectionDW-HomeIntro.jsx"
 import DwSecurity from "./SectionDW-Security.jsx";
 import DwFeatures from "./SectionDW-Features.jsx";
 import DwFAQ from "./SectionDW-FAQ.jsx";
+
 import HomeFooter from "../../components/Home/HomeFooter.jsx";
 import "../../assets/Home/DocterWorkspace.css";
 
 const DoctorWorkspaceIntro = () => {
+    const location = useLocation();
+
     useEffect(() => {
         const header = document.querySelector(".sticky-header");
 
@@ -21,6 +26,23 @@ const DoctorWorkspaceIntro = () => {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    useEffect(() => {
+        // Kiểm tra xem URL có "hash" (dấu #) không
+        if (location.hash) {
+            // location.hash sẽ là "#security". Chúng ta cần "security"
+            const id = location.hash.substring(1);
+
+            // Dùng setTimeout 100ms để đảm bảo
+            // component con (DwSecurity) đã kịp render
+            setTimeout(() => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: "smooth" });
+                }
+            }, 100); // Đợi 100ms
+        }
+    }, [location]);
 
     return (
         <div className="doctor-workspace-page">
@@ -65,17 +87,9 @@ const DoctorWorkspaceIntro = () => {
 
             {/* Nội dung trang chính (ví dụ placeholder) */}
             <main className="main-content-IntroWS">
-                <div id="homeIntro">
-                    < DwHomeIntro />
-                </div>
-
-                <div id="features">
-                    < DwFeatures />
-                </div>
-
-                <div id="security">
-                    <DwSecurity />
-                </div>
+                < DwHomeIntro />
+                < DwFeatures />
+                <DwSecurity />
                 < DwFAQ />
                 < HomeFooter />
             </main>

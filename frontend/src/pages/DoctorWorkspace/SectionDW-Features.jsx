@@ -68,7 +68,7 @@ const FeaturesSection = () => {
     ];
 
     return (
-        <section className="features-section-dw">
+        <section id="features" className="features-section-dw">
             <div className="features-header-dw">
                 <h2><span className="highlight-number-dw">9</span> công cụ bạn cần duy nhất <span className="highlight-number-dw">1</span> nền tảng</h2>
                 <p>Nâng cấp hoạt động khám chữa bệnh với Doctor Workspace: thông minh hơn, nhanh hơn, hiệu quả hơn</p>
