@@ -17,59 +17,125 @@ const LoginPage = () => {
   const [error, setError] = useState(''); 
   const navigate = useNavigate(); 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(''); 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError(''); 
 
-    try {
-      // 2. Sửa ở đây: gửi username
-      const loginData = {
-        username: username, 
-        password: password,
-      };
+  //   try {
+  //     // 2. Sửa ở đây: gửi username
+  //     const loginData = {
+  //       username: username, 
+  //       password: password,
+  //     };
 
-      const response = await loginUser(loginData); 
+  //     const response = await loginUser(loginData); 
 
-      localStorage.setItem('jwtToken', response.token);
-      localStorage.setItem('userName', response.fullName);
-      localStorage.setItem('userRole', response.role);
+  //     localStorage.setItem('jwtToken', response.token);
+  //     localStorage.setItem('userName', response.fullName);
+  //     localStorage.setItem('userRole', response.role);
 
-      window.dispatchEvent(new Event('authChange'));
+  //     window.dispatchEvent(new Event('authChange'));
 
-      // 3. Sửa xử lý "Ghi nhớ"
-      if (rememberMe) {
-        localStorage.setItem('rememberedUsername', username);
-      } else {
-        localStorage.removeItem('rememberedUsername');
+  //     // 3. Sửa xử lý "Ghi nhớ"
+  //     if (rememberMe) {
+  //       localStorage.setItem('rememberedUsername', username);
+  //     } else {
+  //       localStorage.removeItem('rememberedUsername');
+  //     }
+
+  //     alert('Đăng nhập thành công!');
+
+  //     // 4. Chuyển hướng theo Role
+  //     if (response.role === 'ADMIN') {
+  //       navigate('/admin', { replace: true });
+  //     } else {
+  //       navigate('/', { replace: true });
+  //     }
+
+  //   } catch (err) {
+  //     console.error('Lỗi đăng nhập:', err);
+  //     // 5. Cập nhật logic bắt lỗi
+  //     if (
+  //       err.response &&
+  //       (err.response.status === 401 || // Unauthorized
+  //        err.response.status === 403 || // Forbidden
+  //        err.response.status === 404 || // Not Found (từ UsernameNotFoundException)
+  //        err.response.status === 500)  // Internal Error (từ Sai mật khẩu)
+  //     ) {
+  //       setError('Sai tên đăng nhập hoặc mật khẩu.');
+  //     } else if (err.code === 'ERR_NETWORK') {
+  //       setError('Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại!');
+  //     } else {
+  //       setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
+  //     }
+  //   }
+  // };
+  // ... (các import và state của bạn giữ nguyên) ...
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setError('');
+
+      try {
+        const loginData = {
+          username: username,
+          password: password,
+        };
+
+        // response chứa { token, id, username, email, fullName, roles: [...] }
+        const response = await loginUser(loginData);
+
+        // Lấy role đầu tiên
+        const userRole = response.roles[0];
+
+        // Lưu thông tin vào localStorage
+        localStorage.setItem('jwtToken', response.token);
+        localStorage.setItem('userName', response.fullName);
+        localStorage.setItem('userRole', userRole);
+
+        window.dispatchEvent(new Event('authChange'));
+
+        if (rememberMe) {
+          localStorage.setItem('rememberedUsername', username);
+        } else {
+          localStorage.removeItem('rememberedUsername');
+        }
+
+        alert('Đăng nhập thành công!');
+
+        // Điều hướng theo role
+        if (userRole === 'ROLE_ADMIN') {
+          navigate('/admin', { replace: true });
+        } else if (userRole === 'ROLE_BACSI') {
+          navigate('/doctor-workspace-page', { replace: true });
+        } else if (userRole === 'ROLE_PHONGKHAM') {
+          navigate('/clinic-workspace-page', { replace: true });
+        } else if (userRole === 'ROLE_BENHVIEN') {
+          navigate('/hospital-workspace-page', { replace: true });
+        } else {
+          navigate('/', { replace: true }); // ROLE_BENHNHAN
+        }
+
+      } catch (err) {
+        console.error('Lỗi đăng nhập:', err);
+
+        if (
+          err.response &&
+          (err.response.status === 401 ||
+          err.response.status === 403 ||
+          err.response.status === 404)
+        ) {
+          setError('Sai tên đăng nhập hoặc mật khẩu.');
+        } else if (err.code === 'ERR_NETWORK') {
+          setError('Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại!');
+        } else {
+          setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
+        }
       }
+    };
 
-      alert('Đăng nhập thành công!');
 
-      // 4. Chuyển hướng theo Role
-      if (response.role === 'ADMIN') {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
 
-    } catch (err) {
-      console.error('Lỗi đăng nhập:', err);
-      // 5. Cập nhật logic bắt lỗi
-      if (
-        err.response &&
-        (err.response.status === 401 || // Unauthorized
-         err.response.status === 403 || // Forbidden
-         err.response.status === 404 || // Not Found (từ UsernameNotFoundException)
-         err.response.status === 500)  // Internal Error (từ Sai mật khẩu)
-      ) {
-        setError('Sai tên đăng nhập hoặc mật khẩu.');
-      } else if (err.code === 'ERR_NETWORK') {
-        setError('Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại!');
-      } else {
-        setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
-      }
-    }
-  };
 
   return (
     <div className="flex flex-col min-h-screen bg-white">

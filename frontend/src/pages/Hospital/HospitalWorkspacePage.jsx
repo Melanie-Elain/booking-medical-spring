@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // 1. Import CSS đã đổi tên
 import "../../assets/Home/HospitalWorkspace.css";
+import { useNavigate } from "react-router-dom";
 
 // 2. Import icons (giữ nguyên)
 import {
@@ -126,7 +127,26 @@ const DoctorScheduleMgmt = () => {
 // --- COMPONENT CHÍNH (Đã đổi tên thành HospitalWorkspacePage) ---
 const HospitalWorkspacePage = () => {
   const [activeView, setActiveView] = useState("tongquan");
+  const navigate = useNavigate();
 
+  // 3. TẠO HÀM XỬ LÝ ĐĂNG XUẤT
+  const handleLogout = () => {
+    // Xóa tất cả thông tin đăng nhập
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole');
+    
+    // (Nếu bạn có "rememberMe", cũng hãy xóa nó)
+    // localStorage.removeItem('rememberedUsername');
+
+    // Bắn sự kiện "authChange" để Header tự động cập nhật
+    window.dispatchEvent(new Event('authChange'));
+
+    // Chuyển hướng về trang chủ
+    navigate('/', { replace: true });
+  };
+
+  
   // Hàm render nội dung (giữ nguyên logic)
   const renderMainContent = () => {
     switch (activeView) {
@@ -219,7 +239,9 @@ const HospitalWorkspacePage = () => {
 
         {/* Footer Sidebar */}
         <div className="hwp-sidebar-footer">
-          <a href="/logout" className="hwp-nav-item hwp-logout-btn">
+          <a href="#" 
+          onClick={handleLogout}
+          className="hwp-nav-item hwp-logout-btn">
             <LogOut size={20} />
             <span>Đăng xuất</span>
           </a>
