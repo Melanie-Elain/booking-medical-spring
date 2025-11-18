@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../assets/Home/ClinicWorkspace.css";
 import { useNavigate } from "react-router-dom";
-// import ClinicAppointmentManagement from "./ClinicAppointmentManagementPage";
+import ClinicAppointment from "./ClinicAppointmentManagementPage"
 
 // 2. Import icons (giữ nguyên)
 import {
@@ -79,16 +79,7 @@ const ClinicOverview = () => {
     );
 };
 
-const ClinicAppointmentMgmt = () => {
-    return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Quản lý Lịch khám Phòng khám</h2>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <p>Danh sách lịch khám của toàn bộ phòng khám...</p>
-            </div>
-        </div>
-    );
-};
+
 
 const DoctorManagement = () => {
     return (
@@ -189,7 +180,7 @@ const ClinicWorkspacePage = () => {
             case "tongquan":
                 return <ClinicOverview />;
             case "lichkham":
-                return <ClinicAppointmentMgmt />;
+                return <ClinicAppointment />;
             case "quanlybacsi":
                 return <DoctorManagement />;
             case "quanlykhoa":
@@ -208,10 +199,9 @@ const ClinicWorkspacePage = () => {
             <div className="cwp-sidebar">
                 {/* Logo/User Info */}
                 <div className="cwp-sidebar-header">
-                    <div className="cwp-user-avatar">PK</div> {/* Đổi avatar thành Phòng Khám */}
+                    <div className="cwp-user-avatar">{clinicInitials}</div> {/* Đổi avatar thành Phòng Khám */}
                     <div>
-                        <span className="cwp-user-name">Phòng khám XYZ</span>
-                        <span className="cwp-user-phone">admin@clinic.com</span>
+                        <span className="cwp-user-name">{clinicName}</span>
                     </div>
                     <ChevronDown size={18} />
                 </div>
@@ -289,7 +279,7 @@ const ClinicWorkspacePage = () => {
                 {/* Header của nội dung chính */}
                 <header className="cwp-main-header">
                     <h1 className="text-xl font-semibold">
-                        Bảng điều khiển Phòng khám XYZ
+                        Bảng điều khiển {clinicName}
                     </h1>
                     <div className="cwp-header-actions">
                         <button className="cwp-action-btn">
@@ -298,7 +288,7 @@ const ClinicWorkspacePage = () => {
                         <button className="cwp-action-btn">
                             <Bell size={20} />
                         </button>
-                        <div className="cwp-action-btn cwp-user-avatar-btn">PK</div>
+                        <div className="cwp-action-btn cwp-user-avatar-btn">{clinicInitials}</div>
                     </div>
                 </header>
 

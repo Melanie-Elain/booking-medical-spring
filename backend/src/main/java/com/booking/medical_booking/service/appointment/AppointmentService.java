@@ -22,6 +22,8 @@ import com.booking.medical_booking.repository.ClinicRepository;
 import com.booking.medical_booking.repository.UserRepository; 
 import org.springframework.security.core.context.SecurityContextHolder; 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.booking.medical_booking.model.Clinic; 
+import com.booking.medical_booking.model.Hospital;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,22 +86,36 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AppointmentResponseDTO> getAllAppointmentsByClinic(Long clinicId, Pageable pageable) {
-        // Sử dụng method query mới sẽ được thêm vào Repository
+        public Page<AppointmentResponseDTO> getAllAppointmentsByClinic(Long userId, Pageable pageable) {
+                // 1. Dùng userId để tìm Clinic
+        Clinic clinic = clinicRepository.findByUserId(userId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy phòng khám với userId: " + userId));
+                
+                // 2. Lấy ID thật của phòng khám (bảng phongkham)
+                // Lưu ý: ID của Clinic là Integer
+                Integer realClinicId = clinic.getId();
+
         Page<Appointment> appointmentPage = appointmentRepository.findByLichGio_LichTong_MaDoiTuongAndLichGio_LichTong_LoaiDoiTuongOrderByMaLichHenDesc(
-                clinicId, User.UserRole.PHONGKHAM, pageable);
+        realClinicId.longValue(), User.UserRole.PHONGKHAM, pageable); // <-- Dùng realClinicId
 
         return appointmentPage.map(this::convertToDTO);
-    }
+        }
 
     @Transactional(readOnly = true)
-    public Page<AppointmentResponseDTO> getAllAppointmentsByHospital(Long hospitalId, Pageable pageable) {
-        // Sử dụng method query mới sẽ được thêm vào Repository
+        public Page<AppointmentResponseDTO> getAllAppointmentsByHospital(Long userId, Pageable pageable) {
+        // 1. Dùng userId để tìm Hospital
+                Hospital hospital = hospitalRepository.findByUserId(userId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy bệnh viện với userId: " + userId));
+
+                // 2. Lấy ID thật của bệnh viện (bảng benhvien)
+                // Lưu ý: ID của Hospital là Integer
+                Integer realHospitalId = hospital.getId();
+                
         Page<Appointment> appointmentPage = appointmentRepository.findByLichGio_LichTong_MaDoiTuongAndLichGio_LichTong_LoaiDoiTuongOrderByMaLichHenDesc(
-                hospitalId, User.UserRole.BENHVIEN, pageable);
+        realHospitalId.longValue(), User.UserRole.BENHVIEN, pageable); // <-- Dùng realHospitalId
 
         return appointmentPage.map(this::convertToDTO);
-    }
+        }
     
     private AppointmentResponseDTO convertToDTO(Appointment app) {
         String providerName = "(Không rõ)";

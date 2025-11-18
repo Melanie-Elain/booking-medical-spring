@@ -1,5 +1,8 @@
 /* --- Hospital Workspace Page CSS --- */
 /* (TẤT CẢ CLASS ĐÃ ĐỔI TÊN TỪ hm- SANG hwp-) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .hwp-dashboard {
     display: flex;

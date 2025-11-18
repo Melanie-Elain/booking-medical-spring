@@ -1,7 +1,7 @@
 package com.booking.medical_booking.repository; 
 
 import com.booking.medical_booking.model.Hospital;
-
+import java.util.Optional;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +23,6 @@ public interface HospitalRepository extends JpaRepository<Hospital, Integer> {
                    "WHERE ck.TenCK = :specialtyName", 
            nativeQuery = true)
     List<Hospital> findBySpecialtyName(@Param("specialtyName") String specialtyName);
+
+    Optional<Hospital> findByUserId(Long userId);
 }
