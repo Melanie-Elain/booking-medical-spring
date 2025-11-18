@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../../assets/Home/ClinicWorkspace.css";
 import { useNavigate } from "react-router-dom";
 import ClinicAppointment from "./ClinicAppointmentManagementPage"
+import ClinicProfileManagement from "./ClinicProfileManagement";
+import ClinicScheduleManagement from "./ClinicScheduleManagement";
 
 // 2. Import icons (giữ nguyên)
 import {
@@ -81,38 +83,38 @@ const ClinicOverview = () => {
 
 
 
-const DoctorManagement = () => {
-    return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Quản lý Bác sĩ</h2>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <p>Danh sách bác sĩ, thêm/sửa/xóa thông tin bác sĩ...</p>
-            </div>
-        </div>
-    );
-};
+// const DoctorManagement = () => {
+//     return (
+//         <div>
+//             <h2 className="text-2xl font-bold mb-4">Quản lý Bác sĩ</h2>
+//             <div className="bg-white p-4 rounded-lg shadow">
+//                 <p>Danh sách bác sĩ, thêm/sửa/xóa thông tin bác sĩ...</p>
+//             </div>
+//         </div>
+//     );
+// };
 
-const SpecialtyManagement = () => {
-    return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Quản lý Dịch vụ/Chuyên khoa</h2>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <p>Danh sách các dịch vụ/chuyên khoa của phòng khám...</p>
-            </div>
-        </div>
-    );
-};
+// const SpecialtyManagement = () => {
+//     return (
+//         <div>
+//             <h2 className="text-2xl font-bold mb-4">Quản lý Dịch vụ/Chuyên khoa</h2>
+//             <div className="bg-white p-4 rounded-lg shadow">
+//                 <p>Danh sách các dịch vụ/chuyên khoa của phòng khám...</p>
+//             </div>
+//         </div>
+//     );
+// };
 
-const DoctorScheduleMgmt = () => {
-    return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Quản lý Lịch làm việc</h2>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <p>Sắp xếp lịch làm việc cho các bác sĩ...</p>
-            </div>
-        </div>
-    );
-};
+// const DoctorScheduleMgmt = () => {
+//     return (
+//         <div>
+//             <h2 className="text-2xl font-bold mb-4">Quản lý Lịch làm việc</h2>
+//             <div className="bg-white p-4 rounded-lg shadow">
+//                 <p>Sắp xếp lịch làm việc cho các bác sĩ...</p>
+//             </div>
+//         </div>
+//     );
+// };
 
 // --- COMPONENT CHÍNH  ---
 const ClinicWorkspacePage = () => {
@@ -181,12 +183,12 @@ const ClinicWorkspacePage = () => {
                 return <ClinicOverview />;
             case "lichkham":
                 return <ClinicAppointment />;
-            case "quanlybacsi":
-                return <DoctorManagement />;
+            // case "quanlybacsi":
+            //     return <DoctorManagement />;
             case "quanlykhoa":
-                return <SpecialtyManagement />;
+                return < ClinicProfileManagement/>;
             case "lichlamviec":
-                return <DoctorScheduleMgmt />;
+                return <ClinicScheduleManagement />;
             default:
                 return <ClinicOverview />;
         }
@@ -228,21 +230,14 @@ const ClinicWorkspacePage = () => {
                     </a>
 
                     <p className="cwp-nav-group-title">QUẢN LÝ PHÒNG KHÁM</p>
-                    <a
-                        href="#"
-                        className={`cwp-nav-item ${activeView === "quanlybacsi" ? "active" : ""}`}
-                        onClick={() => setActiveView("quanlybacsi")}
-                    >
-                        <Stethoscope size={20} />
-                        <span>Quản lý Bác sĩ</span>
-                    </a>
+        
                     <a
                         href="#"
                         className={`cwp-nav-item ${activeView === "quanlykhoa" ? "active" : ""}`}
                         onClick={() => setActiveView("quanlykhoa")}
                     >
                         <Briefcase size={20} />
-                        <span>Quản lý Dịch vụ</span>
+                        <span>Quản lý Hồ sơ</span>
                     </a>
                     <a
                         href="#"

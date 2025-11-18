@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import "../../assets/Home/HospitalWorkspace.css";
 import { useNavigate } from "react-router-dom";
 import HospitalAppointment from "./HospitalAppointmentManagementPage";
-
-
+import HospitalScheduleManagement from "./HospitalScheduleManagement";
 
 // 2. Import icons (giữ nguyên)
 import {
@@ -21,6 +20,7 @@ import {
   Stethoscope,
   Briefcase,
 } from "lucide-react";
+import HospitalProfileManagement from "./HospitalProfileManagement";
 
 // --- COMPONENT CON (Giữ nguyên, chúng là component nội bộ) ---
 // TÌM COMPONENT NÀY VÀ THAY THẾ NÓ
@@ -85,17 +85,6 @@ const HospitalOverview = () => {
 };
 
 
-
-const SpecialtyManagement = () => {
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Quản lý Chuyên khoa</h2>
-      <div className="bg-white p-4 rounded-lg shadow">
-        <p>Danh sách các chuyên khoa của bệnh viện...</p>
-      </div>
-    </div>
-  );
-};
 
 const DoctorScheduleMgmt = () => {
   return (
@@ -177,10 +166,10 @@ const HospitalWorkspacePage = () => {
         return <HospitalAppointment />;
       // case "quanlybacsi":
       //   return <DoctorManagement />;
-      case "quanlykhoa":
-        return <SpecialtyManagement />;
+      case "quanlyhoso":
+        return <HospitalProfileManagement />;
       case "lichlamviec":
-        return <DoctorScheduleMgmt />;
+        return <HospitalScheduleManagement />;
       default:
         return <HospitalOverview />;
     }
@@ -225,11 +214,11 @@ const HospitalWorkspacePage = () => {
           
           <a
             href="#"
-            className={`hwp-nav-item ${activeView === "quanlykhoa" ? "active" : ""}`}
-            onClick={() => setActiveView("quanlykhoa")}
+            className={`hwp-nav-item ${activeView === "quanlyhoso" ? "active" : ""}`}
+            onClick={() => setActiveView("quanlyhoso")}
           >
             <Briefcase size={20} />
-            <span>Quản lý Chuyên khoa</span>
+            <span>Quản lý Hồ sơ</span>
           </a>
           <a
             href="#"

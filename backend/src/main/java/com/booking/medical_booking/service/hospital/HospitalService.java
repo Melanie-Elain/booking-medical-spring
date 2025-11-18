@@ -44,12 +44,18 @@ public class HospitalService {
         return hospitalRepository.findAll();
     }
 
-    public Hospital getHospitalById(Integer id) {
-        return hospitalRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Không tìm thấy Hospital ID: " + id));
+    @Transactional(readOnly = true) // Thêm @Transactional
+        public Hospital getHospitalById(Integer id) {
+        return hospitalRepository.findById(id) // findById này đã được thêm @EntityGraph
+        .orElseThrow(() -> new RuntimeException("Không tìm thấy Hospital ID: " + id));
+        }
+
+    // === HÀM MỚI QUAN TRỌNG (ĐỂ LẤY ID) ===
+    @Transactional(readOnly = true)
+    public Hospital findByUserId(Long userId) {
+        return hospitalRepository.findByUserId(userId) // Phải khớp với Repository
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy bệnh viện với userId: " + userId));
     }
-
-
 
     @Transactional
     public Hospital createHospital(HospitalRequestDTO request) {

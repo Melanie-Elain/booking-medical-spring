@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 @Repository
 public interface HospitalRepository extends JpaRepository<Hospital, Integer> {
@@ -25,4 +26,8 @@ public interface HospitalRepository extends JpaRepository<Hospital, Integer> {
     List<Hospital> findBySpecialtyName(@Param("specialtyName") String specialtyName);
 
     Optional<Hospital> findByUserId(Long userId);
+
+    @Override
+    @EntityGraph(attributePaths = {"specialties", "user"}) // Tải kèm chuyên khoa và user
+    Optional<Hospital> findById(Integer id);
 }

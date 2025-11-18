@@ -24,3 +24,20 @@ export const updateHospitalAppointmentStatus = (appointmentId, newStatus) => {
     };
     return axiosInstance.put(`/hospitals/appointments/${appointmentId}/status`, requestBody);
 };
+
+
+/**
+ * Lấy hồ sơ bệnh viện (bảng benhvien) bằng user_id (bảng users)
+ * API: GET /api/hospitals/user/{userId}
+ */
+export const getHospitalProfileByUserId = (userId) => {
+    return axiosInstance.get(`/hospitals/user/${userId}`);
+};
+
+/**
+ * Bệnh viện tự cập nhật hồ sơ của mình
+ * API: PUT /api/hospitals/{id}
+ */
+export const updateHospitalProfile = (hospitalId, data) => {
+    return axiosInstance.put(`/hospitals/${hospitalId}`, data);
+};
