@@ -3,13 +3,21 @@ import { useNavigate } from "react-router-dom";
 
 const BookingSearchCard = ({ item }) => {
     const navigate = useNavigate();
-    const handleBookClick = (e) => {
-        e.stopPropagation();
-        navigate(`/dat-kham/bac-si/${item.id}/hoan-tat-dat-kham`);
-    }
+
+    const getRoutePrefix = (type) => {
+        switch (type) {
+            case 'BENHVIEN': return 'benh-vien';  
+            case 'PHONGKHAM': return 'phong-kham';
+            case 'BACSI': 
+            default: return 'bac-si';
+        }
+    };
+
+    
+    const routePrefix = getRoutePrefix(item.type); 
 
     const handleCardClick = () => {
-        navigate(`/dat-kham/bac-si/${item.id}`);
+        navigate(`/dat-kham/${routePrefix}/${item.id}`);
     }
     return (
         <>
@@ -47,9 +55,7 @@ const BookingSearchCard = ({ item }) => {
               </div>
 
               {/* Nút đặt khám */}
-              <button className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
-                    onClick={(e) => handleBookClick(e)}
-              >
+              <button className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
                 Đặt khám
               </button>
         </div>

@@ -62,7 +62,6 @@ const BookingSearch = () => {
 
       console.log("params: ", params);
       const response = await SearchService.searchAllEntities(params);
-      // Giả định API trả về một object có cấu trúc: { data: [...], total: N }
       setSearchResults(response.data.content || []);
       console.log("searchResults", response);
       setTotalElements(response.data.totalElements || 0);

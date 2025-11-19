@@ -25,7 +25,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     @Query(value = "SELECT d.* FROM bacsi d WHERE " + 
                "d.name LIKE CONCAT('%', :query, '%') OR " +
                "d.specialty LIKE CONCAT('%', :query, '%') OR " +
-               "d.workplace LIKE CONCAT('%', :query, '%')",
+               "d.address LIKE CONCAT('%', :query, '%')",
        nativeQuery = true)
 List<Doctor> findByGeneralSearch(@Param("query") String query);
 
