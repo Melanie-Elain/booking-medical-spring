@@ -70,7 +70,7 @@ const DoctorWorkspaceIntro = () => {
                     {/* Right buttons */}
                     <div className="header-right">
                         <a
-                            href="https://app.doctorworkspace.com/sign-in"
+                            href="/login"
                             className="btn-secondary"
                         >
                             Đăng nhập
