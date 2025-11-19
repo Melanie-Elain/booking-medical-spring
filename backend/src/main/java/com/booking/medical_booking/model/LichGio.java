@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 // 1. IMPORT THƯ VIỆN JSON
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -32,6 +34,6 @@ public class LichGio {
     private LichTong lichTong;
     
     @JsonIgnore 
-    @OneToOne(mappedBy = "lichGio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Appointment appointment;
+    @OneToMany(mappedBy = "lichGio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Appointment> appointments;
 }

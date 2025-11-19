@@ -26,6 +26,8 @@ import com.booking.medical_booking.dto.PaymentRequestDTO;
 import com.booking.medical_booking.dto.PaymentResponseDTO;
 import com.booking.medical_booking.dto.VnPayIpnResponseDTO;
 import com.booking.medical_booking.model.Appointment;
+import com.booking.medical_booking.model.LichGio;
+import com.booking.medical_booking.repository.LichGioRepository;
 import com.booking.medical_booking.service.appointment.AppointmentService;
 import com.booking.medical_booking.service.payment.Momoservice;
 import com.booking.medical_booking.service.payment.PaymentService;
@@ -53,6 +55,9 @@ public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
+
+    @Autowired
+    private LichGioRepository lichGioRepository;
     
     @PostMapping("/create-checkout-url")
     public ResponseEntity<PaymentResponseDTO> createCheckoutUrl(@Valid @RequestBody PaymentRequestDTO request) {
@@ -177,6 +182,7 @@ public class PaymentController {
                 updateAppointmentStatus(Integer.parseInt(vnp_TxnRef), "Đã thanh toán");
                 return new RedirectView("http://localhost:3000/payment-status?status=success&orderId=" + vnp_TxnRef);
             } else {
+                updateAppointmentStatus(Integer.parseInt(vnp_TxnRef), "Thanh toán thất bại");
                 return new RedirectView("http://localhost:3000/payment-status?status=failed&orderId=" + vnp_TxnRef);
             }
         } else {
@@ -270,6 +276,11 @@ public class PaymentController {
             if (appointment != null) {
                 appointment.setTrangThai(status);
                 appointmentService.save(appointment);
+                if (status=="Đã thanh toán"){
+                    LichGio lichGio = lichGioRepository.findByMaGio(appointment.getLichGio().getMaGio()).orElseThrow();
+                    lichGio.setStatus("Booked");
+                    lichGioRepository.save(lichGio);
+                }
                 System.out.println("Đã cập nhật trạng thái lịch hẹn #" + id + " thành: " + status);
             }
         } catch (Exception e) {

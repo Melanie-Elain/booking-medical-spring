@@ -645,10 +645,8 @@ public class AppointmentService {
             throw new RuntimeException("Khung giờ này đã được đặt bởi người khác.");
         }
 
-        // 3. KHÓA GIỜ NGAY LẬP TỨC (SỬA ĐỂ FIX LỖI ĐANG CHỜ MÀ VẪN AVAILABLE)
         lichGio.setStatus(STATUS_BOOKED);
-        lichGioRepository.save(lichGio); // Lưu trạng thái Booked vào DB
-
+        lichGioRepository.save(lichGio); 
         User patient = userRepository.findById(appointmentDTO.getUserId())
             .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại."));
 
@@ -658,9 +656,12 @@ public class AppointmentService {
 
         if (isPaymentRequired) {
             finalStatus = TRANG_THAI_CHO_THANH_TOAN;
+            lichGio.setStatus(STATUS_AVAILABLE);
+            lichGioRepository.save(lichGio);
         } else {
             finalStatus = TRANG_THAI_CHO;
         }
+
 
         Appointment newAppointment = new Appointment();
         newAppointment.setUser(patient);

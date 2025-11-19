@@ -8,85 +8,120 @@ import { clinicService } from "../../api/clinicService";
 import { UserService } from "../../api/userService";
 import { appointmentService } from "../../api/appointmentService";
 
+
 const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
+    
+    // State quản lý thời gian hiển thị (Mặc định là tháng hiện tại)
+    const [currentDate, setCurrentDate] = useState(new Date());
     
     const today = new Date();
     const TODAY_DAY = today.getDate();
-    const THIS_MONTH = today.getMonth() + 1; 
-    const THIS_YEAR = today.getFullYear();
+    const TODAY_MONTH = today.getMonth();
+    const TODAY_YEAR = today.getFullYear();
+
+    // Lấy thông tin từ state currentDate (Tháng đang xem)
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
     const weekdays = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
     
-    const DAYS_IN_MONTH = new Date(THIS_YEAR, THIS_MONTH, 0).getDate();
-    const firstDayOfMonth = new Date(THIS_YEAR, today.getMonth(), 1);
+    // Tính toán số ngày trong tháng đang xem
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    // Tính ngày đầu tiên của tháng để biết padding
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
     let startDayIndex = firstDayOfMonth.getDay();
     if (startDayIndex === 0) {
-        startDayIndex = 7; 
+        startDayIndex = 7; // CN là 7
     }
-    const PADDING_DAYS = startDayIndex - 1;
+    const paddingDays = startDayIndex - 1;
 
-    // --- 1. TẠO MAP DỮ LIỆU LỊCH (OK) ---
+    // --- HÀM ĐIỀU HƯỚNG THÁNG ---
+    const handlePrevMonth = () => {
+        setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
+    };
+
+    const handleNextMonth = () => {
+        setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
+    };
+
+    // --- 1. TẠO MAP DỮ LIỆU LỊCH ---
+    // Lưu ý: Cần map theo cả ngày/tháng/năm đầy đủ để tránh trùng ngày giữa các tháng
     const dateMap = {};
     Object.keys(schedules || {}).forEach(key => {
-        const dayMatch = key.match(/, (\d{2})\//);
-        if (dayMatch) {
-            const day = dayMatch[1]; // Kết quả: "27" hoặc "28"
-        }
-        
-        if (dayMatch) {
-            const dayOfMonth = parseInt(dayMatch[1]);
-            // Logic status dựa trên số lượng khung giờ (length của List<ScheduleTimeDTO>)
-            const status = schedules[key].length > 0 ? 'AVAILABLE' : 'FULL'; 
+        // Giả sử key có dạng "Thứ 5, 27/11/2025"
+        // Cần parse chính xác ngày/tháng/năm từ key để so sánh
+        const datePart = key.split(', ')[1]; // "27/11/2025"
+        if (datePart) {
+            const [d, m, y] = datePart.split('/').map(Number);
             
-            dateMap[dayOfMonth] = { 
-                status, 
-                scheduleKey: key,
-                count: schedules[key].length 
-            };
+            // Chỉ đưa vào map nếu đúng là tháng/năm đang hiển thị
+            if (m === currentMonth + 1 && y === currentYear) {
+                const status = schedules[key].length > 0 ? 'AVAILABLE' : 'FULL';
+                dateMap[d] = { 
+                    status, 
+                    scheduleKey: key,
+                    count: schedules[key].length 
+                };
+            }
         }
     });
 
-    // --- 2. XỬ LÝ LƯỚI LỊCH (OK) ---
+    // --- 2. XỬ LÝ LƯỚI LỊCH ---
     const calendarGrid = [];
     
-    // Thêm các ô trống đầu tiên (Padding)
-    for (let i = 0; i < PADDING_DAYS; i++) {
+    // Padding đầu tháng
+    for (let i = 0; i < paddingDays; i++) {
         calendarGrid.push({ day: null });
     }
     
-    // Thêm các ngày trong tháng
-    for (let day = 1; day <= DAYS_IN_MONTH; day++) {
-        const fullDateString = `${day}/${THIS_MONTH}/${THIS_YEAR}`;
-        const data = dateMap[day];
+    // Các ngày trong tháng
+    for (let day = 1; day <= daysInMonth; day++) {
+        // Format: dd/mm/yyyy (để so sánh với selectedDate)
+        // Lưu ý: Cần format string giống hệt cách bạn lưu selectedDate ở component cha
+        const fullDateString = `${day.toString().padStart(2, '0')}/${(currentMonth + 1).toString().padStart(2, '0')}/${currentYear}`;
         
+        const data = dateMap[day];
         let status = 'NONE'; 
         if (data) status = data.status;
+
+        // Kiểm tra có phải hôm nay không
+        const isToday = day === TODAY_DAY && currentMonth === TODAY_MONTH && currentYear === TODAY_YEAR;
 
         calendarGrid.push({
             day,
             status,
             fullDateString,
             scheduleKey: data ? data.scheduleKey : null,
-            isToday: day === TODAY_DAY
+            isToday
         });
     }
 
-    // --- 3. LOGIC STYLING (OK) ---
+    // --- 3. LOGIC STYLING ---
     const getDayStyles = (dayData) => {
-        if (!dayData.day) return 'bg-white';
+        if (!dayData.day) return 'bg-white border-none'; // Ẩn border ô trống
         
-        if (selectedDate === dayData.fullDateString) {
-            return 'bg-blue-600 text-white font-bold shadow-lg';
+        // Ưu tiên 1: Đang chọn
+        if (selectedDate && selectedDate.includes(dayData.fullDateString)) { 
+             // Lưu ý: Logic so sánh string ngày cần chính xác
+             return 'bg-blue-600 text-white font-bold shadow-lg transform scale-105 transition-transform';
         }
         
+        // Ưu tiên 2: Hôm nay
         if (dayData.isToday) {
-            return 'bg-blue-100 text-blue-600 font-semibold cursor-pointer hover:bg-blue-200';
+            // Nếu hôm nay có lịch -> Màu xanh đậm hơn, nếu không -> Màu xanh nhạt
+            return dayData.status === 'AVAILABLE' 
+                ? 'bg-blue-100 text-blue-700 font-bold border-2 border-blue-400 cursor-pointer hover:bg-blue-200'
+                : 'bg-gray-100 text-gray-600 font-bold border-2 border-gray-300'; 
         }
         
+        // Ưu tiên 3: Có lịch (Available)
         if (dayData.status === 'AVAILABLE') {
-            return 'text-gray-800 font-semibold cursor-pointer hover:bg-gray-100';
+            return 'text-gray-800 font-bold cursor-pointer hover:bg-blue-50 hover:text-blue-600 transition-colors';
         }
 
-        return 'text-gray-400 cursor-not-allowed';
+        // Mặc định: Không có lịch / Đầy
+        return 'text-gray-300 cursor-default';
     };
 
     const handleDayClick = (dayData) => {
@@ -99,24 +134,36 @@ const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
     };
 
     return (
-        <div className="p-6 bg-white rounded-lg">
+        <div className="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
             {/* Thanh điều hướng tháng */}
-            <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">Tháng 11 {THIS_YEAR}</h2>
-                <div className="flex items-center space-x-2 text-gray-600">
-                    <ChevronLeft size={20} className="cursor-pointer hover:text-blue-600" />
-                    <ChevronRight size={20} className="cursor-pointer hover:text-blue-600" />
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-gray-800 capitalize">
+                    Tháng {currentMonth + 1}, {currentYear}
+                </h2>
+                <div className="flex items-center space-x-1">
+                    <button 
+                        onClick={handlePrevMonth}
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600 hover:text-blue-600"
+                    >
+                        <ChevronLeft size={24} />
+                    </button>
+                    <button 
+                        onClick={handleNextMonth}
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-600 hover:text-blue-600"
+                    >
+                        <ChevronRight size={24} />
+                    </button>
                 </div>
             </div>
 
             {/* Lưới lịch */}
-            <div className="grid grid-cols-7 text-center border-t border-l border-gray-300">
+            <div className="grid grid-cols-7 text-center border-t border-l border-gray-200 rounded-tl-lg rounded-tr-lg overflow-hidden">
                 
                 {/* Tên thứ */}
                 {weekdays.map((dayName, index) => (
                     <div 
                         key={index} 
-                        className={`py-2 text-sm font-medium border-b border-r border-gray-300 ${dayName === 'CN' ? 'text-red-500' : 'text-gray-600'}`}
+                        className={`py-3 text-sm font-semibold border-b border-r border-gray-200 bg-gray-50 ${dayName === 'CN' ? 'text-red-500' : 'text-gray-600'}`}
                     >
                         {dayName}
                     </div>
@@ -129,7 +176,7 @@ const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
                     return (
                         <div
                             key={index}
-                            className={`h-12 flex items-center justify-center border-b border-r border-gray-300 ${styles}`}
+                            className={`h-14 flex items-center justify-center border-b border-r border-gray-200 text-sm ${styles}`}
                             onClick={() => handleDayClick(dayData)}
                         >
                             {dayData.day}
@@ -138,29 +185,29 @@ const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
                 })}
             </div>
 
-            {/* Chú thích màu */}
-            {/* Cần cập nhật chú thích màu chính xác theo logic status mới */}
-            <div className="flex justify-start space-x-6 mt-6 text-sm text-gray-700">
+            {/* Chú thích màu (Giữ nguyên hoặc cập nhật nếu cần) */}
+            <div className="flex flex-wrap gap-4 mt-6 text-sm text-gray-600">
                 <div className="flex items-center">
-                    <span className="w-3 h-3 bg-gray-800 rounded-full mr-1"></span>
-                    Ngày có thể đặt
+                    <span className="w-3 h-3 bg-gray-800 rounded-full mr-2"></span>
+                    Ngày có lịch
                 </div>
                 <div className="flex items-center">
-                    <span className="w-3 h-3 bg-blue-100 border border-blue-400 rounded-full mr-1"></span>
+                    <span className="w-3 h-3 bg-blue-100 border border-blue-400 rounded-full mr-2"></span>
                     Hôm nay
                 </div>
                 <div className="flex items-center">
-                    <span className="w-3 h-3 bg-blue-600 rounded-full mr-1"></span>
-                    Ngày đang chọn
+                    <span className="w-3 h-3 bg-blue-600 rounded-full mr-2"></span>
+                    Đang chọn
                 </div>
-                <div className="flex items-center">
-                    <span className="w-3 h-3 bg-red-500 rounded-full mr-1"></span>
-                    Ngày đã đầy lịch
+                 <div className="flex items-center">
+                    <span className="w-3 h-3 bg-gray-200 rounded-full mr-2"></span>
+                    Không có lịch
                 </div>
             </div>
         </div>
     );
 };
+
 
 
 const TimeSlotSelector = ({ times, onSelectTime, selectedTime }) => {
