@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.*;
 
 import com.booking.medical_booking.dto.AppointmentDTO;
 import com.booking.medical_booking.dto.AppointmentDetailDTO;
+import com.booking.medical_booking.dto.AppointmentResponseDTO;
 import com.booking.medical_booking.model.Appointment;
 import com.booking.medical_booking.service.appointment.AppointmentService;
 import com.booking.medical_booking.service.auth.UserService; // Lớp Service lấy User
 
 import jakarta.validation.Valid;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -73,4 +75,30 @@ public class AppointmentController {
         AppointmentDetailDTO result = appointmentService.getBookingDetails(id);
         return ResponseEntity.ok(result);
     }
+
+    // 2. XÁC NHẬN / CẬP NHẬT TRẠNG THÁI
+    // Bác sĩ, Admin, BV, PK đều gọi vào đây
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(
+            @PathVariable Integer id,
+            @RequestBody Map<String, String> request) {
+        try {
+            AppointmentResponseDTO result = appointmentService.updateAppointmentStatus(id, request);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // 3. HỦY LỊCH (Dùng cho cả Khách hàng lẫn Bác sĩ nếu muốn)
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelAppointment(@PathVariable Integer id) {
+        try {
+            AppointmentResponseDTO result = appointmentService.cancelAppointment(id);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

@@ -139,14 +139,38 @@ public class DoctorController {
         return ResponseEntity.ok(appointmentPage);
     }
 
+    // @PutMapping("/appointments/{appointmentId}/status")
+    // // @PreAuthorize("hasRole('DOCTOR')") // Bạn nên thêm phân quyền ở đây
+    // public ResponseEntity<AppointmentResponseDTO> updateAppointmentStatus(
+    //         @PathVariable Integer appointmentId, // ID của lịch hẹn
+    //         @RequestBody Map<String, String> request) {
+    //     // Service `updateAppointmentStatus` nên kiểm tra quyền của người dùng
+    //     AppointmentResponseDTO updatedAppointmentDTO = appointmentService.updateAppointmentStatus(appointmentId, request);
+    //     return ResponseEntity.ok(updatedAppointmentDTO);
+    // }
+    // 1. XÁC NHẬN / CẬP NHẬT TRẠNG THÁI
     @PutMapping("/appointments/{appointmentId}/status")
-    // @PreAuthorize("hasRole('DOCTOR')") // Bạn nên thêm phân quyền ở đây
-    public ResponseEntity<AppointmentResponseDTO> updateAppointmentStatus(
-            @PathVariable Integer appointmentId, // ID của lịch hẹn
+    public ResponseEntity<?> updateAppointmentStatus(
+            @PathVariable Integer appointmentId,
             @RequestBody Map<String, String> request) {
-        // Service `updateAppointmentStatus` nên kiểm tra quyền của người dùng
-        AppointmentResponseDTO updatedAppointmentDTO = appointmentService.updateAppointmentStatus(appointmentId, request);
-        return ResponseEntity.ok(updatedAppointmentDTO);
+        try {
+            // Service đã có check quyền, yên tâm gọi
+            AppointmentResponseDTO result = appointmentService.updateAppointmentStatus(appointmentId, request);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // 2. HỦY LỊCH (Thêm mới vào đây)
+    @PutMapping("/appointments/{appointmentId}/cancel")
+    public ResponseEntity<?> cancelAppointment(@PathVariable Integer appointmentId) {
+        try {
+            AppointmentResponseDTO result = appointmentService.cancelAppointment(appointmentId);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 
