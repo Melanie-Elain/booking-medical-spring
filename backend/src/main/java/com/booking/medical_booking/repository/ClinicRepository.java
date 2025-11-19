@@ -3,6 +3,8 @@ package com.booking.medical_booking.repository;
 import com.booking.medical_booking.model.Clinic;
 
 import java.util.List;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +22,10 @@ public interface ClinicRepository extends JpaRepository<Clinic, Integer> {
     "WHERE ck.TenCK = :specialtyName",
     nativeQuery = true)
     List<Clinic> findBySpecialtyName(@Param("specialtyName") String specialtyName);
+
+    Optional<Clinic> findByUserId(Long userId);
+
+    @Override
+    @EntityGraph(attributePaths = {"specialties", "user"}) // Tải kèm chuyên khoa và user
+    Optional<Clinic> findById(Integer id);
 }

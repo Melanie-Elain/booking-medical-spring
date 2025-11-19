@@ -4,16 +4,7 @@ import {
   updateAppointmentStatus 
 } from '../../api/adminService'; 
 
-// (Component PaginationControls giữ nguyên)
-// const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
-//   if (totalPages <= 1) return null;
-//   const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
-//   return (
-//     <div className="mt-6 flex justify-center items-center gap-2">
-//       {/* ... (Code các nút bấm) ... */}
-//     </div>
-//   );
-// };
+
 const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
   // Nếu chỉ có 1 trang thì không cần hiển thị
   if (totalPages <= 1) return null;
@@ -169,7 +160,7 @@ const AppointmentManagementPage = () => {
 
                 {/* 5. Hành động (DTO) */}
                 <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
-                  {app.trangThai === 'Đang chờ' && (
+                 { (app.trangThai === 'Đang chờ' || app.trangThai === 'Đã thanh toán') && (
                     <>
                       <button
                         onClick={() => handleUpdateStatus(app.maLichHen, 'Đã xác nhận')}

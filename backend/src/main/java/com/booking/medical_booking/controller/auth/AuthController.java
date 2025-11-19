@@ -1,5 +1,6 @@
 package com.booking.medical_booking.controller.auth;
 
+import com.booking.medical_booking.dto.LoginResponse;
 import com.booking.medical_booking.dto.LoginRequest; 
 import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.service.auth.UserService;
@@ -24,7 +25,7 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // (Hàm register của bạn đã xử lý try-catch, rất tốt)
+
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         try {
@@ -35,17 +36,27 @@ public class AuthController {
         }
     }
 
-    // === LỖI BIÊN DỊCH CỦA BẠN ĐÃ ĐƯỢC SỬA Ở ĐÂY ===
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
+    // @PostMapping("/login")
+    // public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
         
-        // Sửa lại: Dùng getUsername()
-        Map<String, String> responseMap = userService.login(
-            loginRequest.getUsername(), // <-- ĐÃ SỬA
+    //     Map<String, String> responseMap = userService.login(
+    //         loginRequest.getUsername(), 
+    //         loginRequest.getPassword()
+    //     );
+
+    //     return ResponseEntity.ok(responseMap);
+    // }
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        
+        // Bây giờ userService.login() trả về một đối tượng LoginResponse
+        LoginResponse loginResponse = userService.login(
+            loginRequest.getUsername(),
             loginRequest.getPassword()
         );
 
-        return ResponseEntity.ok(responseMap);
+        // Trả về đối tượng đó
+        return ResponseEntity.ok(loginResponse);
     }
 
     @GetMapping("/check-exist")
@@ -55,7 +66,7 @@ public class AuthController {
         
         Map<String, String> response = new HashMap<>();
 
-        // Logic của bạn giữ nguyên
+
         if (phoneNumber != null && userService.isPhoneNumberExists(phoneNumber)) {
             response.put("error", "Số điện thoại đã tồn tại");
             return ResponseEntity.badRequest().body(response);

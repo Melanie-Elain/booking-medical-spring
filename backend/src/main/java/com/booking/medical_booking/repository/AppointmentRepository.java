@@ -2,13 +2,16 @@
 package com.booking.medical_booking.repository;
 
 import com.booking.medical_booking.model.Appointment;
+import com.booking.medical_booking.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph; // <-- IMPORT
+import org.springframework.data.jpa.repository.EntityGraph; 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
@@ -21,6 +24,18 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     // === cho Bệnh nhân ===
     @EntityGraph(attributePaths = {"user", "lichGio", "lichGio.lichTong"})
     Page<Appointment> findByUserIdOrderByMaLichHenDesc(Long userId, Pageable pageable);
+
+    @Override
+    @EntityGraph(attributePaths = {"user", "lichGio", "lichGio.lichTong"})
+    Optional<Appointment> findById(Integer id);
+
+    // === METHOD MỚI CHO BÁC SĨ, BV, PK ===
+    @EntityGraph(attributePaths = {"user", "lichGio", "lichGio.lichTong"})
+    Page<Appointment> findByLichGio_LichTong_MaDoiTuongAndLichGio_LichTong_LoaiDoiTuongOrderByMaLichHenDesc(
+            Long maDoiTuong,
+            User.UserRole loaiDoiTuong,
+            Pageable pageable
+    );
 
     // Tìm kiếm lịch hẹn của tôi với từ khóa (cho Bệnh nhân)
     @Query(

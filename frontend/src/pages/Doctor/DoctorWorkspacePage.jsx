@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-// Import CSS (ĐÃ SỬA LẠI ĐƯỜNG DẪN TƯƠNG ĐỐI)
+import React, { useState, useEffect } from "react";
 import "../../assets/Home/DocterWorkspace.css";
+import { useNavigate } from "react-router-dom";
+import DoctorAppointmentManagement from "./DoctorAppointmentManagementPage";
+import ScheduleManagement from "./ScheduleManagement";  
+import DoctorProfileManagement from "./DoctorProfileManagement";  
 // Import icons
 import {
   LayoutDashboard,
@@ -16,7 +19,6 @@ import {
   Users,
 } from "lucide-react";
 
-// --- COMPONENT CON CHO CÁC MỤC ---
 // 1. Component "Tổng quan" (Nội dung chính)
 const OverviewDashboard = () => {
   return (
@@ -78,56 +80,68 @@ const OverviewDashboard = () => {
   );
 };
 
-// 2. Component "Quản lý Lịch khám" (Placeholder)
-const AppointmentManagement = () => {
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Quản lý Lịch khám</h2>
-      <div className="bg-white p-4 rounded-lg shadow">
-        <p>
-          Đây là nơi hiển thị danh sách lịch khám. Bác sĩ có thể xem, xác nhận,
-          hoặc hủy lịch hẹn...
-        </p>
-      </div>
-    </div>
-  );
-};
 
-// 3. Component "Hồ sơ Bác sĩ" (Placeholder)
-const DoctorProfileManagement = () => {
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Hồ sơ Bác sĩ</h2>
-      <div className="bg-white p-4 rounded-lg shadow">
-        <p>
-          Đây là nơi bác sĩ có thể xem và chỉnh sửa thông tin cá nhân, chuyên
-          khoa, kinh nghiệm...
-        </p>
-      </div>
-    </div>
-  );
-};
-
-// 4. Component "Quản lý Lịch làm việc" (Placeholder)
-const ScheduleManagement = () => {
-     return (
-       <div>
-         <h2 className="text-2xl font-bold mb-4">Quản lý Lịch làm việc</h2>
-         <div className="bg-white p-4 rounded-lg shadow">
-           <p>
-             Đây là nơi bác sĩ thêm/sửa/xóa các khung giờ làm việc
-             hàng tuần.
-           </p>
-         </div>
-       </div>
-     );
-   };
 
 // --- COMPONENT CHÍNH (LAYOUT) ---
 const DoctorWorkspacePage = () => {
-  // 'activeView' sẽ quản lý nội dung nào đang được hiển thị
-  // 'tongquan' là giá trị mặc định khi tải trang
   const [activeView, setActiveView] = useState("tongquan");
+  const navigate = useNavigate();
+  
+  const [doctorName, setDoctorName] = useState(
+     localStorage.getItem("userName") || "Bác sĩ"
+  );
+
+    // 2. Lắng nghe sự kiện 'authChange' (bạn đã tạo ở hàm logout)
+    //    để cập nhật tên ngay lập tức khi đăng nhập/đăng xuất
+    useEffect(() => {
+      const handleAuthChange = () => {
+        const newName = localStorage.getItem("userName") || "Bác sĩ";
+        setDoctorName(newName);
+      };
+
+      window.addEventListener("authChange", handleAuthChange);
+
+      // Dọn dẹp listener
+      return () => {
+        window.removeEventListener("authChange", handleAuthChange);
+      };
+    }, []); // Mảng rỗng đảm bảo chỉ chạy 1 lần khi mount
+
+    // 3. Hàm helper để lấy chữ cái viết tắt
+    const getInitials = (name) => {
+      if (!name) return "?";
+      const words = name.trim().split(' ');
+      if (words.length === 0 || words[0] === "") return "?";
+      if (words.length === 1) {
+        return words[0].charAt(0).toUpperCase();
+      }
+      // Lấy chữ cái đầu của từ đầu tiên và từ cuối cùng
+      const firstInitial = words[0].charAt(0).toUpperCase();
+      const lastInitial = words[words.length - 1].charAt(0).toUpperCase();
+      return `${firstInitial}${lastInitial}`;
+    };
+
+    // 4. Tính toán chữ viết tắt từ state
+    const doctorInitials = getInitials(doctorName);
+
+
+    // 3. TẠO HÀM XỬ LÝ ĐĂNG XUẤT
+    const handleLogout = () => {
+      // Xóa tất cả thông tin đăng nhập
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userRole');
+      
+      // (Nếu bạn có "rememberMe", cũng hãy xóa nó)
+      // localStorage.removeItem('rememberedUsername');
+  
+      // Bắn sự kiện "authChange" để Header tự động cập nhật
+      window.dispatchEvent(new Event('authChange'));
+  
+      // Chuyển hướng về trang chủ
+      navigate('/', { replace: true });
+    };
+  
 
   // Hàm để render nội dung chính dựa trên 'activeView'
   const renderMainContent = () => {
@@ -135,7 +149,7 @@ const DoctorWorkspacePage = () => {
       case "tongquan":
         return <OverviewDashboard />;
       case "lichkham":
-        return <AppointmentManagement />;
+        return <DoctorAppointmentManagement />;
       case "lichlamviec":
         return <ScheduleManagement />;
       case "hosobacsi":
@@ -151,10 +165,9 @@ const DoctorWorkspacePage = () => {
       <div className="dashboard-sidebar">
         {/* Logo/User Info */}
         <div className="sidebar-header">
-          <div className="user-avatar">NH</div>
+          <div className="user-avatar">{doctorInitials}</div>
           <div>
-            <span className="user-name">Ngô Trường Hiếu</span>
-            <span className="user-phone">0911647047</span>
+            <span className="user-name">{doctorName}</span>
           </div>
           <ChevronDown size={18} />
         </div>
@@ -179,14 +192,14 @@ const DoctorWorkspacePage = () => {
             <CalendarCheck size={20} />
             <span>Quản lý Lịch khám</span>
           </a>
-          <a
+          {/* <a
             href="#"
             className={`nav-item-DW ${activeView === "hosobenhnhan" ? "active" : ""}`}
             onClick={() => setActiveView("hosobenhnhan")}
           >
             <Users size={20} />
             <span>Hồ sơ Bệnh nhân</span>
-          </a>
+          </a> */}
 
           <p className="nav-group-title">ĐẶT KHÁM THÔNG MINH</p>
            <a
@@ -218,7 +231,9 @@ const DoctorWorkspacePage = () => {
 
         {/* Footer Sidebar */}
         <div className="sidebar-footer">
-          <a href="/logout" className="nav-item-DW logout-btn">
+          <a href="#" 
+           onClick={handleLogout}
+           className="nav-item-DW logout-btn">
             <LogOut size={20} />
             <span>Đăng xuất</span>
           </a>
@@ -230,7 +245,7 @@ const DoctorWorkspacePage = () => {
         {/* Header của nội dung chính */}
         <header className="main-header-DW">
           <h1 className="text-xl font-semibold">
-            Chào mừng, Bác sĩ Ngô Trường Hiếu!
+            Chào mừng, Bác sĩ {doctorName}!
           </h1>
           <div className="header-actions">
             <button className="action-btn">
@@ -239,7 +254,7 @@ const DoctorWorkspacePage = () => {
             <button className="action-btn">
               <Bell size={20} />
             </button>
-            <div className="action-btn user-avatar-btn">NH</div>
+            <div className="action-btn user-avatar-btn">{doctorInitials}</div>
           </div>
         </header>
 
