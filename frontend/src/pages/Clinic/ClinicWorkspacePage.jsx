@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-// 1. Import CSS đã đổi tên
+import React, { useState, useEffect } from "react";
 import "../../assets/Home/ClinicWorkspace.css";
 import { useNavigate } from "react-router-dom";
+import ClinicAppointment from "./ClinicAppointmentManagementPage"
+import ClinicProfileManagement from "./ClinicProfileManagement";
+import ClinicScheduleManagement from "./ClinicScheduleManagement";
 
 // 2. Import icons (giữ nguyên)
 import {
@@ -18,8 +20,7 @@ import {
     Briefcase,
 } from "lucide-react";
 
-// --- COMPONENT CON (Đã đổi tên cho phù hợp với Phòng khám) ---
-// TÌM COMPONENT NÀY VÀ THAY THẾ NÓ
+
 const ClinicOverview = () => {
     return (
         <div>
@@ -80,54 +81,83 @@ const ClinicOverview = () => {
     );
 };
 
-const ClinicAppointmentMgmt = () => {
-    return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Quản lý Lịch khám Phòng khám</h2>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <p>Danh sách lịch khám của toàn bộ phòng khám...</p>
-            </div>
-        </div>
-    );
-};
 
-const DoctorManagement = () => {
-    return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Quản lý Bác sĩ</h2>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <p>Danh sách bác sĩ, thêm/sửa/xóa thông tin bác sĩ...</p>
-            </div>
-        </div>
-    );
-};
 
-const SpecialtyManagement = () => {
-    return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Quản lý Dịch vụ/Chuyên khoa</h2>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <p>Danh sách các dịch vụ/chuyên khoa của phòng khám...</p>
-            </div>
-        </div>
-    );
-};
+// const DoctorManagement = () => {
+//     return (
+//         <div>
+//             <h2 className="text-2xl font-bold mb-4">Quản lý Bác sĩ</h2>
+//             <div className="bg-white p-4 rounded-lg shadow">
+//                 <p>Danh sách bác sĩ, thêm/sửa/xóa thông tin bác sĩ...</p>
+//             </div>
+//         </div>
+//     );
+// };
 
-const DoctorScheduleMgmt = () => {
-    return (
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Quản lý Lịch làm việc</h2>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <p>Sắp xếp lịch làm việc cho các bác sĩ...</p>
-            </div>
-        </div>
-    );
-};
+// const SpecialtyManagement = () => {
+//     return (
+//         <div>
+//             <h2 className="text-2xl font-bold mb-4">Quản lý Dịch vụ/Chuyên khoa</h2>
+//             <div className="bg-white p-4 rounded-lg shadow">
+//                 <p>Danh sách các dịch vụ/chuyên khoa của phòng khám...</p>
+//             </div>
+//         </div>
+//     );
+// };
 
-// --- COMPONENT CHÍNH (Đã đổi tên thành ClinicWorkspacePage) ---
+// const DoctorScheduleMgmt = () => {
+//     return (
+//         <div>
+//             <h2 className="text-2xl font-bold mb-4">Quản lý Lịch làm việc</h2>
+//             <div className="bg-white p-4 rounded-lg shadow">
+//                 <p>Sắp xếp lịch làm việc cho các bác sĩ...</p>
+//             </div>
+//         </div>
+//     );
+// };
+
+// --- COMPONENT CHÍNH  ---
 const ClinicWorkspacePage = () => {
     const [activeView, setActiveView] = useState("tongquan");
     const navigate = useNavigate();
+
+    const [clinicName, setClinicName] = useState(
+         localStorage.getItem("userName") || "Bác sĩ"
+      );
+
+      // 2. Lắng nghe sự kiện 'authChange' (bạn đã tạo ở hàm logout)
+      //    để cập nhật tên ngay lập tức khi đăng nhập/đăng xuất
+      useEffect(() => {
+        const handleAuthChange = () => {
+          const newName = localStorage.getItem("userName") || "Bác sĩ";
+          setClinicName(newName);
+        };
+    
+        window.addEventListener("authChange", handleAuthChange);
+    
+        // Dọn dẹp listener
+        return () => {
+          window.removeEventListener("authChange", handleAuthChange);
+        };
+      }, []); // Mảng rỗng đảm bảo chỉ chạy 1 lần khi mount
+    
+      // 3. Hàm helper để lấy chữ cái viết tắt
+      const getInitials = (name) => {
+        if (!name) return "?";
+        const words = name.trim().split(' ');
+        if (words.length === 0 || words[0] === "") return "?";
+        if (words.length === 1) {
+          return words[0].charAt(0).toUpperCase();
+        }
+        // Lấy chữ cái đầu của từ đầu tiên và từ cuối cùng
+        const firstInitial = words[0].charAt(0).toUpperCase();
+        const lastInitial = words[words.length - 1].charAt(0).toUpperCase();
+        return `${firstInitial}${lastInitial}`;
+      };
+    
+      // 4. Tính toán chữ viết tắt từ state
+      const clinicInitials = getInitials(clinicName);
+    
   
     // 3. TẠO HÀM XỬ LÝ ĐĂNG XUẤT
     const handleLogout = () => {
@@ -152,13 +182,13 @@ const ClinicWorkspacePage = () => {
             case "tongquan":
                 return <ClinicOverview />;
             case "lichkham":
-                return <ClinicAppointmentMgmt />;
-            case "quanlybacsi":
-                return <DoctorManagement />;
+                return <ClinicAppointment />;
+            // case "quanlybacsi":
+            //     return <DoctorManagement />;
             case "quanlykhoa":
-                return <SpecialtyManagement />;
+                return < ClinicProfileManagement/>;
             case "lichlamviec":
-                return <DoctorScheduleMgmt />;
+                return <ClinicScheduleManagement />;
             default:
                 return <ClinicOverview />;
         }
@@ -171,10 +201,9 @@ const ClinicWorkspacePage = () => {
             <div className="cwp-sidebar">
                 {/* Logo/User Info */}
                 <div className="cwp-sidebar-header">
-                    <div className="cwp-user-avatar">PK</div> {/* Đổi avatar thành Phòng Khám */}
+                    <div className="cwp-user-avatar">{clinicInitials}</div> {/* Đổi avatar thành Phòng Khám */}
                     <div>
-                        <span className="cwp-user-name">Phòng khám XYZ</span>
-                        <span className="cwp-user-phone">admin@clinic.com</span>
+                        <span className="cwp-user-name">{clinicName}</span>
                     </div>
                     <ChevronDown size={18} />
                 </div>
@@ -201,21 +230,14 @@ const ClinicWorkspacePage = () => {
                     </a>
 
                     <p className="cwp-nav-group-title">QUẢN LÝ PHÒNG KHÁM</p>
-                    <a
-                        href="#"
-                        className={`cwp-nav-item ${activeView === "quanlybacsi" ? "active" : ""}`}
-                        onClick={() => setActiveView("quanlybacsi")}
-                    >
-                        <Stethoscope size={20} />
-                        <span>Quản lý Bác sĩ</span>
-                    </a>
+        
                     <a
                         href="#"
                         className={`cwp-nav-item ${activeView === "quanlykhoa" ? "active" : ""}`}
                         onClick={() => setActiveView("quanlykhoa")}
                     >
                         <Briefcase size={20} />
-                        <span>Quản lý Dịch vụ</span>
+                        <span>Quản lý Hồ sơ</span>
                     </a>
                     <a
                         href="#"
@@ -252,7 +274,7 @@ const ClinicWorkspacePage = () => {
                 {/* Header của nội dung chính */}
                 <header className="cwp-main-header">
                     <h1 className="text-xl font-semibold">
-                        Bảng điều khiển Phòng khám XYZ
+                        Bảng điều khiển {clinicName}
                     </h1>
                     <div className="cwp-header-actions">
                         <button className="cwp-action-btn">
@@ -261,7 +283,7 @@ const ClinicWorkspacePage = () => {
                         <button className="cwp-action-btn">
                             <Bell size={20} />
                         </button>
-                        <div className="cwp-action-btn cwp-user-avatar-btn">PK</div>
+                        <div className="cwp-action-btn cwp-user-avatar-btn">{clinicInitials}</div>
                     </div>
                 </header>
 

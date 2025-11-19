@@ -14,8 +14,8 @@ import ClinicProfile from "../pages/Booking/ClinicProfile";
 import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
 import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
 
-import DoctorWorkspaceIntro from "../pages/DoctorWorkspace/DocterWorkspaceIntro";
-import DoctorWorkspacePage from "../pages/DoctorWorkspace/DocterWorkspacePage";
+import DoctorWorkspaceIntro from "../pages/DoctorWorkspace/DoctorWorkspaceIntro";
+import DoctorWorkspacePage from "../pages/Doctor/DoctorWorkspacePage";
 import HospitalWorkspacePage from "../pages/Hospital/HospitalWorkspacePage";
 import ClinicWorkspacePage from "../pages/Clinic/ClinicWorkspacePage";
 

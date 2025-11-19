@@ -40,9 +40,17 @@ public class ClinicService {
         return clinicRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Clinic getClinicById(Integer id) {
         return clinicRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Không tìm thấy Clinic ID: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public Clinic findByUserId(Long userId) {
+        // Gọi repository (nhớ là repository phải có hàm findByUser_Id)
+        return clinicRepository.findByUserId(userId) 
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy phòng khám với userId: " + userId));
     }
 
     @Transactional

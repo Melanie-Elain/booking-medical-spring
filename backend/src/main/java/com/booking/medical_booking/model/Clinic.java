@@ -30,6 +30,12 @@ public class Clinic {
     @Column(name = "images_intro")
     private String imagesIntro; 
 
+
+        // 1. Liên kết 1-1 với User (Để lấy thông tin đăng nhập)
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user; 
+    
     // Quan hệ N-N với Chuyên khoa (Specialty)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

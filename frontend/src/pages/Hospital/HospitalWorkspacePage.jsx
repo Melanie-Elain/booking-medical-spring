@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // 1. Import CSS đã đổi tên
 import "../../assets/Home/HospitalWorkspace.css";
 import { useNavigate } from "react-router-dom";
+import HospitalAppointment from "./HospitalAppointmentManagementPage";
+import HospitalScheduleManagement from "./HospitalScheduleManagement";
 
 // 2. Import icons (giữ nguyên)
 import {
   LayoutDashboard,
   CalendarCheck,
+  User,
   Settings,
   BarChart3,
   ChevronDown,
@@ -17,6 +20,7 @@ import {
   Stethoscope,
   Briefcase,
 } from "lucide-react";
+import HospitalProfileManagement from "./HospitalProfileManagement";
 
 // --- COMPONENT CON (Giữ nguyên, chúng là component nội bộ) ---
 // TÌM COMPONENT NÀY VÀ THAY THẾ NÓ
@@ -80,38 +84,7 @@ const HospitalOverview = () => {
   );
 };
 
-const HospitalAppointmentMgmt = () => {
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Quản lý Lịch khám Bệnh viện</h2>
-      <div className="bg-white p-4 rounded-lg shadow">
-        <p>Danh sách lịch khám của toàn bộ bệnh viện...</p>
-      </div>
-    </div>
-  );
-};
 
-const DoctorManagement = () => {
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Quản lý Bác sĩ</h2>
-      <div className="bg-white p-4 rounded-lg shadow">
-        <p>Danh sách bác sĩ, thêm/sửa/xóa thông tin bác sĩ...</p>
-      </div>
-    </div>
-  );
-};
-
-const SpecialtyManagement = () => {
-  return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Quản lý Chuyên khoa</h2>
-      <div className="bg-white p-4 rounded-lg shadow">
-        <p>Danh sách các chuyên khoa của bệnh viện...</p>
-      </div>
-    </div>
-  );
-};
 
 const DoctorScheduleMgmt = () => {
   return (
@@ -124,10 +97,47 @@ const DoctorScheduleMgmt = () => {
   );
 };
 
-// --- COMPONENT CHÍNH (Đã đổi tên thành HospitalWorkspacePage) ---
+// --- COMPONENT CHÍNH  ---
 const HospitalWorkspacePage = () => {
   const [activeView, setActiveView] = useState("tongquan");
   const navigate = useNavigate();
+
+  const [hospitalName, setHospitalName] = useState(
+       localStorage.getItem("userName") || "Bệnh viện"
+    );
+  
+      // 2. Lắng nghe sự kiện 'authChange' (bạn đã tạo ở hàm logout)
+      //    để cập nhật tên ngay lập tức khi đăng nhập/đăng xuất
+      useEffect(() => {
+        const handleAuthChange = () => {
+          const newName = localStorage.getItem("userName") || "Bệnh viện";
+          setHospitalName(newName);
+        };
+  
+        window.addEventListener("authChange", handleAuthChange);
+  
+        // Dọn dẹp listener
+        return () => {
+          window.removeEventListener("authChange", handleAuthChange);
+        };
+      }, []); // Mảng rỗng đảm bảo chỉ chạy 1 lần khi mount
+  
+      // 3. Hàm helper để lấy chữ cái viết tắt
+      const getInitials = (name) => {
+        if (!name) return "?";
+        const words = name.trim().split(' ');
+        if (words.length === 0 || words[0] === "") return "?";
+        if (words.length === 1) {
+          return words[0].charAt(0).toUpperCase();
+        }
+        // Lấy chữ cái đầu của từ đầu tiên và từ cuối cùng
+        const firstInitial = words[0].charAt(0).toUpperCase();
+        const lastInitial = words[words.length - 1].charAt(0).toUpperCase();
+        return `${firstInitial}${lastInitial}`;
+      };
+  
+      // 4. Tính toán chữ viết tắt từ state
+      const hospitalInitials = getInitials(hospitalName);
 
   // 3. TẠO HÀM XỬ LÝ ĐĂNG XUẤT
   const handleLogout = () => {
@@ -153,13 +163,13 @@ const HospitalWorkspacePage = () => {
       case "tongquan":
         return <HospitalOverview />;
       case "lichkham":
-        return <HospitalAppointmentMgmt />;
-      case "quanlybacsi":
-        return <DoctorManagement />;
-      case "quanlykhoa":
-        return <SpecialtyManagement />;
+        return <HospitalAppointment />;
+      // case "quanlybacsi":
+      //   return <DoctorManagement />;
+      case "quanlyhoso":
+        return <HospitalProfileManagement />;
       case "lichlamviec":
-        return <DoctorScheduleMgmt />;
+        return <HospitalScheduleManagement />;
       default:
         return <HospitalOverview />;
     }
@@ -172,10 +182,9 @@ const HospitalWorkspacePage = () => {
       <div className="hwp-sidebar">
         {/* Logo/User Info */}
         <div className="hwp-sidebar-header">
-          <div className="hwp-user-avatar">BV</div>
+          <div className="hwp-user-avatar">{hospitalInitials}</div>
           <div>
-            <span className="hwp-user-name">Bệnh viện XYZ</span>
-            <span className="hwp-user-phone">admin@hospital.com</span>
+            <span className="hwp-user-name">{hospitalName}</span>
           </div>
           <ChevronDown size={18} />
         </div>
@@ -202,21 +211,14 @@ const HospitalWorkspacePage = () => {
           </a>
 
           <p className="hwp-nav-group-title">QUẢN LÝ BỆNH VIỆN</p>
+          
           <a
             href="#"
-            className={`hwp-nav-item ${activeView === "quanlybacsi" ? "active" : ""}`}
-            onClick={() => setActiveView("quanlybacsi")}
-          >
-            <Stethoscope size={20} />
-            <span>Quản lý Bác sĩ</span>
-          </a>
-          <a
-            href="#"
-            className={`hwp-nav-item ${activeView === "quanlykhoa" ? "active" : ""}`}
-            onClick={() => setActiveView("quanlykhoa")}
+            className={`hwp-nav-item ${activeView === "quanlyhoso" ? "active" : ""}`}
+            onClick={() => setActiveView("quanlyhoso")}
           >
             <Briefcase size={20} />
-            <span>Quản lý Chuyên khoa</span>
+            <span>Quản lý Hồ sơ</span>
           </a>
           <a
             href="#"
@@ -253,7 +255,7 @@ const HospitalWorkspacePage = () => {
         {/* Header của nội dung chính */}
         <header className="hwp-main-header">
           <h1 className="text-xl font-semibold">
-            Bảng điều khiển Bệnh viện XYZ
+            Bảng điều khiển  {hospitalName}
           </h1>
           <div className="hwp-header-actions">
             <button className="hwp-action-btn">
@@ -262,7 +264,7 @@ const HospitalWorkspacePage = () => {
             <button className="hwp-action-btn">
               <Bell size={20} />
             </button>
-            <div className="hwp-action-btn hwp-user-avatar-btn">BV</div>
+            <div className="hwp-action-btn hwp-user-avatar-btn">{hospitalInitials} </div>
           </div>
         </header>
 
