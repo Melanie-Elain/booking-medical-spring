@@ -54,7 +54,7 @@ const HomeIntroSection = () => {
                 </a>
             </div>
             <div className="intro-image-container-dw">
-                <img src="/images/IntroDW/intro-dashboard.png" alt="Doctor Workspace Dashboard" />
+                <img src="/images/IntroDW/main-view-doctor.png" alt="Doctor Workspace Dashboard" />
             </div>
         </section>
     );
