@@ -46,12 +46,11 @@ export const getHospitalById = async (hospitalId) => {
  */
 export const getHospitalSchedules = async (hospitalId) => {
     const response = await axiosInstance.get(`/hospitals/${hospitalId}/schedules`);
-    console.log("Lịch làm việc bệnh viện:", response.data);
+    console.log("Lịch làm việc bệnh viện reponse:", response.data);
     return response.data;
 };
 
 
-// Giữ lại object này để tương thích với bất kỳ code cũ nào có thể đang dùng
 export const HospitalService = {
     getAllHospitalsList: getAllHospitalsList,
     getHospitalById: getHospitalById,

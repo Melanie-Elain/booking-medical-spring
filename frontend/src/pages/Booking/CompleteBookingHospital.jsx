@@ -83,11 +83,14 @@ const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
     // --- 1. TẠO MAP DỮ LIỆU LỊCH (OK) ---
     const dateMap = {};
     Object.keys(schedules || {}).forEach(key => {
-        const dayMatch = key.match(/(\d{2})-\d{2}$/); // Lấy ngày (vd: 03)
+        const dayMatch = key.match(/, (\d{2})\//);
+        if (dayMatch) {
+            const day = dayMatch[1]; // Kết quả: "27" hoặc "28"
+            console.log(day);
+        }
         
         if (dayMatch) {
             const dayOfMonth = parseInt(dayMatch[1]);
-            // Logic status dựa trên số lượng khung giờ (length của List<ScheduleTimeDTO>)
             const status = schedules[key].length > 0 ? 'AVAILABLE' : 'FULL'; 
             
             dateMap[dayOfMonth] = { 
@@ -349,7 +352,7 @@ const CompleteBookingHospital = () => {
 
                 const schedulesData =await HospitalService.getHospitalSchedules(id);
                 setSchedules(schedulesData);
-                console.log("Lịch làm việc bệnh viện:");
+                console.log("Lịch làm việc bệnh viện:",schedulesData);
                 
                 const patientData=await UserService.getUserCurrent();
                 setPatient(patientData);

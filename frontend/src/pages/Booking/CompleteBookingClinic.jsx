@@ -27,7 +27,10 @@ const CalendarComponent = ({ onSelectDay, selectedDate, schedules }) => {
     // --- 1. TẠO MAP DỮ LIỆU LỊCH (OK) ---
     const dateMap = {};
     Object.keys(schedules || {}).forEach(key => {
-        const dayMatch = key.match(/(\d{2})-\d{2}$/); // Lấy ngày (vd: 03)
+        const dayMatch = key.match(/, (\d{2})\//);
+        if (dayMatch) {
+            const day = dayMatch[1]; // Kết quả: "27" hoặc "28"
+        }
         
         if (dayMatch) {
             const dayOfMonth = parseInt(dayMatch[1]);
@@ -265,10 +268,10 @@ const CompleteBookingClinic = () => {
                 setClinic(clinicInfo);
 
                 const schedulesData= await clinicService.getClinicSchedules(id);
+                console.log("Lịch làm việc của phòng khám: ", schedulesData);
                 setSchedules(schedulesData);
 
                 const patientData = await UserService.getUserCurrent();
-                console.log("Lịch làm việc ")
                 setPatient(patientData);
             } catch (err) {
                 console.error("Lỗi khi tải dữ liệu phòng khám hoặc bệnh nhân:", err);

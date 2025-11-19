@@ -6,6 +6,7 @@ import {ArrowUpRight, CircleCheck} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { clinicsData } from "../../data/clinicsData";
 import { clinicService } from "../../api/clinicService";
+import { UserService } from "../../api/userService";
 
 const ClinicProfile = () => {
     const navigate = useNavigate();
@@ -42,6 +43,22 @@ const ClinicProfile = () => {
         }
         fetchClinicData();
     }, [id]);
+
+    const handleBookNow = async () => {
+        try {
+            const user = await UserService.getUserCurrent(); 
+            
+            if (user && user.id) {
+                navigate(`/dat-kham/phong-kham/${clinic.id}/hoan-tat-dat-kham`);
+            } else {
+                alert("Vui lòng đăng nhập để đặt lịch.");
+                navigate('/login', { state: { from: `/dat-kham/phong-kham/${clinic.id}` } });
+            }
+        } catch (error) {
+            alert("Vui lòng đăng nhập để đặt lịch.");
+            navigate('/login', { state: { from: `/dat-kham/phong-kham/${clinic.id}` } });
+        }
+    };
 
     if (!clinic) {
         return <div className="p-6 text-center text-gray-500">Không tìm thấy phòng khám nào.</div>;
@@ -97,7 +114,8 @@ const ClinicProfile = () => {
             </div>
             <div className="max-w-5xl mx-auto flex justify-end">
                 <button className="w-2/5 bg-blue-600 rounded-lg py-2 text-white font-semibold"
-                onClick={()=> navigate(`/dat-kham/phong-kham/${clinic.id}/hoan-tat-dat-kham`)}>
+                    onClick={handleBookNow}
+                >
                     Đặt khám ngay
                 </button>
             </div>
