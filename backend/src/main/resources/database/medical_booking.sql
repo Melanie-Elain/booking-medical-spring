@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 16, 2025 lúc 03:10 PM
+-- Thời gian đã tạo: Th10 19, 2025 lúc 02:48 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.0.30
+-- Phiên bản PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -197,7 +197,51 @@ CREATE TABLE `lichhen` (
 --
 
 INSERT INTO `lichhen` (`ma_lich_hen`, `user_id`, `ma_gio`, `trang_thai`, `ghi_chu`, `hinh_thuc_kham`, `tong_tien`) VALUES
-(68, 4, 20, 'Đang chờ thanh toán', '123456', 'thuong', 50600.00);
+(110, 5, 13, 'Đã xác nhận', '', 'thuong', 50600.00),
+(111, 5, 14, 'Đã xác nhận', '', 'thuong', 50600.00),
+(112, 5, 15, 'Đã thanh toán', '', 'thuong', 50600.00),
+(113, 5, 18, 'Đã thanh toán', '', 'thuong', 50600.00),
+(114, 5, 17, 'Đã thanh toán', '', 'thuong', 50600.00),
+(115, 5, 16, 'Đã thanh toán', '', 'thuong', 50600.00),
+(116, 5, 21, 'Đã thanh toán', '', 'thuong', 50600.00),
+(117, 5, 31, 'Đã thanh toán', '', 'thuong', 50600.00),
+(118, 5, 32, 'Đã thanh toán', '', 'thuong', 50600.00),
+(119, 5, 3, 'Đang chờ', '', NULL, 0.00),
+(120, 5, 39, 'Đang chờ', '', NULL, 0.00),
+(121, 5, 1, 'Đang chờ', '', NULL, 0.00),
+(122, 5, 42, 'Đang chờ', '', NULL, 0.00),
+(123, 5, 33, 'Đã thanh toán', '', 'thuong', 50600.00),
+(124, 5, 45, 'Đã thanh toán', '', 'thuong', 50600.00),
+(125, 5, 46, 'Đã thanh toán', '', 'thuong', 50600.00),
+(126, 4, 2, 'Đã xác nhận', '', NULL, 0.00),
+(127, 5, 48, 'Đã thanh toán', '', 'thuong', 50600.00);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `lichsu_thanhtoan`
+--
+
+CREATE TABLE `lichsu_thanhtoan` (
+  `id` bigint(20) NOT NULL,
+  `appointment_id` bigint(20) NOT NULL COMMENT 'ID Lịch hẹn',
+  `payment_method` varchar(255) DEFAULT NULL,
+  `order_id` varchar(255) DEFAULT NULL,
+  `transaction_no` varchar(255) DEFAULT NULL,
+  `amount` decimal(38,2) DEFAULT NULL,
+  `bank_code` varchar(255) DEFAULT NULL,
+  `card_type` varchar(255) DEFAULT NULL,
+  `response_code` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `lichsu_thanhtoan`
+--
+
+INSERT INTO `lichsu_thanhtoan` (`id`, `appointment_id`, `payment_method`, `order_id`, `transaction_no`, `amount`, `bank_code`, `card_type`, `response_code`, `status`, `created_at`) VALUES
+(1, 127, 'VNPAY', '127', '15271144', 50600.00, 'NCB', 'ATM', '00', 'SUCCESS', '2025-11-19 13:46:43');
 
 -- --------------------------------------------------------
 
@@ -217,8 +261,8 @@ CREATE TABLE `lich_gio` (
 --
 
 INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
-(1, 1, '08:00 - 08:15', 'Available'),
-(2, 1, '08:15 - 08:30', 'Available'),
+(1, 1, '08:00 - 08:15', 'Booked'),
+(2, 1, '08:15 - 08:30', 'Booked'),
 (3, 1, '08:30 - 08:45', 'Booked'),
 (4, 2, '14:00 - 14:15', 'Available'),
 (5, 2, '14:15 - 14:30', 'Available'),
@@ -235,8 +279,8 @@ INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
 (16, 6, '13:00 - 13:15', 'Booked'),
 (17, 6, '13:15 - 13:30', 'Booked'),
 (18, 6, '13:30 - 13:45', 'Booked'),
-(19, 7, '07:00 - 07:15', 'Booked'),
-(20, 7, '07:15 - 07:30', 'Booked'),
+(19, 7, '07:00 - 07:15', 'Available'),
+(20, 7, '07:15 - 07:30', 'Available'),
 (21, 7, '07:30 - 07:45', 'Booked'),
 (22, 8, '17:00 - 17:15', 'Available'),
 (23, 8, '17:15 - 17:30', 'Available'),
@@ -244,10 +288,31 @@ INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
 (25, 9, '18:00 - 18:15', 'Available'),
 (26, 9, '18:15 - 18:30', 'Available'),
 (27, 9, '18:30 - 18:45', 'Available'),
-(28, 10, '08:00 - 08:15', 'Booked'),
+(28, 10, '08:00 - 08:15', 'Available'),
 (29, 10, '08:15 - 08:30', 'Available'),
 (30, 10, '08:30 - 08:45', 'Available'),
-(31, 7, '07:15 - 07:30', 'Booked');
+(31, 7, '07:15 - 07:30', 'Booked'),
+(32, 11, '07:00 - 11:30', 'Booked'),
+(33, 12, '07:00 - 11:30', 'Booked'),
+(34, 12, '13:00 - 16:30', 'Available'),
+(35, 13, '07:00 - 07:30', 'Available'),
+(36, 13, '08:00 - 08:30', 'Available'),
+(37, 13, '09:00 - 09:30', 'Available'),
+(38, 13, '10:00 - 10:30', 'Available'),
+(39, 14, '08:00 - 08:30', 'Booked'),
+(40, 14, '09:00 - 09:30', 'Available'),
+(41, 14, '10:00 - 10:30', 'Available'),
+(42, 15, '07:00 - 07:30', 'Booked'),
+(43, 15, '08:00 - 08:30', 'Available'),
+(44, 15, '09:00 - 09:30', 'Available'),
+(45, 16, '07:00 - 11:30', 'Booked'),
+(46, 16, '13:00 - 16:30', 'Booked'),
+(47, 17, '07:00 - 11:30', 'Available'),
+(48, 17, '13:00 - 16:30', 'Booked'),
+(49, 18, '07:00 - 07:30', 'Available'),
+(50, 18, '08:00 - 08:30', 'Available'),
+(51, 18, '09:00 - 09:30', 'Available'),
+(52, 18, '10:00 - 10:30', 'Available');
 
 -- --------------------------------------------------------
 
@@ -277,7 +342,15 @@ INSERT INTO `lich_tong` (`ma_lich`, `loai_doi_tuong`, `ma_doi_tuong`, `ngay`, `t
 (7, 'BENHVIEN', 2, '2025-11-12', 'Thứ 4, 12-11'),
 (8, 'PHONGKHAM', 1, '2025-11-15', 'Thứ 7, 15-11'),
 (9, 'PHONGKHAM', 2, '2025-11-15', 'Thứ 7, 15-11'),
-(10, 'PHONGKHAM', 7, '2025-11-17', 'Thứ 2, 17-11');
+(10, 'PHONGKHAM', 7, '2025-11-17', 'Thứ 2, 17-11'),
+(11, 'BENHVIEN', 1, '2025-11-27', 'Thứ 5, 27/11/2025'),
+(12, 'BENHVIEN', 1, '2025-11-28', 'Thứ 6, 28/11/2025'),
+(13, 'PHONGKHAM', 2, '2025-11-27', 'Thứ 5, 27/11/2025'),
+(14, 'PHONGKHAM', 2, '2025-12-26', 'Thứ 6, 26/12/2025'),
+(15, 'PHONGKHAM', 2, '2025-11-30', 'Chủ nhật, 30/11/2025'),
+(16, 'BENHVIEN', 1, '2025-11-20', 'Thứ 5, 20/11/2025'),
+(17, 'BENHVIEN', 1, '2025-11-21', 'Thứ 6, 21/11/2025'),
+(18, 'BACSI', 1, '2025-11-21', 'Thứ 6, 21/11/2025');
 
 -- --------------------------------------------------------
 
@@ -341,25 +414,6 @@ INSERT INTO `phongkham_chuyenkhoa` (`MaPK`, `MaCK`) VALUES
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `thanhtoan`
---
-
-CREATE TABLE `thanhtoan` (
-  `id` bigint(20) NOT NULL,
-  `ma_lich_hen` int(11) NOT NULL COMMENT 'Liên kết với lichhen.ma_lich_hen',
-  `momo_order_id` varchar(255) NOT NULL COMMENT 'Mã đơn hàng gửi lên MoMo',
-  `momo_trans_id` varchar(255) DEFAULT NULL COMMENT 'Mã giao dịch MoMo trả về',
-  `amount` decimal(10,2) NOT NULL COMMENT 'Số tiền thanh toán',
-  `status` varchar(50) NOT NULL COMMENT 'Trạng thái (PENDING, PAID, FAILED, CANCELED)',
-  `momo_result_code` varchar(50) DEFAULT NULL COMMENT 'Mã kết quả từ MoMo',
-  `payment_method` varchar(50) NOT NULL DEFAULT 'MOMO',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Cấu trúc bảng cho bảng `users`
 --
 
@@ -391,7 +445,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `full_name`, `phone_number`, `password`, `email`, `dob`, `gender`, `id_card`, `health_insurance`, `ethnicity`, `province`, `district`, `ward`, `address`, `occupation`, `referral_code`, `role`, `created_at`, `avatar_url`) VALUES
 (4, 'Trần Bảo Hân', '0123456789', '$2a$10$XInCfmmAbNsLrD89bAuGW.gjdYcznnty48lsUteTgUERXgXvLeca2', 'azunastart0101@gmail.com', '2025-11-12', 'Nam', '', '', 'Kinh', 'Tỉnh Bắc Giang', 'Huyện Hiệp Hòa', 'Xã Xuân Cẩm', '', '', '', 'BENHNHAN', '2025-11-06 08:19:24', 'https://res.cloudinary.com/dlqpohz0j/image/upload/v1763301058/hrqleepptczcdp7fmsum.jpg'),
-(5, 'Nguyễn Thị Thanh Hằng', '0912345678', '$2a$10$Dq9oY7Zmsybjo5sZdVy0Xe6UCvd2EL2v1KBH.YnymQYCs5q6N0I8m', 'th@gmail.com', '2025-10-28', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'BENHNHAN', '2025-11-06 09:07:31', NULL),
+(5, 'Nguyễn Thị Thanh Hằng', '0912345678', '$2a$10$Dq9oY7Zmsybjo5sZdVy0Xe6UCvd2EL2v1KBH.YnymQYCs5q6N0I8m', 'th@gmail.com', '2025-10-28', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'BENHNHAN', '2025-11-06 09:07:31', 'https://res.cloudinary.com/dlqpohz0j/image/upload/v1763558527/qplkwlezirs2szg7nigv.jpg'),
 (6, 'Admin', '0987654321', '$2a$10$c6lFff/P6HFQWuG9JW.2bOhZnHqjx7gzx4zSbSH0qK30B4XQGGf4u', 'ad@gmail.com', '2025-10-28', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'ADMIN', '2025-11-06 11:43:11', NULL),
 (7, 'Bùi Viết Bảo Huy', '0123456788', '$2a$10$.TcgDk9d0VgF809f3illqON3sqyRCk6CnMxQlZ8ufx3cDcETk7786', 'bvbh@gmail.com', '2025-11-10', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'BENHNHAN', '2025-11-10 01:10:18', NULL),
 (8, 'BS. Trần Thị Bích Ngọc', '0123654789', '$2a$10$dciPrbeCN7wt7MOVuPE9ouGVPqb2hrsHLx5W2B9E3fYPqmUkltF42', 'ngoc@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-10 03:18:34', NULL),
@@ -465,6 +519,12 @@ ALTER TABLE `lichhen`
   ADD KEY `FK_hen_user` (`user_id`);
 
 --
+-- Chỉ mục cho bảng `lichsu_thanhtoan`
+--
+ALTER TABLE `lichsu_thanhtoan`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Chỉ mục cho bảng `lich_gio`
 --
 ALTER TABLE `lich_gio`
@@ -490,15 +550,6 @@ ALTER TABLE `phongkham`
 ALTER TABLE `phongkham_chuyenkhoa`
   ADD PRIMARY KEY (`MaPK`,`MaCK`),
   ADD KEY `MaCK` (`MaCK`);
-
---
--- Chỉ mục cho bảng `thanhtoan`
---
-ALTER TABLE `thanhtoan`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `momo_order_id` (`momo_order_id`),
-  ADD UNIQUE KEY `uni_momo_order_id` (`momo_order_id`),
-  ADD KEY `FK_thanhtoan_lichhen` (`ma_lich_hen`);
 
 --
 -- Chỉ mục cho bảng `users`
@@ -533,31 +584,31 @@ ALTER TABLE `chuyenkhoa`
 -- AUTO_INCREMENT cho bảng `lichhen`
 --
 ALTER TABLE `lichhen`
-  MODIFY `ma_lich_hen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `ma_lich_hen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
+
+--
+-- AUTO_INCREMENT cho bảng `lichsu_thanhtoan`
+--
+ALTER TABLE `lichsu_thanhtoan`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT cho bảng `lich_gio`
 --
 ALTER TABLE `lich_gio`
-  MODIFY `ma_gio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `ma_gio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT cho bảng `lich_tong`
 --
 ALTER TABLE `lich_tong`
-  MODIFY `ma_lich` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `ma_lich` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `phongkham`
 --
 ALTER TABLE `phongkham`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT cho bảng `thanhtoan`
---
-ALTER TABLE `thanhtoan`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
@@ -620,12 +671,6 @@ ALTER TABLE `phongkham`
 ALTER TABLE `phongkham_chuyenkhoa`
   ADD CONSTRAINT `phongkham_chuyenkhoa_ibfk_1` FOREIGN KEY (`MaPK`) REFERENCES `phongkham` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `phongkham_chuyenkhoa_ibfk_2` FOREIGN KEY (`MaCK`) REFERENCES `chuyenkhoa` (`MaCK`) ON DELETE CASCADE;
-
---
--- Các ràng buộc cho bảng `thanhtoan`
---
-ALTER TABLE `thanhtoan`
-  ADD CONSTRAINT `FK_thanhtoan_lichhen` FOREIGN KEY (`ma_lich_hen`) REFERENCES `lichhen` (`ma_lich_hen`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

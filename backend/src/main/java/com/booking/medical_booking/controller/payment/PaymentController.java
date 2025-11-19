@@ -28,6 +28,7 @@ import com.booking.medical_booking.dto.VnPayIpnResponseDTO;
 import com.booking.medical_booking.model.Appointment;
 import com.booking.medical_booking.service.appointment.AppointmentService;
 import com.booking.medical_booking.service.payment.Momoservice;
+import com.booking.medical_booking.service.payment.PaymentService;
 import com.booking.medical_booking.service.payment.VNPayService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +50,9 @@ public class PaymentController {
 
     @Autowired
     private VnPayProperties vnPayProperties;
+
+    @Autowired
+    private PaymentService paymentService;
     
     @PostMapping("/create-checkout-url")
     public ResponseEntity<PaymentResponseDTO> createCheckoutUrl(@Valid @RequestBody PaymentRequestDTO request) {
@@ -168,31 +172,15 @@ public class PaymentController {
 
 
         if (secureHashLocal != null && secureHashLocal.equalsIgnoreCase(vnp_SecureHash)){
-            
+            paymentService.saveVnPayTransaction(vnp_Params);
             if ("00".equals(vnp_ResponseCode)) {
-                System.err.println("VNPAY Return: Thanh toán thành công!");
-                try {
-                    Integer maLichHen = Integer.parseInt(vnp_TxnRef);
-                    Appointment appointment = appointmentService.findById(maLichHen); 
-                    if (appointment != null) {
-                        appointment.setTrangThai("Đã thanh toán"); 
-                        
-                        appointmentService.save(appointment);
-                        
-                        System.out.println("Đã cập nhật trạng thái cho lịch hẹn #" + maLichHen);
-                    } else {
-                        System.err.println("Không tìm thấy lịch hẹn có ID: " + maLichHen);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Lỗi khi cập nhật trạng thái: " + e.getMessage());
-                    e.printStackTrace();
-                }
+                updateAppointmentStatus(Integer.parseInt(vnp_TxnRef), "Đã thanh toán");
                 return new RedirectView("http://localhost:3000/payment-status?status=success&orderId=" + vnp_TxnRef);
             } else {
                 return new RedirectView("http://localhost:3000/payment-status?status=failed&orderId=" + vnp_TxnRef);
             }
         } else {
-            System.err.println("VNPAY Return: Lỗi xác thực chữ ký!");
+            updateAppointmentStatus(Integer.parseInt(vnp_TxnRef), "Thanh toán thất bại");
             return new RedirectView("http://localhost:3000/payment-status?status=failed&message=InvalidSignature");
         }
     }
