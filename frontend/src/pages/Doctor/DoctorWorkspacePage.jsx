@@ -233,7 +233,7 @@ const DoctorWorkspacePage = () => {
         <div className="sidebar-footer">
           <a href="#" 
            onClick={handleLogout}
-           className="nav-item-DW logout-btn">
+           className="nav-item-DW dwp-logout-btn">
             <LogOut size={20} />
             <span>Đăng xuất</span>
           </a>
