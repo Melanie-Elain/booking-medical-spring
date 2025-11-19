@@ -21,6 +21,8 @@ public class LichGio {
     private Integer maGio;
 
     private String khungGio;
+
+    @Column(name = "status")
     private String status;
 
     // SỬA LẠI: Trở về LAZY

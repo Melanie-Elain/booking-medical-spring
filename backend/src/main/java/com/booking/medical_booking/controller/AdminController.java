@@ -243,4 +243,19 @@ public class AdminController {
         AppointmentResponseDTO updatedAppointmentDTO = appointmentService.updateAppointmentStatus(id, request);
         return ResponseEntity.ok(updatedAppointmentDTO);
     }
+
+    // ==============================================================
+    // 👉 THÊM HÀM HỦY LỊCH (CHO ADMIN) VÀO ĐÂY
+    // ==============================================================
+    @PutMapping("/appointments/{id}/cancel")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> cancelAppointment(@PathVariable Integer id) {
+        try {
+            // Admin gọi service hủy lịch
+            AppointmentResponseDTO result = appointmentService.cancelAppointment(id);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

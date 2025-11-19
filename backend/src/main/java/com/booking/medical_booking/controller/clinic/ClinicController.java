@@ -127,11 +127,36 @@ public class ClinicController {
         return ResponseEntity.ok(appointmentPage);
     }
 
+    // @PutMapping("/appointments/{appointmentId}/status")
+    // public ResponseEntity<AppointmentResponseDTO> updateAppointmentStatus(
+    //         @PathVariable Integer appointmentId,
+    //         @RequestBody Map<String, String> request) {
+    //     AppointmentResponseDTO updatedAppointmentDTO = appointmentService.updateAppointmentStatus(appointmentId, request);
+    //     return ResponseEntity.ok(updatedAppointmentDTO);
+    // }
+    // 1. XÁC NHẬN / CẬP NHẬT TRẠNG THÁI
     @PutMapping("/appointments/{appointmentId}/status")
-    public ResponseEntity<AppointmentResponseDTO> updateAppointmentStatus(
+    public ResponseEntity<?> updateAppointmentStatus(
             @PathVariable Integer appointmentId,
             @RequestBody Map<String, String> request) {
-        AppointmentResponseDTO updatedAppointmentDTO = appointmentService.updateAppointmentStatus(appointmentId, request);
-        return ResponseEntity.ok(updatedAppointmentDTO);
+        try {
+            AppointmentResponseDTO result = appointmentService.updateAppointmentStatus(appointmentId, request);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
+    // 2. HỦY LỊCH (Thêm mới vào đây)
+    @PutMapping("/appointments/{appointmentId}/cancel")
+    public ResponseEntity<?> cancelAppointment(@PathVariable Integer appointmentId) {
+        try {
+            AppointmentResponseDTO result = appointmentService.cancelAppointment(appointmentId);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    
 }
