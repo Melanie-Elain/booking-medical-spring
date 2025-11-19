@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/clinics/**").permitAll()
                 .requestMatchers("/api/specialties/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/payment/confirm-status").permitAll()
+                .requestMatchers("/api/payment/vnpay-return", "/api/payment/vnpay-ipn", "/").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
 
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()

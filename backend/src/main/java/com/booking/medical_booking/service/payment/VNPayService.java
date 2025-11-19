@@ -35,6 +35,11 @@ public class VNPayService {
         Map<String, String> sortedFields = new TreeMap<>(fields);
         
         StringBuilder hashData = new StringBuilder();
+
+        System.out.println("-------------------------------------------");
+        System.out.println("Chuỗi trước khi Hash: " + hashData);
+        System.out.println("Mã HashSecret đang dùng: [" + vnPayProperties.getHashSecret() + "]");
+        System.out.println("-------------------------------------------");
         
         // 2. Nối chuỗi tham số (Sử dụng URL Encoding cho giá trị)
         for (Map.Entry<String, String> entry : sortedFields.entrySet()) {
@@ -44,7 +49,7 @@ public class VNPayService {
             if (value != null && !value.isEmpty()) {
                 try {
                     // ✅ FIX: Mã hóa URL giá trị trước khi nối vào hashData
-                    String encodedValue = URLEncoder.encode(value, StandardCharsets.US_ASCII.toString());
+                    String encodedValue = URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
 
                     hashData.append(key);
                     hashData.append('=');
@@ -63,6 +68,13 @@ public class VNPayService {
         if (rawHashData.length() > 0) {
             rawHashData = rawHashData.substring(0, rawHashData.length() - 1);
         }
+
+        System.out.println("Chuỗi sau khi cắt & là: " + rawHashData);
+        System.out.println("-------------------------------------------");
+        System.out.println("Chuỗi trước khi Hash: " + hashData);
+        System.out.println("Mã HashSecret đang dùng: [" + vnPayProperties.getHashSecret() + "]");
+        System.out.println("-------------------------------------------");
+        
 
         try {
             // 4. Băm bằng HMAC-SHA512
@@ -86,6 +98,7 @@ public class VNPayService {
         
         String vnp_TxnRef = String.valueOf(orderId);
         String vnp_OrderInfo = "Thanh toan don hang lich kham #" + orderId;
+        System.out.println("Thanh toan don hang lich kham #"+ orderId);
         long totalAmountInCents = totalAmount;
         String vnp_Amount = String.valueOf(totalAmountInCents); 
         

@@ -24,6 +24,7 @@ import CompleteBookingHospital from "../pages/Booking/CompleteBookingHospital";
 import MockPaymentPage from "../pages/Payment/MockPaymentPage";
 import PaymentMethodSelectionPage from "../pages/Payment/PaymentMethodSelectionPage";
 import PaymentStatus from "../pages/Payment/PaymentStatus";
+import CompletePayment from "../pages/Payment/CompletePayment";
 
 // === IMPORT CÁC TRANG DASHBOARD  ===
 import UserDashboardLayout from "../pages/UserDashboard/UserDashboardLayout";
@@ -91,7 +92,9 @@ const AppRoutes = () => {
       <Route path="/dat-kham/benh-vien/:id" element={<HospitalProfile />} />
       <Route path="/payment/select-method" element={<PaymentMethodSelectionPage/>} />
       <Route path="/payment/mock-checkout" element={<MockPaymentPage/>} />
-      <Route path="/payment-status" element={<PaymentStatus />} />
+      <Route path="/payment-status" element={<CompletePayment />} />
+      {/* <Route path="/payment-status" element={<CompletePayment />} /> */}
+
       
       <Route path="/dat-kham/benh-vien/:id/hoan-tat-dat-kham" element={<CompleteBookingHospital />} />
       <Route

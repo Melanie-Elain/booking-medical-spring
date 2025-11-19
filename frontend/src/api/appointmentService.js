@@ -29,9 +29,14 @@ export const appointmentService = {
 
     getAppointmentDetails: async (appointmentId) => { 
         console.log("Fetching appointment details for ID:", appointmentId);
+        const response = await axiosInstance.get(`/booking/${appointmentId}`);
         
-        // Sử dụng backticks (`) cho phép chèn biến vào chuỗi URL
-        const response = await axiosInstance.get(`/api/appointments/${appointmentId}`);
+        return response.data;
+    },
+
+    getAppointmentInforDetails: async (appointmentId) => { 
+        console.log("Fetching appointment details for ID:", appointmentId);
+        const response = await axiosInstance.get(`/booking/${appointmentId}/details`);
         
         return response.data;
     },

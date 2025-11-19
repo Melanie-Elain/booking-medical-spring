@@ -1,20 +1,24 @@
 package com.booking.medical_booking.controller.payment;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.booking.medical_booking.config.VnPayProperties;
 import com.booking.medical_booking.dto.MomoCreateResponseDTO;
@@ -27,6 +31,7 @@ import com.booking.medical_booking.service.payment.Momoservice;
 import com.booking.medical_booking.service.payment.VNPayService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -136,101 +141,151 @@ public class PaymentController {
     }
 
     @GetMapping("/vnpay-return") 
-    public String handleVnPayReturn(HttpServletRequest request) throws UnsupportedEncodingException {
+    public RedirectView handleVnPayReturn(HttpServletRequest request, HttpServletResponse response) throws IOException {
         
-        Map<String, String> vnp_Params = new HashMap<>();
+        Map<String, String> vnp_Params = new TreeMap<>();
         Enumeration<String> params = request.getParameterNames();
         
         while (params.hasMoreElements()) {
             String fieldName = params.nextElement();
             String fieldValue = request.getParameter(fieldName);
-            vnp_Params.put(fieldName, fieldValue);
+            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                vnp_Params.put(fieldName, fieldValue);
+            }
         }
         
         String vnp_SecureHash = vnp_Params.get("vnp_SecureHash");
+        vnp_Params.remove("vnp_SecureHashType");
         vnp_Params.remove("vnp_SecureHash");
         
         String secureHashLocal = vnPayService.hashAllFields(vnPayProperties.getHashSecret(), vnp_Params);
+
+        System.out.println("VNPAY Hash: " + vnp_SecureHash);
+        System.out.println("Local Hash: " + secureHashLocal);
         
         String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
-        String vnp_TxnRef = request.getParameter("vnp_TxnRef"); // Mã lịch hẹn (orderId)
+        String vnp_TxnRef = request.getParameter("vnp_TxnRef"); 
 
-        String frontendRedirectUrl;
 
-        if (secureHashLocal != null && secureHashLocal.equals(vnp_SecureHash)) {
+        if (secureHashLocal != null && secureHashLocal.equalsIgnoreCase(vnp_SecureHash)){
             
             if ("00".equals(vnp_ResponseCode)) {
-                // ✅ Thành công: Chuyển hướng Frontend để hiển thị "Đã thanh toán" (nhưng chưa lưu DB)
-                return "redirect:http://localhost:3000/payment-status?status=success&orderId=" + vnp_TxnRef;
+                System.err.println("VNPAY Return: Thanh toán thành công!");
+                try {
+                    Integer maLichHen = Integer.parseInt(vnp_TxnRef);
+                    Appointment appointment = appointmentService.findById(maLichHen); 
+                    if (appointment != null) {
+                        appointment.setTrangThai("Đã thanh toán"); 
+                        
+                        appointmentService.save(appointment);
+                        
+                        System.out.println("Đã cập nhật trạng thái cho lịch hẹn #" + maLichHen);
+                    } else {
+                        System.err.println("Không tìm thấy lịch hẹn có ID: " + maLichHen);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Lỗi khi cập nhật trạng thái: " + e.getMessage());
+                    e.printStackTrace();
+                }
+                return new RedirectView("http://localhost:3000/payment-status?status=success&orderId=" + vnp_TxnRef);
             } else {
-                // Thất bại: Chuyển hướng để hiển thị thất bại
-                return "redirect:http://localhost:3000/payment-status?status=failed&orderId=" + vnp_TxnRef;
+                return new RedirectView("http://localhost:3000/payment-status?status=failed&orderId=" + vnp_TxnRef);
             }
         } else {
             System.err.println("VNPAY Return: Lỗi xác thực chữ ký!");
-            frontendRedirectUrl = "redirect:http://localhost:3000/payment-status?status=failed&message=InvalidSignature";
+            return new RedirectView("http://localhost:3000/payment-status?status=failed&message=InvalidSignature");
         }
-
-        return frontendRedirectUrl;
     }
 
     @RequestMapping(value = "/vnpay-ipn", method = {RequestMethod.POST, RequestMethod.GET})
     @Transactional
-    public ResponseEntity<VnPayIpnResponseDTO> handleVnPayIpn(HttpServletRequest request) 
-        throws UnsupportedEncodingException {
-        
-        System.out.println("Helllo");
-        Map<String, String> vnp_Params = new HashMap<>();
-        Enumeration<String> params = request.getParameterNames();
-        while (params.hasMoreElements()) {
-            String fieldName = params.nextElement();
-            String fieldValue = request.getParameter(fieldName);
-            vnp_Params.put(fieldName, fieldValue);
-        }
-
-        String vnp_SecureHash = vnp_Params.get("vnp_SecureHash");
-        vnp_Params.remove("vnp_SecureHash"); 
-        
-        String vnp_ResponseCode = vnp_Params.get("vnp_ResponseCode");
-        String vnp_TxnRef = vnp_Params.get("vnp_TxnRef"); // Mã tham chiếu (Order ID)
-        String vnp_Amount = vnp_Params.get("vnp_Amount"); // Số tiền giao dịch (đã nhân 100)
-
-        String secureHashLocal = vnPayService.hashAllFields(vnPayProperties.getHashSecret(), vnp_Params);
-
-        System.out.println("hi");
-        
-        if (!secureHashLocal.equals(vnp_SecureHash)) {
-            System.err.println("VNPAY IPN: Lỗi xác thực chữ ký!");
-            return ResponseEntity.ok(new VnPayIpnResponseDTO("97", "Chu ky khong hop le")); 
-        }
-
-        Appointment appointment;
+    public ResponseEntity<VnPayIpnResponseDTO> handleVnPayIpn(HttpServletRequest request) {
         try {
-            Integer appointmentId = Integer.valueOf(vnp_TxnRef); 
-            appointment = appointmentService.findById(appointmentId);
+            System.out.println("------------ IPN START ------------");
+            
+            // 1. Dùng TreeMap để sắp xếp tham số (BẮT BUỘC)
+            Map<String, String> vnp_Params = new TreeMap<>();
+            Enumeration<String> params = request.getParameterNames();
+            while (params.hasMoreElements()) {
+                String fieldName = params.nextElement();
+                String fieldValue = request.getParameter(fieldName);
+                if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                    vnp_Params.put(fieldName, fieldValue);
+                }
+            }
+
+            // 2. Lấy chữ ký và loại bỏ tham số không cần thiết
+            String vnp_SecureHash = request.getParameter("vnp_SecureHash");
+            if (vnp_Params.containsKey("vnp_SecureHashType")) vnp_Params.remove("vnp_SecureHashType");
+            if (vnp_Params.containsKey("vnp_SecureHash")) vnp_Params.remove("vnp_SecureHash");
+
+            // 3. Tính toán lại Hash
+            String secureHashLocal = vnPayService.hashAllFields(vnPayProperties.getHashSecret(), vnp_Params);
+
+            // Debug Log
+            System.out.println("IPN VNPAY Hash: " + vnp_SecureHash);
+            System.out.println("IPN Local Hash: " + secureHashLocal);
+
+            // 4. Kiểm tra chữ ký
+            if (secureHashLocal != null && secureHashLocal.equalsIgnoreCase(vnp_SecureHash)) {
+                
+                String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
+                String vnp_TxnRef = request.getParameter("vnp_TxnRef");
+
+                // 5. Tìm đơn hàng trong DB
+                Appointment appointment = null;
+                try {
+                    Integer appointmentId = Integer.valueOf(vnp_TxnRef);
+                    appointment = appointmentService.findById(appointmentId);
+                } catch (Exception e) {
+                    System.err.println("IPN: Lỗi tìm đơn hàng ID: " + vnp_TxnRef);
+                    return ResponseEntity.ok(new VnPayIpnResponseDTO("01", "Order not found"));
+                }
+
+                if (appointment == null) {
+                    return ResponseEntity.ok(new VnPayIpnResponseDTO("01", "Order not found"));
+                }
+
+                // 6. Kiểm tra xem đơn hàng đã được xử lý trước đó chưa
+                // (Tránh cập nhật lại nếu VNPAY gọi nhiều lần)
+                if (appointment.getTrangThai() != null && 
+                (appointment.getTrangThai().equals("Đã thanh toán") || appointment.getTrangThai().equals("Thanh toán thất bại"))) {
+                    System.out.println("IPN: Đơn hàng đã được xử lý trước đó: " + vnp_TxnRef);
+                    return ResponseEntity.ok(new VnPayIpnResponseDTO("02", "Order already confirmed"));
+                }
+
+                // 7. Cập nhật trạng thái
+                if ("00".equals(vnp_ResponseCode)) {
+                    System.out.println("IPN: Thanh toán thành công. Updating DB...");
+                    appointment.setTrangThai("Đã thanh toán"); // Đảm bảo chuỗi này khớp với logic của bạn
+                    appointmentService.save(appointment);
+                    return ResponseEntity.ok(new VnPayIpnResponseDTO("00", "Confirm Success"));
+                } else {
+                    System.out.println("IPN: Thanh toán thất bại. Updating DB...");
+                    appointment.setTrangThai("Thanh toán thất bại");
+                    appointmentService.save(appointment);
+                    return ResponseEntity.ok(new VnPayIpnResponseDTO("00", "Confirm Success"));
+                }
+            } else {
+                System.err.println("IPN: Chữ ký không hợp lệ!");
+                return ResponseEntity.ok(new VnPayIpnResponseDTO("97", "Invalid Signature"));
+            }
         } catch (Exception e) {
-            System.err.println("VNPAY IPN: Khong tim thay lich hen voi ID: " + vnp_TxnRef);
-            return ResponseEntity.ok(new VnPayIpnResponseDTO("01", "Order khong ton tai")); 
+            System.err.println("IPN Error: " + e.getMessage());
+            return ResponseEntity.ok(new VnPayIpnResponseDTO("99", "Unknown Error"));
         }
+    }
 
-        if ("THANH_TOAN_THANH_CONG".equals(appointment.getTrangThai())) {
-            System.out.println("VNPAY IPN: Lich hen da duoc thanh toan: " + vnp_TxnRef);
-            return ResponseEntity.ok(new VnPayIpnResponseDTO("02", "Order da duoc xu ly")); 
-        }
-
-        
-        if ("00".equals(vnp_ResponseCode)) {
-            appointment.setTrangThai("THANH_TOAN_THANH_CONG");
-            appointmentService.save(appointment); 
-            
-            System.out.println("VNPAY IPN: Cap nhat thanh cong lich hen: " + vnp_TxnRef);
-            return ResponseEntity.ok(new VnPayIpnResponseDTO("00", "Confirm Success"));
-            
-        } else {
-            appointment.setTrangThai("THANH_TOAN_THAT_BAI");
-            appointmentService.save(appointment);
-            System.out.println("VNPAY IPN: Giao dich that bai. Ma loi: " + vnp_ResponseCode);
-            return ResponseEntity.ok(new VnPayIpnResponseDTO("00", "Confirm Success")); 
+    private void updateAppointmentStatus(Integer id, String status) {
+        try {
+            Appointment appointment = appointmentService.findById(id);
+            if (appointment != null) {
+                appointment.setTrangThai(status);
+                appointmentService.save(appointment);
+                System.out.println("Đã cập nhật trạng thái lịch hẹn #" + id + " thành: " + status);
+            }
+        } catch (Exception e) {
+            System.err.println("Lỗi cập nhật DB: " + e.getMessage());
         }
     }
 

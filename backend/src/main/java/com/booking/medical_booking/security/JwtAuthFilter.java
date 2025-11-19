@@ -42,18 +42,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             // ---------------------------------------------
             // ⚠️ PATH PUBLIC — không yêu cầu JWT
-            // ---------------------------------------------
-            if (requestPath.startsWith("/api/doctors") ||
-                requestPath.startsWith("/api/hospitals") ||
-                requestPath.startsWith("/api/clinics") ||
-                requestPath.startsWith("/api/specialties") ||
-                requestPath.startsWith("/api/auth")) {
+                // ---------------------------------------------
+                if (requestPath.startsWith("/api/doctors") ||
+                    requestPath.startsWith("/api/hospitals") ||
+                    requestPath.startsWith("/api/clinics") ||
+                    requestPath.startsWith("/api/specialties") ||
+                    requestPath.startsWith("/vnpay-return") || 
+                    requestPath.startsWith("/vnpay-ipn")||
+                    requestPath.equals("/") ||
+                    requestPath.startsWith("/api/auth")) {
 
-                filterChain.doFilter(request, response);
-                return;
-            }
+                    filterChain.doFilter(request, response);
+                    return;
+                }
 
-            // ---------------------------------------------
+                // ---------------------------------------------
             // ⚠️ PATH PRIVATE — yêu cầu JWT
             // ---------------------------------------------
             final String authHeader = request.getHeader("Authorization");

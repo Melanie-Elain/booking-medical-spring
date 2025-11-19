@@ -2,7 +2,11 @@ package com.booking.medical_booking.service.appointment;
 
 import com.booking.medical_booking.dto.AppointmentDTO;
 import com.booking.medical_booking.model.Appointment;
+import com.booking.medical_booking.model.Clinic;
+import com.booking.medical_booking.model.Doctor;
+import com.booking.medical_booking.model.Hospital;
 import com.booking.medical_booking.model.LichGio;
+import com.booking.medical_booking.model.LichTong;
 import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.repository.AppointmentRepository;
 import com.booking.medical_booking.repository.LichGioRepository;
@@ -11,14 +15,11 @@ import com.booking.medical_booking.service.EmailService;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.booking.medical_booking.dto.AppointmentResponseDTO; 
-import com.booking.medical_booking.model.Appointment;
-import com.booking.medical_booking.model.User; 
-import com.booking.medical_booking.repository.AppointmentRepository;
+import com.booking.medical_booking.dto.AppointmentResponseDTO;
+import com.booking.medical_booking.dto.AppointmentDetailDTO;
 import com.booking.medical_booking.repository.DoctorRepository; 
 import com.booking.medical_booking.repository.HospitalRepository; 
 import com.booking.medical_booking.repository.ClinicRepository; 
-import com.booking.medical_booking.repository.UserRepository; 
 import org.springframework.security.core.context.SecurityContextHolder; 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -49,6 +50,10 @@ public class AppointmentService {
     private LichGioRepository   lichGioRepository;
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private AppointmentRepository lichHenRepo;
+    
 
     
 
@@ -226,5 +231,64 @@ public AppointmentResponseDTO updateAppointmentStatus(Integer id, Map<String, St
     public Appointment save(Appointment appointment) {
         return appointmentRepository.save(appointment);
     }
+
+    public AppointmentDetailDTO getBookingDetails(Integer maLichHen) {
+    // 1. Tìm lịch hẹn
+    Appointment lichHen = lichHenRepo.findById(maLichHen)
+            .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hẹn: " + maLichHen));
+
+    // 2. Lấy thông tin bệnh nhân (User)
+    User benhNhan = userRepository.findById(lichHen.getUser().getId()) 
+            .orElseThrow(() -> new RuntimeException("Lỗi dữ liệu bệnh nhân"));
+
+    // 3. Lấy thông tin Giờ và Ngày (LichGio -> LichTong)
+    LichGio lichGio = lichHen.getLichGio(); // Giả sử có quan hệ @ManyToOne
+    LichTong lichTong = lichGio.getLichTong(); // Giả sử có quan hệ @ManyToOne
+
+    // 4. Map dữ liệu cơ bản vào DTO
+    AppointmentDetailDTO dto = new AppointmentDetailDTO();
+    dto.setMaLichHen(lichHen.getMaLichHen());
+    dto.setGhiChu(lichHen.getGhiChu());
+    dto.setTongTien(lichHen.getFinalPrice());
+    
+    dto.setGioKham(lichGio.getKhungGio());
+    dto.setNgayKham(lichTong.getNgay().toString()); // Chuyển Date sang String
+
+    // Map thông tin bệnh nhân
+    dto.setTenBenhNhan(benhNhan.getFullName());
+    dto.setNgaySinh(benhNhan.getDob());
+    dto.setGioiTinh(benhNhan.getGender());
+    dto.setDiaChiBenhNhan(benhNhan.getAddress());
+
+    // 5. LẤY THÔNG TIN ĐƠN VỊ KHÁM (QUAN TRỌNG)
+    // Dựa vào loai_doi_tuong trong lich_tong
+    String loai = lichTong.getLoaiDoiTuong().name(); // "BACSI", "BENHVIEN", "PHONGKHAM"
+    Long idDoiTuong = lichTong.getMaDoiTuong();
+
+    if ("BACSI".equalsIgnoreCase(loai)) {
+        Doctor bs = doctorRepository.findById(idDoiTuong).orElse(null);
+        if (bs != null) {
+            dto.setTenDonVi("BS. " + bs.getName());
+            dto.setDiaChiDonVi(bs.getWorkplace()); // Hoặc bs.getAddress()
+            dto.setHinhAnhDonVi(bs.getImage());
+        }
+    } else if ("BENHVIEN".equalsIgnoreCase(loai)) {
+        Hospital bv = hospitalRepository.findById(idDoiTuong.intValue()).orElse(null);
+        if (bv != null) {
+            dto.setTenDonVi(bv.getName());
+            dto.setDiaChiDonVi(bv.getAddress());
+            dto.setHinhAnhDonVi(bv.getImage());
+        }
+    } else if ("PHONGKHAM".equalsIgnoreCase(loai)) {
+        Clinic pk = clinicRepository.findById(idDoiTuong.intValue()).orElse(null);
+        if (pk != null) {
+            dto.setTenDonVi(pk.getName());
+            dto.setDiaChiDonVi(pk.getAddress());
+            dto.setHinhAnhDonVi(pk.getImage());
+        }
+    }
+
+    return dto;
+}
 
 }

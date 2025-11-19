@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 13, 2025 lúc 04:54 AM
+-- Thời gian đã tạo: Th10 16, 2025 lúc 03:10 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
--- Phiên bản PHP: 8.2.12
+-- Phiên bản PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -97,25 +97,26 @@ CREATE TABLE `benhvien` (
   `image` varchar(255) DEFAULT NULL,
   `description` tinytext DEFAULT NULL,
   `phone` varchar(50) DEFAULT NULL,
-  `banner` varchar(255) DEFAULT NULL
+  `banner` varchar(255) DEFAULT NULL,
+  `imageIntro` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `benhvien`
 --
 
-INSERT INTO `benhvien` (`id`, `user_id`, `name`, `slogan`, `address`, `image`, `description`, `phone`, `banner`) VALUES
-(1, 10, 'Bệnh viện Chợ Rẫy', 'Nơi gửi trọn niềm tin', '201B Nguyễn Chí Thanh, P. 12, Q. 5, TP.HCM', 'https://cdn.youmed.vn/photos/14c1b0c8-1b44-48e6-ab0d-b4b989a86b45.png?width=100&aspect_ratio=1:1', 'Bệnh viện đa khoa trung ương hàng đầu tại khu vực phía Nam.', '0123456777', 'https://cdn.youmed.vn/photos/c90bc798-1748-4cfa-9472-53882038476c.png?width=300'),
-(2, 24, 'Bệnh viện Đại học Y Dược TP.HCM', 'Tiên phong - Đẳng cấp - Chuẩn mực', '215 Hồng Bàng, P. 11, Q. 5, TP.HCM', 'https://cdn.youmed.vn/photos/186f542e-45e0-416b-9050-b258bfd2317b.png?width=100&aspect_ratio=1:1', 'Bệnh viện uy tín kết hợp giữa điều trị và giảng dạy y khoa.', '02838554269', 'https://cdn.youmed.vn/photos/0eecce02-6958-4007-9fcc-78d5d644e33b.png?width=300'),
-(3, 25, 'Bệnh viện Từ Dũ', 'Nơi khởi đầu sự sống', '284 Cống Quỳnh, P. Phạm Ngũ Lão, Q. 1, TP.HCM', 'https://cdn.youmed.vn/photos/fb4179f1-d0e9-4e2a-98a2-26e6efe7add8.png?width=100&aspect_ratio=1:1', 'Bệnh viện chuyên sản phụ khoa hàng đầu tại Việt Nam.', '02854042829', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/08/yhct.jpg?width=300'),
-(4, 26, 'Bệnh viện Phụ sản Quốc tế Sài Gòn (SIH)', 'Nơi chắp cánh những thiên thần bé bỏng', '63 Bùi Thị Xuân, P. Phạm Ngũ Lão, Q. 1, TP.HCM', 'https://cdn.youmed.vn/photos/4d510848-8b6c-480b-b28f-a4c4a3ef1e4c.png?width=100&aspect_ratio=1:1', 'Bệnh viện chuyên khoa sản phụ và sơ sinh hàng đầu, tiêu chuẩn quốc tế.', '02839253000', 'https://cdn.youmed.vn/photos/ff27f5b6-4fe5-456b-a3be-ded96837a656.png?width=300'),
-(5, 27, 'Bệnh viện Tâm thần Trung ương 2', 'Khỏe mạnh tinh thần, vững bước tương lai', '158 Hùng Vương, P. 2, TP. Biên Hòa, Đồng Nai', 'https://cdn.youmed.vn/photos/5d25ccd4-9ed8-4455-81fa-dca65d1c2604.png?width=100&aspect_ratio=1:1', 'Cơ sở y tế chuyên sâu về khám và điều trị các vấn đề tâm thần.', '02513822295', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/08/rhmtphcm.jpg?width=300'),
-(6, 28, 'Bệnh viện Nhi Đồng 1', 'Tận tâm vì sức khỏe trẻ thơ', '341 Sư Vạn Hạnh, P. 10, Q. 10, TP.HCM', 'https://cdn.youmed.vn/photos/b7674b50-09f5-46ce-a7d3-abba422f62c6.png?width=100&aspect_ratio=1:1', 'Bệnh viện Nhi khoa lớn và uy tín nhất Việt Nam.', '02839271119', 'https://cdn.youmed.vn/photos/93bdf6dd-82c5-4faf-8f8a-eae0a4363814.png?width=300'),
-(7, 29, 'Bệnh viện Nhân dân 115', 'Chăm sóc bằng trái tim', '527 Sư Vạn Hạnh, P. 12, Q. 10, TP.HCM', 'https://cdn.youmed.vn/photos/b7674b50-09f5-46ce-a7d3-abba422f62c6.png?width=100&aspect_ratio=1:1', 'Bệnh viện đa khoa hạng I, mạnh về Ngoại thần kinh và Tim mạch.', '02838652368', 'https://cdn.youmed.vn/photos/93bdf6dd-82c5-4faf-8f8a-eae0a4363814.png?width=300'),
-(8, 30, 'Bệnh viện Hùng Vương', 'Ân cần - Tận tụy', '128 Hồng Bàng, P. 12, Q. 5, TP.HCM', 'https://cdn.youmed.vn/photos/fb4179f1-d0e9-4e2a-98a2-26e6efe7add8.png?width=100&aspect_ratio=1:1', 'Một trong những bệnh viện phụ sản lâu đời và uy tín nhất.', '02838558532', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2...\n'),
-(9, 31, 'Bệnh viện Vinmec Central Park', 'Chăm sóc tận tâm, Tiêu chuẩn quốc tế', '208 Nguyễn Hữu Cảnh, P. 22, Q. Bình Thạnh, TP.HCM', 'https://cdn.youmed.vn/photos/14c1b0c8-1b44-48e6-ab0d-b4b989a86b45.png?width=100&aspect_ratio=1:1', 'Bệnh viện đa khoa quốc tế thuộc hệ thống Vingroup.', '02836221166', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/08/rhmtphcm.jpg?width=300'),
-(10, 32, 'Bệnh viện FV', 'Nơi bạn tin tưởng', '6 Nguyễn Lương Bằng, P. Tân Phú, Q. 7, TP.HCM', 'https://cdn.youmed.vn/photos/186f542e-45e0-416b-9050-b258bfd2317b.png?width=100&aspect_ratio=1:1', 'Bệnh viện quốc tế với nhiều chuyên khoa sâu.', '02854113333', 'https://cdn.youmed.vn/photos/0eecce02-6958-4007-9fcc-78d5d644e33b.png?width=300'),
-(11, NULL, '123', '123', '1234', '', '', '0123654799', '');
+INSERT INTO `benhvien` (`id`, `user_id`, `name`, `slogan`, `address`, `image`, `description`, `phone`, `banner`, `imageIntro`) VALUES
+(1, 10, 'Bệnh viện Chợ Rẫy', 'Nơi gửi trọn niềm tin', '201B Nguyễn Chí Thanh, P. 12, Q. 5, TP.HCM', 'https://cdn.youmed.vn/photos/14c1b0c8-1b44-48e6-ab0d-b4b989a86b45.png?width=100&aspect_ratio=1:1', 'Bệnh viện đa khoa trung ương hàng đầu tại khu vực phía Nam.', '0123456777', 'https://cdn.youmed.vn/photos/c90bc798-1748-4cfa-9472-53882038476c.png?width=300', NULL),
+(2, 24, 'Bệnh viện Đại học Y Dược TP.HCM', 'Tiên phong - Đẳng cấp - Chuẩn mực', '215 Hồng Bàng, P. 11, Q. 5, TP.HCM', 'https://cdn.youmed.vn/photos/186f542e-45e0-416b-9050-b258bfd2317b.png?width=100&aspect_ratio=1:1', 'Bệnh viện uy tín kết hợp giữa điều trị và giảng dạy y khoa.', '02838554269', 'https://cdn.youmed.vn/photos/0eecce02-6958-4007-9fcc-78d5d644e33b.png?width=300', NULL),
+(3, 25, 'Bệnh viện Từ Dũ', 'Nơi khởi đầu sự sống', '284 Cống Quỳnh, P. Phạm Ngũ Lão, Q. 1, TP.HCM', 'https://cdn.youmed.vn/photos/fb4179f1-d0e9-4e2a-98a2-26e6efe7add8.png?width=100&aspect_ratio=1:1', 'Bệnh viện chuyên sản phụ khoa hàng đầu tại Việt Nam.', '02854042829', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/08/yhct.jpg?width=300', NULL),
+(4, 26, 'Bệnh viện Phụ sản Quốc tế Sài Gòn (SIH)', 'Nơi chắp cánh những thiên thần bé bỏng', '63 Bùi Thị Xuân, P. Phạm Ngũ Lão, Q. 1, TP.HCM', 'https://cdn.youmed.vn/photos/4d510848-8b6c-480b-b28f-a4c4a3ef1e4c.png?width=100&aspect_ratio=1:1', 'Bệnh viện chuyên khoa sản phụ và sơ sinh hàng đầu, tiêu chuẩn quốc tế.', '02839253000', 'https://cdn.youmed.vn/photos/ff27f5b6-4fe5-456b-a3be-ded96837a656.png?width=300', NULL),
+(5, 27, 'Bệnh viện Tâm thần Trung ương 2', 'Khỏe mạnh tinh thần, vững bước tương lai', '158 Hùng Vương, P. 2, TP. Biên Hòa, Đồng Nai', 'https://cdn.youmed.vn/photos/5d25ccd4-9ed8-4455-81fa-dca65d1c2604.png?width=100&aspect_ratio=1:1', 'Cơ sở y tế chuyên sâu về khám và điều trị các vấn đề tâm thần.', '02513822295', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/08/rhmtphcm.jpg?width=300', NULL),
+(6, 28, 'Bệnh viện Nhi Đồng 1', 'Tận tâm vì sức khỏe trẻ thơ', '341 Sư Vạn Hạnh, P. 10, Q. 10, TP.HCM', 'https://cdn.youmed.vn/photos/b7674b50-09f5-46ce-a7d3-abba422f62c6.png?width=100&aspect_ratio=1:1', 'Bệnh viện Nhi khoa lớn và uy tín nhất Việt Nam.', '02839271119', 'https://cdn.youmed.vn/photos/93bdf6dd-82c5-4faf-8f8a-eae0a4363814.png?width=300', NULL),
+(7, 29, 'Bệnh viện Nhân dân 115', 'Chăm sóc bằng trái tim', '527 Sư Vạn Hạnh, P. 12, Q. 10, TP.HCM', 'https://cdn.youmed.vn/photos/b7674b50-09f5-46ce-a7d3-abba422f62c6.png?width=100&aspect_ratio=1:1', 'Bệnh viện đa khoa hạng I, mạnh về Ngoại thần kinh và Tim mạch.', '02838652368', 'https://cdn.youmed.vn/photos/93bdf6dd-82c5-4faf-8f8a-eae0a4363814.png?width=300', NULL),
+(8, 30, 'Bệnh viện Hùng Vương', 'Ân cần - Tận tụy', '128 Hồng Bàng, P. 12, Q. 5, TP.HCM', 'https://cdn.youmed.vn/photos/fb4179f1-d0e9-4e2a-98a2-26e6efe7add8.png?width=100&aspect_ratio=1:1', 'Một trong những bệnh viện phụ sản lâu đời và uy tín nhất.', '02838558532', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2...\n', NULL),
+(9, 31, 'Bệnh viện Vinmec Central Park', 'Chăm sóc tận tâm, Tiêu chuẩn quốc tế', '208 Nguyễn Hữu Cảnh, P. 22, Q. Bình Thạnh, TP.HCM', 'https://cdn.youmed.vn/photos/14c1b0c8-1b44-48e6-ab0d-b4b989a86b45.png?width=100&aspect_ratio=1:1', 'Bệnh viện đa khoa quốc tế thuộc hệ thống Vingroup.', '02836221166', 'https://cdn.youmed.vn/tin-tuc/wp-content/uploads/2020/08/rhmtphcm.jpg?width=300', NULL),
+(10, 32, 'Bệnh viện FV', 'Nơi bạn tin tưởng', '6 Nguyễn Lương Bằng, P. Tân Phú, Q. 7, TP.HCM', 'https://cdn.youmed.vn/photos/186f542e-45e0-416b-9050-b258bfd2317b.png?width=100&aspect_ratio=1:1', 'Bệnh viện quốc tế với nhiều chuyên khoa sâu.', '02854113333', 'https://cdn.youmed.vn/photos/0eecce02-6958-4007-9fcc-78d5d644e33b.png?width=300', NULL),
+(11, NULL, '123', '123', '1234', '', '', '0123654799', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -186,27 +187,17 @@ CREATE TABLE `lichhen` (
   `user_id` bigint(20) NOT NULL COMMENT 'ID của Bệnh nhân (từ bảng users)',
   `ma_gio` int(11) NOT NULL COMMENT 'ID của Khung giờ (từ bảng lich_gio)',
   `trang_thai` varchar(255) DEFAULT NULL,
-  `ghi_chu` longtext DEFAULT NULL
+  `ghi_chu` tinytext DEFAULT NULL,
+  `hinh_thuc_kham` varchar(50) DEFAULT NULL COMMENT 'Hình thức khám (thuong/bhyt)',
+  `tong_tien` decimal(10,2) DEFAULT 0.00 COMMENT 'Giá cuối cùng tại thời điểm đặt lịch'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `lichhen`
 --
 
-INSERT INTO `lichhen` (`ma_lich_hen`, `user_id`, `ma_gio`, `trang_thai`, `ghi_chu`) VALUES
-(2, 4, 4, 'Đã xác nhận', 'Tái khám'),
-(3, 6, 7, 'Đang chờ', 'Đau dạ dày'),
-(5, 4, 13, 'Đã hủy', 'Bệnh nhân bận việc'),
-(6, 6, 16, 'Đang chờ', 'Khám sức khỏe tổng quát cho công ty'),
-(8, 4, 22, 'Đã xác nhận', 'Khám da liễu'),
-(9, 6, 25, 'Đã xác nhận', 'Khám nội soi'),
-(11, 5, 2, 'Đang chờ', 'ho'),
-(12, 5, 17, 'Đang chờ', 'ho'),
-(13, 5, 15, 'Đang chờ', 'sổ mũi'),
-(14, 5, 24, 'Đang chờ', ''),
-(15, 5, 3, 'Đang chờ', ''),
-(16, 5, 14, 'Đang chờ', 'có vấn đề về tim mạch'),
-(17, 5, 23, 'Đang chờ', '');
+INSERT INTO `lichhen` (`ma_lich_hen`, `user_id`, `ma_gio`, `trang_thai`, `ghi_chu`, `hinh_thuc_kham`, `tong_tien`) VALUES
+(68, 4, 20, 'Đang chờ thanh toán', '123456', 'thuong', 50600.00);
 
 -- --------------------------------------------------------
 
@@ -226,16 +217,16 @@ CREATE TABLE `lich_gio` (
 --
 
 INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
-(1, 1, '08:00 - 08:15', 'Booked'),
-(2, 1, '08:15 - 08:30', 'Booked'),
+(1, 1, '08:00 - 08:15', 'Available'),
+(2, 1, '08:15 - 08:30', 'Available'),
 (3, 1, '08:30 - 08:45', 'Booked'),
-(4, 2, '14:00 - 14:15', 'Booked'),
+(4, 2, '14:00 - 14:15', 'Available'),
 (5, 2, '14:15 - 14:30', 'Available'),
 (6, 2, '14:30 - 14:45', 'Available'),
-(7, 3, '09:00 - 09:15', 'Booked'),
+(7, 3, '09:00 - 09:15', 'Available'),
 (8, 3, '09:15 - 09:30', 'Available'),
 (9, 3, '09:30 - 09:45', 'Available'),
-(10, 4, '10:00 - 10:15', 'Booked'),
+(10, 4, '10:00 - 10:15', 'Available'),
 (11, 4, '10:15 - 10:30', 'Available'),
 (12, 4, '10:30 - 10:45', 'Available'),
 (13, 5, '08:00 - 08:15', 'Booked'),
@@ -243,19 +234,20 @@ INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
 (15, 5, '08:30 - 08:45', 'Booked'),
 (16, 6, '13:00 - 13:15', 'Booked'),
 (17, 6, '13:15 - 13:30', 'Booked'),
-(18, 6, '13:30 - 13:45', 'Available'),
+(18, 6, '13:30 - 13:45', 'Booked'),
 (19, 7, '07:00 - 07:15', 'Booked'),
-(20, 7, '07:15 - 07:30', 'Available'),
-(21, 7, '07:30 - 07:45', 'Available'),
-(22, 8, '17:00 - 17:15', 'Booked'),
-(23, 8, '17:15 - 17:30', 'Booked'),
-(24, 8, '17:30 - 17:45', 'Booked'),
-(25, 9, '18:00 - 18:15', 'Booked'),
+(20, 7, '07:15 - 07:30', 'Booked'),
+(21, 7, '07:30 - 07:45', 'Booked'),
+(22, 8, '17:00 - 17:15', 'Available'),
+(23, 8, '17:15 - 17:30', 'Available'),
+(24, 8, '17:30 - 17:45', 'Available'),
+(25, 9, '18:00 - 18:15', 'Available'),
 (26, 9, '18:15 - 18:30', 'Available'),
 (27, 9, '18:30 - 18:45', 'Available'),
 (28, 10, '08:00 - 08:15', 'Booked'),
 (29, 10, '08:15 - 08:30', 'Available'),
-(30, 10, '08:30 - 08:45', 'Available');
+(30, 10, '08:30 - 08:45', 'Available'),
+(31, 7, '07:15 - 07:30', 'Booked');
 
 -- --------------------------------------------------------
 
@@ -349,6 +341,25 @@ INSERT INTO `phongkham_chuyenkhoa` (`MaPK`, `MaCK`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `thanhtoan`
+--
+
+CREATE TABLE `thanhtoan` (
+  `id` bigint(20) NOT NULL,
+  `ma_lich_hen` int(11) NOT NULL COMMENT 'Liên kết với lichhen.ma_lich_hen',
+  `momo_order_id` varchar(255) NOT NULL COMMENT 'Mã đơn hàng gửi lên MoMo',
+  `momo_trans_id` varchar(255) DEFAULT NULL COMMENT 'Mã giao dịch MoMo trả về',
+  `amount` decimal(10,2) NOT NULL COMMENT 'Số tiền thanh toán',
+  `status` varchar(50) NOT NULL COMMENT 'Trạng thái (PENDING, PAID, FAILED, CANCELED)',
+  `momo_result_code` varchar(50) DEFAULT NULL COMMENT 'Mã kết quả từ MoMo',
+  `payment_method` varchar(50) NOT NULL DEFAULT 'MOMO',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `users`
 --
 
@@ -370,41 +381,42 @@ CREATE TABLE `users` (
   `occupation` varchar(255) DEFAULT NULL,
   `referral_code` varchar(255) DEFAULT NULL,
   `role` enum('BENHNHAN','BACSI','ADMIN','BENHVIEN','PHONGKHAM') DEFAULT 'BENHNHAN',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `avatar_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `users`
 --
 
-INSERT INTO `users` (`id`, `full_name`, `phone_number`, `password`, `email`, `dob`, `gender`, `id_card`, `health_insurance`, `ethnicity`, `province`, `district`, `ward`, `address`, `occupation`, `referral_code`, `role`, `created_at`) VALUES
-(4, 'Trần Bảo Hân', '0123456789', '$2a$10$XInCfmmAbNsLrD89bAuGW.gjdYcznnty48lsUteTgUERXgXvLeca2', 'a@gmail.com', '2025-11-12', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'BENHNHAN', '2025-11-06 08:19:24'),
-(5, 'Nguyễn Thị Thanh Hằng', '0912345678', '$2a$10$Dq9oY7Zmsybjo5sZdVy0Xe6UCvd2EL2v1KBH.YnymQYCs5q6N0I8m', 'th@gmail.com', '2025-10-28', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'BENHNHAN', '2025-11-06 09:07:31'),
-(6, 'Admin', '0987654321', '$2a$10$c6lFff/P6HFQWuG9JW.2bOhZnHqjx7gzx4zSbSH0qK30B4XQGGf4u', 'ad@gmail.com', '2025-10-28', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'ADMIN', '2025-11-06 11:43:11'),
-(7, 'Bùi Viết Bảo Huy', '0123456788', '$2a$10$.TcgDk9d0VgF809f3illqON3sqyRCk6CnMxQlZ8ufx3cDcETk7786', 'bvbh@gmail.com', '2025-11-10', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'BENHNHAN', '2025-11-10 01:10:18'),
-(8, 'BS. Trần Thị Bích Ngọc', '0123654789', '$2a$10$dciPrbeCN7wt7MOVuPE9ouGVPqb2hrsHLx5W2B9E3fYPqmUkltF42', 'ngoc@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-10 03:18:34'),
-(10, 'Bệnh viện Chợ rẫy', '0123456777', '$2a$10$cMVq0MXvuLanOBygDrqzJOcMrwUipBD29v75Df3at4RIMVPAG8dSO', 'bvcr@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-10 13:19:26'),
-(12, 'Ngô Trường Hiếu', '0987220775', '$2a$10$u52aiDjv72ZXnwAmMSZYEekH/faRqDlxmx0v5J5Zr2D7E9EdBnH5y', 'nthbh@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHNHAN', '2025-11-10 13:26:57'),
-(14, 'TS.BS Đào Bùi Quý Quyền', '0934567890', '$2a$10$/uY9jmKOMTWbp52jSOONXeKrFFiHYDd8dDZndjn5qK00PCfnuu2ji', 'dbqq@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-10 14:27:55'),
-(15, 'GS.TS.BS Võ Thành Nhân', '0867223626', '$2a$10$lTkybfwtJ2Gk2D0Fu9okKeD/V.Pm9UKD50zK4MyBBzEYvsAjqzONO', 'vtn@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-10 14:29:06'),
-(17, 'BS. Nguyễn Thị Hồng Hạnh', '0122234562', '$2a$10$s7LhM4HmHN11cOv5GT2/2u/rCJqEO6xbibGR5tmWsTmdxaVkrVIxi', 'nthh@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:27:47'),
-(18, 'BS. Trần Ngọc Ánh', '0867223622', '$2a$10$We65CXC.564o5uL7e7Hj5ON3HKITjOVAKdw1iJhPcjtfV2ypHcMsi', 'tna@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:40:19'),
-(19, 'BS. Bùi Tiến Hùng', '0867233625', '$2a$10$J3y2uXGFnNe0FTBwprQ8heXeVZTI1ca80iGs7Qbdc6IZcrqGe1Y86', 'bth@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:40:42'),
-(20, 'PGS.TS.BS Tăng Hà Nam Anh', '0857223625', '$2a$10$UkkwdbXl5bUmXbJtINsVMOyE7uroj.I2weRKNmoHrBOxMMQ8wbo.6', 'thna@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:41:03'),
-(21, 'ThS.BS Nguyễn Thị Tâm', '0867221625', '$2a$10$7rFMHDfwrNYykKNO0oRJguLbWR1.ZVqEpje4mGLZ4yrGsea.DEZqG', 'ntt@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:41:29'),
-(22, 'BS.CKI Nguyễn Vạn Thông', '0817223625', '$2a$10$m83IT7fAKjsiJp1evl/.pOPJtrsn5CGWbkRxWlSV8Y8G9H9O0HEt6', 'nvt@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:41:58'),
-(23, 'BS.CKII Trần Minh Khuyên', '0867223632', '$2a$10$igl3lL/W217RdaDTO3uRX.lV3VUtq/yRk5yGFDSFHVDONcVH5lFWi', 'tmk@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:45:18'),
-(24, 'Bệnh viện Đại học Y Dược TP.HCM', '02838554269', '$2a$10$EneBzO914QggGecMILB7IuAZ9h2eYkVuadzaM33yLyOGUfmgK9iC6', 'dhyd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:50:07'),
-(25, 'Bệnh viện Từ Dũ', '02854042829', '$2a$10$mqmvT/ew7Js23/moMz78pO3rTJNoM/ZZlh4Q9G7inYsfVN66HO7a2', 'bvtd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:50:36'),
-(26, 'Bệnh viện Phụ sản Quốc tế Sài Gòn (SIH)', '02839253000', '$2a$10$dkWSzhZI8l5ckE2fgbuYi.Lf7k918DkHT1VLTeZWcMxKCgxHRzNYu', 'sih@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:50:58'),
-(27, 'Bệnh viện Tâm thần Trung ương 2', '02513822295', '$2a$10$EXqAPk5o7NBmCwjflA9JzuPZZyeDJzad0HeuC7CFHc1bwaATKzZpC', 'bvtttw2@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:51:27'),
-(28, 'Bệnh viện Nhi Đồng 1', '02839271119', '$2a$10$4BmU/vGAk.EWG/b8vrB1ie34gkTR4.iQbcmHeV.Na6CBjzPN3Nq/y', 'bvnd1@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:51:50'),
-(29, 'Bệnh viện Nhân dân 115', '02838652368', '$2a$10$QZlbEB9bHle8n7zeLk9k4uRsFy5UmqA4XFpHvbc.n9ARJCLHQtiPu', 'bvnd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:52:12'),
-(30, 'Bệnh viện Hùng Vương', '02838558532', '$2a$10$sbttWqazHC2DzF5hVciTkeUCtU9GbZ6ccRFtvcqLhqmxGeRfSqeSu', 'bvhv@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:52:35'),
-(31, 'Bệnh viện Vinmec Central Park', '02836221166', '$2a$10$Ja0yDbFCBP9/9sP/GA5EDOf6ndaDEnP6WEXijkE3JtxXi.p9NRAVa', 'bvvcp@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:52:59'),
-(32, 'Bệnh viện FV', '02854113333', '$2a$10$lKbxifOJrL2/iwBfWHfFget9s1XD/j/N2F/voh1Hb3Lom3SCjwqyy', 'bvfv@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:53:24'),
-(33, 'Shine Clinic By TS.BS Trần Ngọc Ánh', '0807223625', '$2a$10$NZAL5B56LPQOBzrAYVhmmuytJzFi9c7tP6a1Gj1ANS0uNG/We2wGC', 'scb@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PHONGKHAM', '2025-11-11 08:57:44'),
-(34, 'Phòng Khám Nội Tổng Quát Sài Gòn', '0809223625', '$2a$10$Ut8jrPS6tiZkX9RHF/pGb.qnaMOXXEECuJ4QPGeJC1Rc0QfSttDgq', 'pkntq@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PHONGKHAM', '2025-11-11 08:58:19');
+INSERT INTO `users` (`id`, `full_name`, `phone_number`, `password`, `email`, `dob`, `gender`, `id_card`, `health_insurance`, `ethnicity`, `province`, `district`, `ward`, `address`, `occupation`, `referral_code`, `role`, `created_at`, `avatar_url`) VALUES
+(4, 'Trần Bảo Hân', '0123456789', '$2a$10$XInCfmmAbNsLrD89bAuGW.gjdYcznnty48lsUteTgUERXgXvLeca2', 'azunastart0101@gmail.com', '2025-11-12', 'Nam', '', '', 'Kinh', 'Tỉnh Bắc Giang', 'Huyện Hiệp Hòa', 'Xã Xuân Cẩm', '', '', '', 'BENHNHAN', '2025-11-06 08:19:24', 'https://res.cloudinary.com/dlqpohz0j/image/upload/v1763301058/hrqleepptczcdp7fmsum.jpg'),
+(5, 'Nguyễn Thị Thanh Hằng', '0912345678', '$2a$10$Dq9oY7Zmsybjo5sZdVy0Xe6UCvd2EL2v1KBH.YnymQYCs5q6N0I8m', 'th@gmail.com', '2025-10-28', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'BENHNHAN', '2025-11-06 09:07:31', NULL),
+(6, 'Admin', '0987654321', '$2a$10$c6lFff/P6HFQWuG9JW.2bOhZnHqjx7gzx4zSbSH0qK30B4XQGGf4u', 'ad@gmail.com', '2025-10-28', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'ADMIN', '2025-11-06 11:43:11', NULL),
+(7, 'Bùi Viết Bảo Huy', '0123456788', '$2a$10$.TcgDk9d0VgF809f3illqON3sqyRCk6CnMxQlZ8ufx3cDcETk7786', 'bvbh@gmail.com', '2025-11-10', 'Nam', '', '', 'Kinh', '', '', '', '', '', '', 'BENHNHAN', '2025-11-10 01:10:18', NULL),
+(8, 'BS. Trần Thị Bích Ngọc', '0123654789', '$2a$10$dciPrbeCN7wt7MOVuPE9ouGVPqb2hrsHLx5W2B9E3fYPqmUkltF42', 'ngoc@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-10 03:18:34', NULL),
+(10, 'Bệnh viện Chợ rẫy', '0123456777', '$2a$10$cMVq0MXvuLanOBygDrqzJOcMrwUipBD29v75Df3at4RIMVPAG8dSO', 'bvcr@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-10 13:19:26', NULL),
+(12, 'Ngô Trường Hiếu', '0987220775', '$2a$10$u52aiDjv72ZXnwAmMSZYEekH/faRqDlxmx0v5J5Zr2D7E9EdBnH5y', 'nthbh@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHNHAN', '2025-11-10 13:26:57', NULL),
+(14, 'TS.BS Đào Bùi Quý Quyền', '0934567890', '$2a$10$/uY9jmKOMTWbp52jSOONXeKrFFiHYDd8dDZndjn5qK00PCfnuu2ji', 'dbqq@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-10 14:27:55', NULL),
+(15, 'GS.TS.BS Võ Thành Nhân', '0867223626', '$2a$10$lTkybfwtJ2Gk2D0Fu9okKeD/V.Pm9UKD50zK4MyBBzEYvsAjqzONO', 'vtn@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-10 14:29:06', NULL),
+(17, 'BS. Nguyễn Thị Hồng Hạnh', '0122234562', '$2a$10$s7LhM4HmHN11cOv5GT2/2u/rCJqEO6xbibGR5tmWsTmdxaVkrVIxi', 'nthh@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:27:47', NULL),
+(18, 'BS. Trần Ngọc Ánh', '0867223622', '$2a$10$We65CXC.564o5uL7e7Hj5ON3HKITjOVAKdw1iJhPcjtfV2ypHcMsi', 'tna@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:40:19', NULL),
+(19, 'BS. Bùi Tiến Hùng', '0867233625', '$2a$10$J3y2uXGFnNe0FTBwprQ8heXeVZTI1ca80iGs7Qbdc6IZcrqGe1Y86', 'bth@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:40:42', NULL),
+(20, 'PGS.TS.BS Tăng Hà Nam Anh', '0857223625', '$2a$10$UkkwdbXl5bUmXbJtINsVMOyE7uroj.I2weRKNmoHrBOxMMQ8wbo.6', 'thna@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:41:03', NULL),
+(21, 'ThS.BS Nguyễn Thị Tâm', '0867221625', '$2a$10$7rFMHDfwrNYykKNO0oRJguLbWR1.ZVqEpje4mGLZ4yrGsea.DEZqG', 'ntt@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:41:29', NULL),
+(22, 'BS.CKI Nguyễn Vạn Thông', '0817223625', '$2a$10$m83IT7fAKjsiJp1evl/.pOPJtrsn5CGWbkRxWlSV8Y8G9H9O0HEt6', 'nvt@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:41:58', NULL),
+(23, 'BS.CKII Trần Minh Khuyên', '0867223632', '$2a$10$igl3lL/W217RdaDTO3uRX.lV3VUtq/yRk5yGFDSFHVDONcVH5lFWi', 'tmk@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BACSI', '2025-11-11 08:45:18', NULL),
+(24, 'Bệnh viện Đại học Y Dược TP.HCM', '02838554269', '$2a$10$EneBzO914QggGecMILB7IuAZ9h2eYkVuadzaM33yLyOGUfmgK9iC6', 'dhyd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:50:07', NULL),
+(25, 'Bệnh viện Từ Dũ', '02854042829', '$2a$10$mqmvT/ew7Js23/moMz78pO3rTJNoM/ZZlh4Q9G7inYsfVN66HO7a2', 'bvtd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:50:36', NULL),
+(26, 'Bệnh viện Phụ sản Quốc tế Sài Gòn (SIH)', '02839253000', '$2a$10$dkWSzhZI8l5ckE2fgbuYi.Lf7k918DkHT1VLTeZWcMxKCgxHRzNYu', 'sih@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:50:58', NULL),
+(27, 'Bệnh viện Tâm thần Trung ương 2', '02513822295', '$2a$10$EXqAPk5o7NBmCwjflA9JzuPZZyeDJzad0HeuC7CFHc1bwaATKzZpC', 'bvtttw2@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:51:27', NULL),
+(28, 'Bệnh viện Nhi Đồng 1', '02839271119', '$2a$10$4BmU/vGAk.EWG/b8vrB1ie34gkTR4.iQbcmHeV.Na6CBjzPN3Nq/y', 'bvnd1@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:51:50', NULL),
+(29, 'Bệnh viện Nhân dân 115', '02838652368', '$2a$10$QZlbEB9bHle8n7zeLk9k4uRsFy5UmqA4XFpHvbc.n9ARJCLHQtiPu', 'bvnd@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:52:12', NULL),
+(30, 'Bệnh viện Hùng Vương', '02838558532', '$2a$10$sbttWqazHC2DzF5hVciTkeUCtU9GbZ6ccRFtvcqLhqmxGeRfSqeSu', 'bvhv@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:52:35', NULL),
+(31, 'Bệnh viện Vinmec Central Park', '02836221166', '$2a$10$Ja0yDbFCBP9/9sP/GA5EDOf6ndaDEnP6WEXijkE3JtxXi.p9NRAVa', 'bvvcp@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:52:59', NULL),
+(32, 'Bệnh viện FV', '02854113333', '$2a$10$lKbxifOJrL2/iwBfWHfFget9s1XD/j/N2F/voh1Hb3Lom3SCjwqyy', 'bvfv@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BENHVIEN', '2025-11-11 08:53:24', NULL),
+(33, 'Shine Clinic By TS.BS Trần Ngọc Ánh', '0807223625', '$2a$10$NZAL5B56LPQOBzrAYVhmmuytJzFi9c7tP6a1Gj1ANS0uNG/We2wGC', 'scb@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PHONGKHAM', '2025-11-11 08:57:44', NULL),
+(34, 'Phòng Khám Nội Tổng Quát Sài Gòn', '0809223625', '$2a$10$Ut8jrPS6tiZkX9RHF/pGb.qnaMOXXEECuJ4QPGeJC1Rc0QfSttDgq', 'pkntq@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'PHONGKHAM', '2025-11-11 08:58:19', NULL);
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -480,6 +492,15 @@ ALTER TABLE `phongkham_chuyenkhoa`
   ADD KEY `MaCK` (`MaCK`);
 
 --
+-- Chỉ mục cho bảng `thanhtoan`
+--
+ALTER TABLE `thanhtoan`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `momo_order_id` (`momo_order_id`),
+  ADD UNIQUE KEY `uni_momo_order_id` (`momo_order_id`),
+  ADD KEY `FK_thanhtoan_lichhen` (`ma_lich_hen`);
+
+--
 -- Chỉ mục cho bảng `users`
 --
 ALTER TABLE `users`
@@ -512,13 +533,13 @@ ALTER TABLE `chuyenkhoa`
 -- AUTO_INCREMENT cho bảng `lichhen`
 --
 ALTER TABLE `lichhen`
-  MODIFY `ma_lich_hen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `ma_lich_hen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT cho bảng `lich_gio`
 --
 ALTER TABLE `lich_gio`
-  MODIFY `ma_gio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `ma_gio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT cho bảng `lich_tong`
@@ -531,6 +552,12 @@ ALTER TABLE `lich_tong`
 --
 ALTER TABLE `phongkham`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT cho bảng `thanhtoan`
+--
+ALTER TABLE `thanhtoan`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
@@ -593,6 +620,12 @@ ALTER TABLE `phongkham`
 ALTER TABLE `phongkham_chuyenkhoa`
   ADD CONSTRAINT `phongkham_chuyenkhoa_ibfk_1` FOREIGN KEY (`MaPK`) REFERENCES `phongkham` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `phongkham_chuyenkhoa_ibfk_2` FOREIGN KEY (`MaCK`) REFERENCES `chuyenkhoa` (`MaCK`) ON DELETE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `thanhtoan`
+--
+ALTER TABLE `thanhtoan`
+  ADD CONSTRAINT `FK_thanhtoan_lichhen` FOREIGN KEY (`ma_lich_hen`) REFERENCES `lichhen` (`ma_lich_hen`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

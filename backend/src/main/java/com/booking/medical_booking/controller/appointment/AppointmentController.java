@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.booking.medical_booking.dto.AppointmentDTO;
+import com.booking.medical_booking.dto.AppointmentDetailDTO;
 import com.booking.medical_booking.model.Appointment;
 import com.booking.medical_booking.service.appointment.AppointmentService;
 import com.booking.medical_booking.service.auth.UserService; // Lớp Service lấy User
@@ -62,10 +63,14 @@ public class AppointmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Appointment> getAppointmentDetail(@PathVariable Integer id) {
-        
-        
         Appointment appointment = appointmentService.findById(id);
-        
+        System.out.println("Thông tin lịch hẹn: "+appointment);
         return ResponseEntity.ok(appointment);
+    }
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<AppointmentDetailDTO> getAppointmentInforDetails(@PathVariable Integer id) {
+        AppointmentDetailDTO result = appointmentService.getBookingDetails(id);
+        return ResponseEntity.ok(result);
     }
 }
