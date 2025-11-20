@@ -1,9 +1,16 @@
 import axios from 'axios';
 
+// src/api/axiosConfig.js
+import axios from 'axios';
+
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080/api', 
-  timeout: 10000,
+    // Nếu có biến môi trường thì dùng, không thì dùng localhost (để chạy máy nhà vẫn được)
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api', 
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
+
 
 axiosInstance.interceptors.request.use(
   (config) => {

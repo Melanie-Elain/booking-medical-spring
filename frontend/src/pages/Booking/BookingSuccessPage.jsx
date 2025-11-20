@@ -2,9 +2,10 @@ import React from 'react';
 import Header from '../../components/Home/Header';
 import HomeFooter from '../../components/Home/HomeFooter';
 import { CheckCircle } from 'lucide-react';
-import { useLocation } from 'react-router-dom'; 
+import { useLocation, useNavigate } from 'react-router-dom'; 
 
 const BookingSuccessPage = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const successDetails = location.state;
 
@@ -121,11 +122,10 @@ const BookingSuccessPage = () => {
 
                     {/* NÚT HÀNH ĐỘNG */}
                     <div className="flex justify-between mt-8 space-x-4">
-                        <button className="flex-1 py-3 border border-blue-600 text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition">
-                            Xem phiếu khám
-                        </button>
-                        <button className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
-                            Lưu lại phiếu
+                    <button className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
+                            onClick={()=>navigate("/")}
+                        >
+                            Về trang chủ
                         </button>
                     </div>
 

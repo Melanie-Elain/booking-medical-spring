@@ -104,7 +104,7 @@ const DownloadApp = ({isBookingPage =false}) => {
                         <li>Lưu trữ hồ sơ sức khoẻ</li>
                         <li>Thanh toán dịch vụ trực tuyến</li>
                     </ul>
-                    <div className="app-stores">
+                    <div className="app-stores" style={{ display: "flex", gap: "16px", justifyContent: "center", alignItems: "center" }}>
                         {/* Thay thế bằng link ảnh Google Play và App Store thực tế */}
                         <img src="https://cdn.youmed.vn/wp-content/themes/youmed/images/google-play.svg" alt="Tải trên Google Play" />
                         <img src="https://cdn.youmed.vn/wp-content/themes/youmed/images/apple-store.svg" alt="Tải trên App Store" />

@@ -6,7 +6,7 @@ const AdminRoute = ({ children }) => {
   const role = localStorage.getItem('userRole');
 
   // Chỉ cho phép truy cập nếu có token VÀ role là "ADMIN"
-  return (token && role === 'ADMIN') ? children : <Navigate to="/" replace />;
+  return (token && role === 'ROLE_ADMIN') ? children : <Navigate to="/" replace />;
 };
 
 export default AdminRoute;

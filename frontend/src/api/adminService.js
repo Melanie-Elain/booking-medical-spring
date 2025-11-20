@@ -55,3 +55,11 @@ export const getMyAppointments = (page, size, keyword) => {
   }
   return axiosInstance.get(url);
 };
+
+/**
+ * ADMIN HỦY LỊCH HẸN
+ * API: PUT /api/admin/appointments/{id}/cancel
+ */
+export const cancelAdminAppointment = (appointmentId) => {
+    return axiosInstance.put(`/admin/appointments/${appointmentId}/cancel`);
+};

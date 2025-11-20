@@ -179,25 +179,11 @@ public class DoctorService {
         return formattedSchedules;
     }
 
-
+    @Transactional(readOnly = true)
+        public Doctor findByUserId(Long userId) {
+            return doctorRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy bác sĩ với userId: " + userId));
+        }
     
 
-    // @Transactional
-    // public List<Doctor> getDoctorsBySpecialtyId(Long specialtyId) {
-    //     Specialty specialty = specialtyRepository.(specialtyId)
-    //         .orElseThrow(() -> new RuntimeException("Không tìm thấy Specialty ID: " + specialtyId));
-        
-    //     return doctorRepository.findBySpecialtiesContaining(specialty);
-    // }
-
-    // @Transactional
-    // public List<Doctor> searchDoctorsByName(String name) {
-    //     return doctorRepository.findByNameContainingIgnoreCase(name);
-    // }
-
-    // @Transactional
-    // public Doctor getDoctorSchedules (Long id) {
-    //     return doctorRepository.findByIdWithSchedules(id)
-    //         .orElseThrow(() -> new RuntimeException("Không tìm thấy Doctor ID: " + id));
-    // }
 }

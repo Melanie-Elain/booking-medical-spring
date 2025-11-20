@@ -41,7 +41,7 @@ const HomeSpecialty = ({ isBookingPage = false }) => {
 
   return (
     <section className="home-specialty">
-      <div className="container">
+      <div className="container-specialty">
         {!isBookingPage ? (
           <div className="specialty-header">
             <h2 className="title">Đặt lịch theo Chuyên khoa</h2>

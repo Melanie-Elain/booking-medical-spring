@@ -4,13 +4,12 @@
     background-color: #ffffff; /* Màu nền nhẹ cho toàn bộ section */
 }
 
-.container {
+.container-clinic {
     width: 90%; 
     max-width: 1200px; /* Giới hạn chiều rộng tối đa */
     margin: 0 auto; 
 }
 
-/* --- Phần Header và Nút Xem thêm --- */
 .clinic-header {
     display: flex;
     justify-content: space-between;

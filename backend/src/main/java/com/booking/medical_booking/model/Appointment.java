@@ -40,8 +40,8 @@ public class Appointment {
     @JsonIgnore
     private User user;
 
-    @OneToOne(fetch = FetchType.EAGER) 
-    @JoinColumn(name = "ma_gio", unique = true, nullable = false) 
+    @ManyToOne(fetch = FetchType.EAGER) 
+    @JoinColumn(name = "ma_gio", nullable = false) 
     @JsonIgnore
     private LichGio lichGio;
 }

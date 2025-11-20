@@ -14,10 +14,10 @@ import ClinicProfile from "../pages/Booking/ClinicProfile";
 import OnlineConsultation from "../pages/Consultation/OnlineConsultationPage";
 import MedicalNews from "../pages/MedicalNews/MedicalNewsPage";
 
-// --- Import trang DoctorWorkspace ---
-import DoctorWorkspacePage from "../pages/DoctorWorkspace/DocterWorkspacePage";
-import DoctorWorkspaceIntro from "../pages/DoctorWorkspace/DocterWorkspaceIntro";
-import DoctorLoginPage from "../pages/Auth/DoctorLoginPage";
+import DoctorWorkspaceIntro from "../pages/DoctorWorkspace/DoctorWorkspaceIntro";
+import DoctorWorkspacePage from "../pages/Doctor/DoctorWorkspacePage";
+import HospitalWorkspacePage from "../pages/Hospital/HospitalWorkspacePage";
+import ClinicWorkspacePage from "../pages/Clinic/ClinicWorkspacePage";
 
 
 import CompleteBookingDoctor from "../pages/Booking/CompleteBookingDoctor";
@@ -28,6 +28,7 @@ import CompleteBookingHospital from "../pages/Booking/CompleteBookingHospital";
 import MockPaymentPage from "../pages/Payment/MockPaymentPage";
 import PaymentMethodSelectionPage from "../pages/Payment/PaymentMethodSelectionPage";
 import PaymentStatus from "../pages/Payment/PaymentStatus";
+import CompletePayment from "../pages/Payment/CompletePayment";
 
 // === IMPORT CÁC TRANG DASHBOARD  ===
 import UserDashboardLayout from "../pages/UserDashboard/UserDashboardLayout";
@@ -95,7 +96,9 @@ const AppRoutes = () => {
       <Route path="/dat-kham/benh-vien/:id" element={<HospitalProfile />} />
       <Route path="/payment/select-method" element={<PaymentMethodSelectionPage/>} />
       <Route path="/payment/mock-checkout" element={<MockPaymentPage/>} />
-      <Route path="/payment-status" element={<PaymentStatus />} />
+      <Route path="/payment-status" element={<CompletePayment />} />
+      {/* <Route path="/payment-status" element={<CompletePayment />} /> */}
+
       
       <Route path="/dat-kham/benh-vien/:id/hoan-tat-dat-kham" element={<CompleteBookingHospital />} />
       <Route
@@ -147,9 +150,12 @@ const AppRoutes = () => {
       />
 
       {/* DocterWorkspace */}
+
       <Route path="/doctor-workspace-intro" element={<DoctorWorkspaceIntro />} />
-      <Route path="/doctor-login" element={<DoctorLoginPage />} />
-      <Route path="/doctor-workspace" element={<DoctorWorkspacePage />} />
+      <Route path="/doctor-workspace-page" element={<DoctorWorkspacePage />} />
+      <Route path="/hospital-workspace-page" element={<HospitalWorkspacePage />} />
+      <Route path="/clinic-workspace-page" element={<ClinicWorkspacePage />} />
+
 
       {/* Auth  */}
       <Route path="/login" element={<LoginPage />} />

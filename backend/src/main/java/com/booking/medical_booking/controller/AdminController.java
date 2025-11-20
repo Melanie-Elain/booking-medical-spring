@@ -234,23 +234,28 @@ public class AdminController {
         return ResponseEntity.ok(appointmentPage);
     } 
 
-    // @PutMapping("/appointments/{id}/status")
-    // @PreAuthorize("hasRole('ADMIN')")
-    // public ResponseEntity<Appointment> updateAppointmentStatus(@PathVariable Integer id, @RequestBody Map<String, String> request) {
-    //     try {
-    //         Appointment updatedAppointment = appointmentService.updateAppointmentStatus(id, request);
-    //         return ResponseEntity.ok(updatedAppointment);
-    //     } catch (RuntimeException e) {
-    //         return ResponseEntity.badRequest().body(null); 
-    //     }
-    // }
 
     @PutMapping("/appointments/{id}/status")
-@PreAuthorize("hasRole('ADMIN')")
-// Sửa kiểu trả về trong ResponseEntity
-public ResponseEntity<AppointmentResponseDTO> updateAppointmentStatus(@PathVariable Integer id, @RequestBody Map<String, String> request) {
-    // Không cần try-catch
-    AppointmentResponseDTO updatedAppointmentDTO = appointmentService.updateAppointmentStatus(id, request);
-    return ResponseEntity.ok(updatedAppointmentDTO);
-}
+    @PreAuthorize("hasRole('ADMIN')")
+    // Sửa kiểu trả về trong ResponseEntity
+    public ResponseEntity<AppointmentResponseDTO> updateAppointmentStatus(@PathVariable Integer id, @RequestBody Map<String, String> request) {
+        // Không cần try-catch
+        AppointmentResponseDTO updatedAppointmentDTO = appointmentService.updateAppointmentStatus(id, request);
+        return ResponseEntity.ok(updatedAppointmentDTO);
+    }
+
+    // ==============================================================
+    // 👉 THÊM HÀM HỦY LỊCH (CHO ADMIN) VÀO ĐÂY
+    // ==============================================================
+    @PutMapping("/appointments/{id}/cancel")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> cancelAppointment(@PathVariable Integer id) {
+        try {
+            // Admin gọi service hủy lịch
+            AppointmentResponseDTO result = appointmentService.cancelAppointment(id);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
