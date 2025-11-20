@@ -3,10 +3,10 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 19, 2025 lúc 02:48 PM
+-- Thời gian đã tạo: Th10 20, 2025 lúc 06:36 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
-
+SET SESSION sql_require_primary_key = 0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -214,7 +214,25 @@ INSERT INTO `lichhen` (`ma_lich_hen`, `user_id`, `ma_gio`, `trang_thai`, `ghi_ch
 (124, 5, 45, 'Đã thanh toán', '', 'thuong', 50600.00),
 (125, 5, 46, 'Đã thanh toán', '', 'thuong', 50600.00),
 (126, 4, 2, 'Đã xác nhận', '', NULL, 0.00),
-(127, 5, 48, 'Đã thanh toán', '', 'thuong', 50600.00);
+(127, 5, 48, 'Đã thanh toán', '', 'thuong', 50600.00),
+(128, 5, 6, 'Đã xác nhận', '', NULL, 0.00),
+(132, 5, 5, 'Đã hủy', '', NULL, 0.00),
+(134, 5, 47, 'Đang chờ thanh toán', '', 'thuong', 50600.00),
+(135, 5, 47, 'Đang chờ thanh toán', '', 'thuong', 50600.00),
+(136, 5, 47, 'Đang chờ thanh toán', '', 'thuong', 50600.00),
+(137, 5, 47, 'Đã thanh toán', '', 'thuong', 50600.00),
+(138, 5, 47, 'Đang chờ thanh toán', '', 'thuong', 50600.00),
+(139, 5, 47, 'Đã thanh toán', '', 'thuong', 50600.00),
+(140, 5, 34, 'Đang chờ thanh toán', '', 'thuong', 50600.00),
+(141, 5, 34, 'Thanh toán thất bại', '', 'thuong', 50600.00),
+(142, 5, 54, 'Đã thanh toán', '', 'thuong', 50600.00),
+(143, 5, 53, 'Đã thanh toán', '', 'thuong', 50600.00),
+(144, 5, 4, 'Đã hủy', '', NULL, 0.00),
+(145, 5, 4, 'Đang chờ', '', NULL, 0.00),
+(146, 5, 34, 'Thanh toán thất bại', '', 'thuong', 50600.00),
+(147, 5, 34, 'Thanh toán thất bại', '', 'thuong', 50600.00),
+(148, 5, 34, 'Thanh toán thất bại', '', 'thuong', 50600.00),
+(149, 5, 34, 'Đã thanh toán', '', 'thuong', 50600.00);
 
 -- --------------------------------------------------------
 
@@ -241,7 +259,19 @@ CREATE TABLE `lichsu_thanhtoan` (
 --
 
 INSERT INTO `lichsu_thanhtoan` (`id`, `appointment_id`, `payment_method`, `order_id`, `transaction_no`, `amount`, `bank_code`, `card_type`, `response_code`, `status`, `created_at`) VALUES
-(1, 127, 'VNPAY', '127', '15271144', 50600.00, 'NCB', 'ATM', '00', 'SUCCESS', '2025-11-19 13:46:43');
+(1, 127, 'VNPAY', '127', '15271144', 50600.00, 'NCB', 'ATM', '00', 'SUCCESS', '2025-11-19 13:46:43'),
+(2, 134, 'VNPAY', '134', '0', 50600.00, 'VNPAY', 'QRCODE', '24', 'FAILED', '2025-11-19 16:58:00'),
+(3, 135, 'VNPAY', '135', '0', 50600.00, 'VNPAY', 'QRCODE', '24', 'FAILED', '2025-11-19 17:00:14'),
+(4, 136, 'VNPAY', '136', '0', 50600.00, 'VNPAY', 'QRCODE', '24', 'FAILED', '2025-11-19 17:07:44'),
+(5, 137, 'VNPAY', '137', '15271350', 50600.00, 'NCB', 'ATM', '00', 'SUCCESS', '2025-11-19 17:08:37'),
+(6, 139, 'VNPAY', '139', '15271358', 50600.00, 'NCB', 'ATM', '00', 'SUCCESS', '2025-11-19 17:15:25'),
+(7, 141, 'VNPAY', '141', '0', 50600.00, 'VNPAY', 'QRCODE', '24', 'FAILED', '2025-11-19 17:22:57'),
+(8, 142, 'VNPAY', '142', '15271391', 50600.00, 'NCB', 'ATM', '00', 'SUCCESS', '2025-11-19 17:46:51'),
+(9, 143, 'VNPAY', '143', '15271398', 50600.00, 'NCB', 'ATM', '00', 'SUCCESS', '2025-11-19 17:50:22'),
+(10, 146, 'VNPAY', '146', '0', 50600.00, 'VNPAY', 'QRCODE', '24', 'FAILED', '2025-11-20 04:54:32'),
+(11, 147, 'VNPAY', '147', '0', 50600.00, 'VNPAY', 'QRCODE', '24', 'FAILED', '2025-11-20 04:54:49'),
+(12, 148, 'VNPAY', '148', '0', 50600.00, 'VNPAY', 'QRCODE', '24', 'FAILED', '2025-11-20 04:56:21'),
+(13, 149, 'VNPAY', '149', '15271949', 50600.00, 'NCB', 'ATM', '00', 'SUCCESS', '2025-11-20 04:57:33');
 
 -- --------------------------------------------------------
 
@@ -264,7 +294,7 @@ INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
 (1, 1, '08:00 - 08:15', 'Booked'),
 (2, 1, '08:15 - 08:30', 'Booked'),
 (3, 1, '08:30 - 08:45', 'Booked'),
-(4, 2, '14:00 - 14:15', 'Available'),
+(4, 2, '14:00 - 14:15', 'Booked'),
 (5, 2, '14:15 - 14:30', 'Available'),
 (6, 2, '14:30 - 14:45', 'Available'),
 (7, 3, '09:00 - 09:15', 'Available'),
@@ -294,7 +324,7 @@ INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
 (31, 7, '07:15 - 07:30', 'Booked'),
 (32, 11, '07:00 - 11:30', 'Booked'),
 (33, 12, '07:00 - 11:30', 'Booked'),
-(34, 12, '13:00 - 16:30', 'Available'),
+(34, 12, '13:00 - 16:30', 'Booked'),
 (35, 13, '07:00 - 07:30', 'Available'),
 (36, 13, '08:00 - 08:30', 'Available'),
 (37, 13, '09:00 - 09:30', 'Available'),
@@ -307,12 +337,29 @@ INSERT INTO `lich_gio` (`ma_gio`, `ma_lich`, `khung_gio`, `status`) VALUES
 (44, 15, '09:00 - 09:30', 'Available'),
 (45, 16, '07:00 - 11:30', 'Booked'),
 (46, 16, '13:00 - 16:30', 'Booked'),
-(47, 17, '07:00 - 11:30', 'Available'),
+(47, 17, '07:00 - 11:30', 'Booked'),
 (48, 17, '13:00 - 16:30', 'Booked'),
 (49, 18, '07:00 - 07:30', 'Available'),
 (50, 18, '08:00 - 08:30', 'Available'),
 (51, 18, '09:00 - 09:30', 'Available'),
-(52, 18, '10:00 - 10:30', 'Available');
+(52, 18, '10:00 - 10:30', 'Available'),
+(53, 19, '07:00 - 11:30', 'Booked'),
+(54, 19, '13:00 - 16:30', 'Booked'),
+(55, 20, '07:00 - 07:30', 'Available'),
+(56, 20, '08:00 - 08:30', 'Available'),
+(57, 20, '09:00 - 09:30', 'Available'),
+(58, 21, '08:00 - 08:30', 'Available'),
+(59, 21, '09:00 - 09:30', 'Available'),
+(60, 22, '07:00 - 07:30', 'Available'),
+(61, 22, '09:00 - 09:30', 'Available'),
+(62, 22, '10:00 - 10:30', 'Available'),
+(63, 23, '08:00 - 08:30', 'Available'),
+(64, 23, '09:00 - 09:30', 'Available'),
+(65, 23, '10:00 - 10:30', 'Available'),
+(66, 21, '10:00 - 10:30', 'Available'),
+(67, 21, '07:00 - 07:30', 'Available'),
+(68, 24, '07:00 - 07:30', 'Available'),
+(69, 25, '07:00 - 07:30', 'Available');
 
 -- --------------------------------------------------------
 
@@ -350,7 +397,14 @@ INSERT INTO `lich_tong` (`ma_lich`, `loai_doi_tuong`, `ma_doi_tuong`, `ngay`, `t
 (15, 'PHONGKHAM', 2, '2025-11-30', 'Chủ nhật, 30/11/2025'),
 (16, 'BENHVIEN', 1, '2025-11-20', 'Thứ 5, 20/11/2025'),
 (17, 'BENHVIEN', 1, '2025-11-21', 'Thứ 6, 21/11/2025'),
-(18, 'BACSI', 1, '2025-11-21', 'Thứ 6, 21/11/2025');
+(18, 'BACSI', 1, '2025-11-21', 'Thứ 6, 21/11/2025'),
+(19, 'BENHVIEN', 1, '2025-12-24', 'Thứ 4, 24/12/2025'),
+(20, 'BACSI', 2, '2025-11-21', 'Thứ 6, 21/11/2025'),
+(21, 'BACSI', 2, '2025-11-22', 'Thứ 7, 22/11/2025'),
+(22, 'BACSI', 2, '2025-11-28', 'Thứ 6, 28/11/2025'),
+(23, 'BACSI', 2, '2025-11-26', 'Thứ 4, 26/11/2025'),
+(24, 'BACSI', 2, '2025-11-29', 'Thứ 7, 29/11/2025'),
+(25, 'BACSI', 2, '2025-11-20', 'Thứ 5, 20/11/2025');
 
 -- --------------------------------------------------------
 
@@ -515,8 +569,8 @@ ALTER TABLE `chuyenkhoa`
 --
 ALTER TABLE `lichhen`
   ADD PRIMARY KEY (`ma_lich_hen`),
-  ADD UNIQUE KEY `UNI_MaGio` (`ma_gio`),
-  ADD KEY `FK_hen_user` (`user_id`);
+  ADD KEY `FK_hen_user` (`user_id`),
+  ADD KEY `FK_hen_gio` (`ma_gio`);
 
 --
 -- Chỉ mục cho bảng `lichsu_thanhtoan`
@@ -584,25 +638,25 @@ ALTER TABLE `chuyenkhoa`
 -- AUTO_INCREMENT cho bảng `lichhen`
 --
 ALTER TABLE `lichhen`
-  MODIFY `ma_lich_hen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
+  MODIFY `ma_lich_hen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=150;
 
 --
 -- AUTO_INCREMENT cho bảng `lichsu_thanhtoan`
 --
 ALTER TABLE `lichsu_thanhtoan`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT cho bảng `lich_gio`
 --
 ALTER TABLE `lich_gio`
-  MODIFY `ma_gio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `ma_gio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT cho bảng `lich_tong`
 --
 ALTER TABLE `lich_tong`
-  MODIFY `ma_lich` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `ma_lich` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT cho bảng `phongkham`

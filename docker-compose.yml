@@ -1,13 +1,136 @@
-version: '3.8'
+# version: '3.8'
 
+# services:
+#   # ---------------------------------------------
+#   # 1. DỊCH VỤ CƠ SỞ DỮ LIỆU (MYSQL)
+#   # ---------------------------------------------
+#   mysql:
+#     image: mysql:8
+#     container_name: mysql-container
+#     restart: unless-stopped
+#     environment:
+#       MYSQL_ROOT_PASSWORD: root
+#       MYSQL_DATABASE: medical_booking
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+#       - ./init_db:/docker-entrypoint-initdb.d
+#     healthcheck:
+#       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+#     networks:
+#       - app-network
+
+#   # ---------------------------------------------
+#   # 2. DỊCH VỤ ỨNG DỤNG (BACKEND & FRONTEND)
+#   # ---------------------------------------------
+#   backend:
+#     build: ./backend
+#     container_name: backend-container
+#     restart: unless-stopped
+#     ports:
+#       - "8080:8080"
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/medical_booking
+#       SPRING_DATASOURCE_USERNAME: root
+#       SPRING_DATASOURCE_PASSWORD: root
+#     depends_on:
+#       mysql:
+#         condition: service_healthy
+#     networks:
+#       - app-network
+
+#   frontend:
+#     build: ./frontend
+#     container_name: frontend-container
+#     restart: unless-stopped
+#     ports:
+#       - "3000:3000"
+#     depends_on:
+#       - backend
+#     networks:
+#       - app-network
+
+#   # ---------------------------------------------
+#   # 3. DỊCH VỤ XỬ LÝ DỮ LIỆU (ELASTICSEARCH, RABBITMQ, LOGSTASH)
+#   # ---------------------------------------------
+
+#   # 3.1. Elasticsearch (Lưu trữ và Tìm kiếm)
+#   elasticsearch:
+#     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+#     container_name: elasticsearch
+#     restart: unless-stopped
+#     environment:
+#       - discovery.type=single-node
+#       - xpack.security.enabled=false
+#       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#     ulimits:
+#       memlock:
+#         soft: -1
+#         hard: -1
+#     ports:
+#       - "9200:9200"
+#       - "9300:9300"
+#     volumes:
+#       - esdata:/usr/share/elasticsearch/data
+#     networks:
+#       - app-network
+
+#   # 3.2. RabbitMQ (Hàng đợi tin nhắn)
+#   rabbitmq:
+#     image: rabbitmq:3.12-management
+#     container_name: rabbitmq
+#     hostname: rabbitmq_host
+#     restart: unless-stopped
+#     environment:
+#       - RABBITMQ_DEFAULT_USER=user
+#       - RABBITMQ_DEFAULT_PASS=password
+#     ports:
+#       - "5672:5672" # AMQP
+#       - "15672:15672" # Management UI
+#     networks:
+#       - app-network
+
+#   # 3.3. Logstash (Cầu nối RabbitMQ -> Elasticsearch)
+#   logstash:
+#     image: docker.elastic.co/logstash/logstash:8.11.0
+#     container_name: logstash
+#     restart: unless-stopped
+#     volumes:
+#       - ./logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+#     environment:
+#       - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
+#     depends_on:
+#       # Logstash phải chờ cả hai dịch vụ này sẵn sàng
+#       elasticsearch:
+#         condition: service_started
+#       rabbitmq:
+#         condition: service_started
+#     networks:
+#       - app-network
+
+# # ---------------------------------------------
+# # VOLUMES VÀ NETWORKS
+# # ---------------------------------------------
+# volumes:
+#   mysql_data:
+#   esdata:
+#     driver: local
+
+# networks:
+#   app-network:
+#     driver: bridge
+
+
+version: "3.8"
 services:
-  # ---------------------------------------------
-  # 1. DỊCH VỤ CƠ SỞ DỮ LIỆU (MYSQL)
-  # ---------------------------------------------
   mysql:
     image: mysql:8
     container_name: mysql-container
-    restart: unless-stopped
+    restart: unless-stopped 
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: medical_booking
@@ -16,17 +139,13 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init_db:/docker-entrypoint-initdb.d
+    
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - app-network
 
-  # ---------------------------------------------
-  # 2. DỊCH VỤ ỨNG DỤNG (BACKEND & FRONTEND)
-  # ---------------------------------------------
   backend:
     build: ./backend
     container_name: backend-container
@@ -37,11 +156,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/medical_booking
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+    
+    # 🌟 CẬP NHẬT DEPENDS_ON ĐỂ CHỜ MYSQL SẴN SÀNG
     depends_on:
       mysql:
-        condition: service_healthy
-    networks:
-      - app-network
+        condition: service_healthy # Backend chỉ khởi động khi MySQL báo trạng thái HEALTHY
+    # 🌟 END DEPENDS_ON
 
   frontend:
     build: ./frontend
@@ -51,75 +171,6 @@ services:
       - "3000:3000"
     depends_on:
       - backend
-    networks:
-      - app-network
 
-  # ---------------------------------------------
-  # 3. DỊCH VỤ XỬ LÝ DỮ LIỆU (ELASTICSEARCH, RABBITMQ, LOGSTASH)
-  # ---------------------------------------------
-
-  # 3.1. Elasticsearch (Lưu trữ và Tìm kiếm)
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    container_name: elasticsearch
-    restart: unless-stopped
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
-    networks:
-      - app-network
-
-  # 3.2. RabbitMQ (Hàng đợi tin nhắn)
-  rabbitmq:
-    image: rabbitmq:3.12-management
-    container_name: rabbitmq
-    hostname: rabbitmq_host
-    restart: unless-stopped
-    environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=password
-    ports:
-      - "5672:5672" # AMQP
-      - "15672:15672" # Management UI
-    networks:
-      - app-network
-
-  # 3.3. Logstash (Cầu nối RabbitMQ -> Elasticsearch)
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.11.0
-    container_name: logstash
-    restart: unless-stopped
-    volumes:
-      - ./logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
-    environment:
-      - "LS_JAVA_OPTS=-Xms256m -Xmx256m"
-    depends_on:
-      # Logstash phải chờ cả hai dịch vụ này sẵn sàng
-      elasticsearch:
-        condition: service_started
-      rabbitmq:
-        condition: service_started
-    networks:
-      - app-network
-
-# ---------------------------------------------
-# VOLUMES VÀ NETWORKS
-# ---------------------------------------------
 volumes:
   mysql_data:
-  esdata:
-    driver: local
-
-networks:
-  app-network:
-    driver: bridge
