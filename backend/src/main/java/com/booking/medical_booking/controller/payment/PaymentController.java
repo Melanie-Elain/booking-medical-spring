@@ -175,19 +175,20 @@ public class PaymentController {
         String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
         String vnp_TxnRef = request.getParameter("vnp_TxnRef"); 
 
+        String frontendUrl = "https://booking-medical-spring.vercel.app";
 
         if (secureHashLocal != null && secureHashLocal.equalsIgnoreCase(vnp_SecureHash)){
             paymentService.saveVnPayTransaction(vnp_Params);
             if ("00".equals(vnp_ResponseCode)) {
                 updateAppointmentStatus(Integer.parseInt(vnp_TxnRef), "Đã thanh toán");
-                return new RedirectView("http://localhost:3000/payment-status?status=success&orderId=" + vnp_TxnRef);
+                return new RedirectView(frontendUrl + "/payment-status?status=success&orderId=" + vnp_TxnRef);
             } else {
                 updateAppointmentStatus(Integer.parseInt(vnp_TxnRef), "Thanh toán thất bại");
-                return new RedirectView("http://localhost:3000/payment-status?status=failed&orderId=" + vnp_TxnRef);
+                return new RedirectView(frontendUrl + "/payment-status?status=failed&orderId=" + vnp_TxnRef);
             }
         } else {
             updateAppointmentStatus(Integer.parseInt(vnp_TxnRef), "Thanh toán thất bại");
-            return new RedirectView("http://localhost:3000/payment-status?status=failed&message=InvalidSignature");
+            return new RedirectView(frontendUrl + "/payment-status?status=failed&message=InvalidSignature");
         }
     }
 
