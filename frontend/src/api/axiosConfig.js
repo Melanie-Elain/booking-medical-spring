@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const axiosInstance = axios.create({
     // Nếu có biến môi trường thì dùng, không thì dùng localhost (để chạy máy nhà vẫn được)
-    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080/api', 
+    baseURL: 'https://medical-booking-backend-f09f.onrender.com/api' || 'http://localhost:8080/api', 
     headers: {
         'Content-Type': 'application/json',
     },
