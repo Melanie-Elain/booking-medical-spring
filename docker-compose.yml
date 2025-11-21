@@ -189,7 +189,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://medical-booking-db-booking-medical.i.aivencloud.com:11878/defaultdb?ssl-mode=REQUIRED
       SPRING_DATASOURCE_USERNAME: avnadmin
-      SPRING_DATASOURCE_PASSWORD: "MAT_KHAU_AIVEN_CUA_BAN" 
+      SPRING_DATASOURCE_PASSWORD: AVNS_ib1xLwZ0si6DyMq81s-
 
   frontend:
     build: ./frontend
