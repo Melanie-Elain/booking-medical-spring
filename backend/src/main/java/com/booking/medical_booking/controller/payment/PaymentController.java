@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -58,6 +59,9 @@ public class PaymentController {
 
     @Autowired
     private LichGioRepository lichGioRepository;
+
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
     
     @PostMapping("/create-checkout-url")
     public ResponseEntity<PaymentResponseDTO> createCheckoutUrl(@Valid @RequestBody PaymentRequestDTO request) {
@@ -174,8 +178,6 @@ public class PaymentController {
         
         String vnp_ResponseCode = request.getParameter("vnp_ResponseCode");
         String vnp_TxnRef = request.getParameter("vnp_TxnRef"); 
-
-        String frontendUrl = "https://booking-medical-spring.vercel.app";
 
         if (secureHashLocal != null && secureHashLocal.equalsIgnoreCase(vnp_SecureHash)){
             paymentService.saveVnPayTransaction(vnp_Params);
