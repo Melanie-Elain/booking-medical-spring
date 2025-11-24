@@ -16,6 +16,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import com.booking.medical_booking.security.JwtAuthFilter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -34,10 +35,8 @@ public class SecurityConfig {
         // 1. CẤU HÌNH CORS
             .cors(cors -> cors.configurationSource(request -> {
                 var corsConfig = new CorsConfiguration();
-                corsConfig.setAllowedOrigins(List.of(
-                    "http://localhost:3000",
-                    "https://booking-medical-spring.vercel.app"
-                ));
+                
+                corsConfig.setAllowedOriginPatterns(Arrays.asList("*"));
                 corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 corsConfig.setAllowedHeaders(List.of("*"));
                 corsConfig.setAllowCredentials(true);
