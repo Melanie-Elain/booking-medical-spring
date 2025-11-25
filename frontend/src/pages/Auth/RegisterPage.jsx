@@ -72,7 +72,7 @@ const handlePhoneBlur = async () => {
     try {
         const res = await axiosInstance.get(`/auth/check-exist`, {
           params: { phoneNumber: phoneNumber }
-      });
+         });
         
         // Luôn parse JSON để lấy nội dung, kể cả khi lỗi
         const data = await res.json(); 
@@ -107,7 +107,9 @@ const handleSubmit = async (e) => {
 
     // --- BƯỚC 1: KIỂM TRA SĐT TỒN TẠI (LÀM LẠI TRƯỚC KHI SUBMIT) ---
     try {
-        const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
+        const res = await axiosInstance.get(`/auth/check-exist`, {
+          params: { phoneNumber: phoneNumber }
+        });
         const data = await res.json();
 
         if (!res.ok) { // Nếu res.ok = false (lỗi 400)
