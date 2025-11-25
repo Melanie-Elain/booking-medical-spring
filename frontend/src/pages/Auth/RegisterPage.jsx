@@ -7,6 +7,7 @@ import HomeFooter from '../../components/Home/HomeFooter';
 import { useNavigate } from 'react-router-dom';
 import { auth } from "../../api/firebase-config";
 import { RecaptchaVerifier, signInWithPhoneNumber, getAuth } from "firebase/auth";
+import axiosInstance from '../../api/axiosConfig';
 
 import Step1OTP from "../Register/Step1OTP";
 import Step2Password from "../Register/Step2Password";
@@ -65,29 +66,31 @@ const setupRecaptcha = () => {
   //     setLoading(false);
   //   }
   // };
-const handlePhoneBlur = async () => {
+  const handlePhoneBlur = async () => {
     if (!phoneNumber) return;
 
     try {
-        const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
+        // Gọi API (Axios tự động ghép link Render/Localhost)
+        const res = await axiosInstance.get(`/auth/check-exist`, {
+             params: { phoneNumber: phoneNumber }
+        });
         
-        // Luôn parse JSON để lấy nội dung, kể cả khi lỗi
-        const data = await res.json(); 
-
-        if (res.ok) { 
-            // res.ok = true (status 200-299)
-            // Backend trả về {"message": "OK"} -> SĐT hợp lệ
-            setErrors(prev => ({ ...prev, phoneNumber: "" }));
-        } else {
-            // res.ok = false (ví dụ: status 400)
-            // Backend trả về {"error": "Số điện thoại đã tồn tại"}
-            setErrors(prev => ({ ...prev, phoneNumber: data.error || "Lỗi không xác định" }));
-        }
+       
+        setErrors(prev => ({ ...prev, phoneNumber: "" }));
 
     } catch (err) {
-        // Lỗi này là lỗi mạng (ví dụ: server backend bị tắt)
-        console.error("Lỗi mạng khi check phone:", err);
-        setErrors(prev => ({ ...prev, phoneNumber: "Không thể kết nối đến máy chủ" }));
+        console.error("Lỗi check phone:", err);
+
+        if (err.response) {
+           
+            const serverMessage = err.response.data.error; 
+            setErrors(prev => ({ ...prev, phoneNumber: serverMessage || "Lỗi xác thực" }));
+        
+        } else if (err.request) {
+            setErrors(prev => ({ ...prev, phoneNumber: "Không thể kết nối đến máy chủ" }));
+        } else {
+            setErrors(prev => ({ ...prev, phoneNumber: "Lỗi không xác định" }));
+        }
     }
 };
 
@@ -102,26 +105,27 @@ const handleSubmit = async (e) => {
         return;
     }
 
-    // --- BƯỚC 1: KIỂM TRA SĐT TỒN TẠI (LÀM LẠI TRƯỚC KHI SUBMIT) ---
     try {
-        const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
-        const data = await res.json();
-
-        if (!res.ok) { // Nếu res.ok = false (lỗi 400)
-            setErrors(prev => ({ ...prev, phoneNumber: data.error || "SĐT đã tồn tại" }));
-            setLoading(false);
-            return; // Dừng lại, không gửi OTP
-        }
-        // Nếu SĐT hợp lệ (200 OK), tiếp tục...
+      await axiosInstance.get(`/auth/check-exist`, {
+           params: { phoneNumber: phoneNumber }
+      });
 
     } catch (err) {
-        console.error("Lỗi mạng khi check phone:", err);
-        setErrors(prev => ({ ...prev, general: "Không thể kết nối máy chủ. Vui lòng thử lại." }));
-        setLoading(false);
-        return; // Dừng lại
+        console.error("Lỗi check phone:", err);
+        setLoading(false); // Tắt loading
+
+        if (err.response) {
+            const serverMessage = err.response.data.error || "Số điện thoại đã tồn tại";
+            setErrors(prev => ({ ...prev, phoneNumber: serverMessage }));
+        } else if (err.request) {
+            setErrors(prev => ({ ...prev, general: "Không thể kết nối đến máy chủ" }));
+        } else {
+            setErrors(prev => ({ ...prev, general: "Đã có lỗi xảy ra" }));
+        }
+        
+        return; 
     }
 
-    // --- BƯỚC 2: GỬI OTP (NẾU BƯỚC 1 THÀNH CÔNG) ---
     try {
         const formattedPhone = "+84" + phoneNumber.slice(1);
         setupRecaptcha();
