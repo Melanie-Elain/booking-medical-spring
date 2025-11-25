@@ -7,6 +7,7 @@ import HomeFooter from '../../components/Home/HomeFooter';
 import { useNavigate } from 'react-router-dom';
 import { auth } from "../../api/firebase-config";
 import { RecaptchaVerifier, signInWithPhoneNumber, getAuth } from "firebase/auth";
+import axiosInstance from '../../api/axiosConfig';
 
 import Step1OTP from "../Register/Step1OTP";
 import Step2Password from "../Register/Step2Password";
@@ -69,7 +70,9 @@ const handlePhoneBlur = async () => {
     if (!phoneNumber) return;
 
     try {
-        const res = await fetch(`http://localhost:8080/api/auth/check-exist?phoneNumber=${phoneNumber}`);
+        const res = await axiosInstance.get(`/auth/check-exist`, {
+          params: { phoneNumber: phoneNumber }
+      });
         
         // Luôn parse JSON để lấy nội dung, kể cả khi lỗi
         const data = await res.json(); 

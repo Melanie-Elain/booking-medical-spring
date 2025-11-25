@@ -17,3 +17,12 @@ export const loginUser = async (data) => {
     throw error;
   }
 };
+
+// export const checkExistPhone = async (phoneNumber) => {
+//   try {
+//     const response = await axiosInstance.post(`/auth/check-exist?phoneNumber=${phoneNumber}`);
+//     return response.data; 
+//   } catch (error) {
+//     throw error;
+//   }
+// };
