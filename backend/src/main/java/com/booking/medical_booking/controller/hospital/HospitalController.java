@@ -30,6 +30,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -94,6 +95,12 @@ public class HospitalController {
         Map<String, List<ScheduleTimeDTO>> schedules = hospitalService.getHospitalSchedules(id);
         
         return ResponseEntity.ok(schedules);
+    }
+
+    @GetMapping("/{id}/schedules-management") // Đường dẫn khác với cái cũ
+    public ResponseEntity<?> getAllSchedules(@PathVariable Long id) {
+        
+        return ResponseEntity.ok(hospitalService.getAllSchedulesForManagement(id));
     }
 
         // --- QUẢN LÝ LỊCH HẸN (CHO BỆNH VIỆN) ---

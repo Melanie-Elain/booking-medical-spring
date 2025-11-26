@@ -143,4 +143,41 @@ public class HospitalService {
         return formattedSchedules;
     }
 
+    // Trong Service
+@Transactional(readOnly = true)
+public Map<String, List<ScheduleTimeDTO>> getAllSchedulesForManagement(Long hospitalId) {
+    
+    // 1. Lấy dữ liệu từ DB (Lấy hết, không quan tâm user role vì đây là chức năng quản lý)
+    List<LichTong> hospitalSchedules = lichTongRepository.findSchedulesWithLichGiosByDoctor(
+        User.UserRole.BENHVIEN, 
+        hospitalId
+    );
+    
+    if (hospitalSchedules.isEmpty()) {
+        return new LinkedHashMap<>();
+    }
+    
+    Map<String, List<ScheduleTimeDTO>> formattedSchedules = new LinkedHashMap<>(); 
+    
+    for (LichTong lichTong : hospitalSchedules) {
+        String tenNgay = lichTong.getTenNgay(); 
+        
+        List<ScheduleTimeDTO> allTimes = lichTong.getLichGios().stream()
+             
+             .map(lichGio -> {
+                 ScheduleTimeDTO dto = new ScheduleTimeDTO();
+                 dto.setId(lichGio.getMaGio());     
+                 dto.setTime(lichGio.getKhungGio());                 
+                 return dto;
+             })
+             .collect(Collectors.toList());
+            
+        if (!allTimes.isEmpty()) {
+            formattedSchedules.put(tenNgay, allTimes);
+        }
+    }
+
+    return formattedSchedules;
+}
+
 }

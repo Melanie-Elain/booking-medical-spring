@@ -12,5 +12,11 @@ export const PaymentService = {
         console.log("Check var Requesting checkout", response);
         
         return response.data;
+    },
+
+    getPaymentHistory: async () => {
+        console.log("Fetching payment history...");
+        const response = await axiosInstance.get(`/payment/history`); 
+        return response.data;
     }
 }

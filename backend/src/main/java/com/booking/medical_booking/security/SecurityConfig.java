@@ -50,19 +50,22 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/doctors/**").permitAll()
+                .requestMatchers("/api/hospitals/*/schedules-management")
+                 .hasAnyAuthority("BENHVIEN", "ROLE_BENHVIEN")
                 .requestMatchers("/api/hospitals/**").permitAll()
                 .requestMatchers("/api/clinics/**").permitAll()
                 .requestMatchers("/api/specialties/**").permitAll()
                 .requestMatchers("/api/search/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/payment/confirm-status").permitAll()
                 .requestMatchers("/api/payment/vnpay-return", "/api/payment/vnpay-ipn", "/").permitAll()
+                .requestMatchers("/api/payment/history").authenticated()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // --- API THEO ROLE CỤ THỂ (QUẢN TRỊ) ---
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/doctor/**").hasRole("BACSI")
-                .requestMatchers("/api/clinic/**").hasRole("PHONGKHAM")
-                .requestMatchers("/api/hospital/**").hasRole("BENHVIEN")
+                .requestMatchers("/api/doctors/**").hasRole("BACSI")
+                .requestMatchers("/api/clinics/**").hasRole("PHONGKHAM")
+                .requestMatchers("/api/hospitals/**").hasRole("BENHVIEN")
 
                 // 1. Chỉ BENHNHAN mới được xem lịch sử khám
                 .requestMatchers("/api/user/appointments/**").hasRole("BENHNHAN")

@@ -8,6 +8,7 @@ import {
     deleteScheduleSlot,
     updateScheduleSlot 
 } from '../../api/HospitalScheduleService';
+import { getAllManagementSchedules } from '../../api/hospitalService';
 
 // Icons
 import { Calendar, Clock, Trash2, Edit2 } from 'lucide-react';
@@ -25,10 +26,54 @@ const HOSPITAL_TIME_SLOTS = [
 const AddScheduleForm = ({ hospitalId, onScheduleAdded }) => {
     const [date, setDate] = useState('');
     const [selectedSlots, setSelectedSlots] = useState(new Set());
+    const [existingSlots, setExistingSlots] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isChecking, setIsChecking] = useState(false);
     const [error, setError] = useState(null);
 
+    useEffect(() => {
+        const checkExistingSchedule = async () => {
+            if (!date || !hospitalId) return;
+
+            setIsChecking(true);
+            setExistingSlots([]);
+            
+            try {
+                const response = await getAllManagementSchedules(hospitalId);
+                const data = response.data || response; // Tùy cấu trúc axios của bạn
+
+                // --- Logic xử lý Date Format (như bài trước) ---
+                const [year, month, day] = date.split('-');
+                const formattedDate = `${day}/${month}/${year}`;
+                
+                const foundKey = Object.keys(data).find(key => key.includes(formattedDate));
+                const slotsInDb = foundKey ? data[foundKey] : [];
+                
+                // Lấy danh sách giờ
+                const timeStrings = slotsInDb.map(item => item.time);
+                
+                setExistingSlots(timeStrings);
+                setSelectedSlots(prev => {
+                    const newSet = new Set(prev);
+                    timeStrings.forEach(time => newSet.delete(time));
+                    return newSet;
+                });
+
+            } catch (err) {
+                console.error("Lỗi khi kiểm tra lịch trùng:", err);
+            } finally {
+                setIsChecking(false);
+            }
+        };
+        const timeoutId = setTimeout(() => {
+            checkExistingSchedule();
+        }, 500); 
+
+        return () => clearTimeout(timeoutId);
+    }, [date, hospitalId]);
+
     const toggleSlot = (slot) => {
+        if (existingSlots.includes(slot)) return;
         const newSet = new Set(selectedSlots);
         newSet.has(slot) ? newSet.delete(slot) : newSet.add(slot);
         setSelectedSlots(newSet);
@@ -106,6 +151,12 @@ const AddScheduleForm = ({ hospitalId, onScheduleAdded }) => {
                                 {slot.includes("07:00") ? "Ca Sáng" : "Ca Chiều"}
                                 <span className="block text-xs text-gray-500">{slot}</span>
                             </span>
+                            {existingSlots.includes(slot) && (
+                                <span className="ml-auto text-red-500 text-xs font-semibold">
+                                    (Đã tồn tại)
+                                </span>
+                            )}
+                            
                         </label>
                     ))}
                 </div>

@@ -372,6 +372,7 @@ const CompleteBookingHospital = () => {
     const [schedules,setSchedules]= useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
     
 
     const [selectedDate, setSelectedDate] = useState(null);
@@ -425,9 +426,25 @@ const CompleteBookingHospital = () => {
     } : null;
 
 
-    // const patientName = patientDetails.name; 
 
     const handleOptionSelect = (optionId) => {
+        setErrorMessage(''); 
+        console.log("Kiểm tra thông tin BHYT:", optionId);
+
+
+        if (optionId === 'bhyt') {
+            
+            const hasBHYTInfo = patient && patient.healthInsurance && patient.healthInsurance.trim().length > 0;
+            console.log("Kiểm tra thông tin BHYT:", hasBHYTInfo);
+
+            if (!hasBHYTInfo) {
+                const msg = 'Bạn chưa cập nhật thông tin thẻ BHYT trong hồ sơ cá nhân. Vui lòng chọn hình thức khám khác hoặc cập nhật hồ sơ.';
+                setErrorMessage(msg); 
+                alert(msg);
+                return; 
+            }
+        }
+
         setSelectedOption(optionId);
         setCurrentStep(2); 
     };
@@ -519,8 +536,7 @@ const CompleteBookingHospital = () => {
         ? hospital.specialties.map(specObject => ({
             id: (specObject.name || '').toLowerCase().replace(/\s/g, '_'),
             label: specObject.name 
-        })) 
-        : [];
+        })) : [];
 
     const getSelectedOptionLabel = (id) => examOptions.find(o => o.id === id)?.label || 'Chưa chọn';
     const getSelectedSpecialtyLabel = (id) => specialties.find(s => s.id === id)?.label || 'Chưa chọn';

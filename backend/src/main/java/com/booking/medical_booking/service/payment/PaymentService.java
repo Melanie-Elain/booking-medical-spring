@@ -1,5 +1,7 @@
 package com.booking.medical_booking.service.payment;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ public class PaymentService {
         transaction.setBankCode(vnp_Params.get("vnp_BankCode"));
         transaction.setCardType(vnp_Params.get("vnp_CardType"));
         transaction.setResponseCode(vnp_Params.get("vnp_ResponseCode"));
+        transaction.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 
         // VNPAY tiền nhân 100 -> Phải chia 100
         long amount = Long.parseLong(vnp_Params.get("vnp_Amount")) / 100;
@@ -37,6 +40,10 @@ public class PaymentService {
         }
 
         paymentRepository.save(transaction);
+    }
+
+    public List<Payment> getPaymentHistory(Long userId) {
+        return paymentRepository.findHistoryByUserId(userId);
     }
 
     // // --- HÀM LƯU MOMO (Ví dụ để bạn dùng sau này) ---

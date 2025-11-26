@@ -56,3 +56,8 @@ export const HospitalService = {
     getHospitalById: getHospitalById,
     getHospitalSchedules: getHospitalSchedules
 };
+
+export const getAllManagementSchedules = (hospitalId) => {
+    // Gọi vào endpoint mới bạn vừa tạo ở backend
+    return axiosInstance.get(`/hospitals/${hospitalId}/schedules-management`); 
+};

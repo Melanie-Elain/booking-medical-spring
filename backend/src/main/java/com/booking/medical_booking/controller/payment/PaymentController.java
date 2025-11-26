@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -28,8 +29,11 @@ import com.booking.medical_booking.dto.PaymentResponseDTO;
 import com.booking.medical_booking.dto.VnPayIpnResponseDTO;
 import com.booking.medical_booking.model.Appointment;
 import com.booking.medical_booking.model.LichGio;
+import com.booking.medical_booking.model.Payment;
+import com.booking.medical_booking.model.User;
 import com.booking.medical_booking.repository.LichGioRepository;
 import com.booking.medical_booking.service.appointment.AppointmentService;
+import com.booking.medical_booking.service.auth.UserService;
 import com.booking.medical_booking.service.payment.Momoservice;
 import com.booking.medical_booking.service.payment.PaymentService;
 import com.booking.medical_booking.service.payment.VNPayService;
@@ -58,7 +62,12 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private LichGioRepository lichGioRepository;
+
+
 
     @Value("${app.frontend.url}")
     private String frontendUrl;
@@ -288,6 +297,19 @@ public class PaymentController {
             }
         } catch (Exception e) {
             System.err.println("Lỗi cập nhật DB: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<?> getMyPaymentHistory() {
+        try {
+            // Lấy user hiện tại (giả sử bạn có hàm này)
+            User currentUser = userService.getCurrentUser(); 
+            
+            List<Payment> history = paymentService.getPaymentHistory(currentUser.getId());
+            return ResponseEntity.ok(history);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Lỗi lấy lịch sử giao dịch");
         }
     }
 

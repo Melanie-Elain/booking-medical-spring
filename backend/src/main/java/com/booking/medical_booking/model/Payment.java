@@ -46,6 +46,6 @@ public class Payment {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @Column(name = "created_at")
     private Timestamp createdAt;
 }
