@@ -44,7 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             // ⚠️ PATH PUBLIC — không yêu cầu JWT
                 // ---------------------------------------------
                 if (requestPath.startsWith("/api/doctors") ||
-                    requestPath.startsWith("/api/hospitals") ||
+                    // requestPath.startsWith("/api/hospitals") ||
                     requestPath.startsWith("/api/clinics") ||
                     requestPath.startsWith("/api/specialties") ||
                     requestPath.startsWith("/vnpay-return") || 
