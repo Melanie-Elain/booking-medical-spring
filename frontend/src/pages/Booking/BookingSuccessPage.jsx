@@ -110,10 +110,10 @@ const BookingSuccessPage = () => {
                             <span className="text-gray-600">Giới tính</span>
                             <span className="font-medium">{bookingDetails.gender}</span>
                         </div>
-                        <div className="flex justify-between border-b pb-1">
+                        {/* <div className="flex justify-between border-b pb-1">
                             <span className="text-gray-600">Địa chỉ</span>
                             <span className="font-medium">{bookingDetails.address}</span>
-                        </div>
+                        </div> */}
                         <div className="flex justify-between">
                             <span className="text-gray-600">Ghi chú</span>
                             <span className="font-medium">{bookingDetails.note}</span>
